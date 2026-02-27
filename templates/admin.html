@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Dashboard - Prestige School of Health Benue</title>
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+
+    <!-- CSS -->
+    <link rel="stylesheet" href="{{ url_for('static', path='/css/style.css') }}">
+</head>
+
+<body>
+
+    <div class="dashboard-layout">
+        <aside class="sidebar">
+            <div class="sidebar-logo">
+                <img src="{{ url_for('static', path='/img/logo.svg') }}" alt="Logo" width="32" height="32"
+                    style="filter: brightness(0) invert(1);">
+                <h2>Admin Portal</h2>
+            </div>
+
+            <ul class="nav-links">
+                <li><a href="#" class="nav-link active">Applications</a></li>
+                <li><a href="#" class="nav-link">Students</a></li>
+                <li><a href="#" class="nav-link">Settings</a></li>
+                <li><a href="#" class="nav-link">Logout</a></li>
+            </ul>
+        </aside>
+
+        <main class="dashboard-content">
+            <header class="mb-6">
+                <h1>Student Applications</h1>
+                <p style="color: var(--text-light);">Review and process pending admission applications.</p>
+            </header>
+
+            <div class="table-container">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Applicant Name</th>
+                            <th>Date Applied</th>
+                            <th>State</th>
+                            <th>Passport</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <!-- Example Row 1 -->
+                        <tr>
+                            <td>
+                                <strong>John Terdoo</strong><br>
+                                <span style="color: var(--text-light); font-size: 0.75rem;">08012345678</span>
+                            </td>
+                            <td>12 Oct 2026</td>
+                            <td>Benue</td>
+                            <td>
+                                <!-- Using a placeholder image for visual demo -->
+                                <img src="https://ui-avatars.com/api/?name=John+Terdoo&background=0D8ABC&color=fff"
+                                    alt="Passport" class="avatar">
+                            </td>
+                            <td>
+                                <div class="actions">
+                                    <button class="btn btn-sm btn-approve"
+                                        onclick="window.showToast('Application Approved', 'success')">Approve</button>
+                                    <button class="btn btn-sm btn-reject"
+                                        onclick="window.showToast('Application Rejected', 'error')">Reject</button>
+                                </div>
+                            </td>
+                        </tr>
+                        <!-- Example Row 2 -->
+                        <tr>
+                            <td>
+                                <strong>Sarah Abuh</strong><br>
+                                <span style="color: var(--text-light); font-size: 0.75rem;">08198765432</span>
+                            </td>
+                            <td>13 Oct 2026</td>
+                            <td>Kogi</td>
+                            <td>
+                                <img src="https://ui-avatars.com/api/?name=Sarah+Abuh&background=0d9488&color=fff"
+                                    alt="Passport" class="avatar">
+                            </td>
+                            <td>
+                                <div class="actions">
+                                    <button class="btn btn-sm btn-approve"
+                                        onclick="window.showToast('Application Approved', 'success')">Approve</button>
+                                    <button class="btn btn-sm btn-reject"
+                                        onclick="window.showToast('Application Rejected', 'error')">Reject</button>
+                                </div>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </main>
+    </div>
+
+    <!-- JS -->
+    <script src="{{ url_for('static', path='/js/app.js') }}"></script>
+</body>
+
+</html>
