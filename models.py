@@ -1,14 +1,15 @@
-from sqlalchemy import Column, String, Boolean
+from sqlalchemy import Column, String, Boolean, Text
+from datetime import datetime, timezone
 from database import Base
 import uuid
 
 class User(Base):
     __tablename__ = "User"
-
     id = Column(String, primary_key=True, default=lambda: str(uuid.uuid4()))
     email = Column(String, unique=True, index=True)
+    jamb_reg_no = Column(String, unique=True, index=True) # Critical for ICT verification
     passwordHash = Column(String)
-    role = Column(String, default="STUDENT") # Values: STUDENT, ADMIN, SUPER_ADMIN
+    role = Column(String, default="student")
     isPasswordChanged = Column(Boolean, default=False)
 
 from sqlalchemy import Column, String, DateTime, ForeignKey
@@ -27,3 +28,12 @@ class Admission(Base):
     resultsUrl = Column(String)   # Path to the uploaded PDF/Image
     status = Column(String, default="PENDING") # PENDING, APPROVED, REJECTED
     createdAt = Column(DateTime(timezone=True), server_default=func.now())
+
+class News(Base):
+    __tablename__ = "News"
+    id = Column(String, primary_key=True, default=lambda: str(uuid.uuid4()))
+    title = Column(String, nullable=False)
+    content = Column(Text, nullable=False)
+    category = Column(String)  # e.g., "Admission", "Exam", "General"
+    is_urgent = Column(Boolean, default=False)
+    created_at = Column(DateTime, default=lambda: datetime.now(timezone.utc))
