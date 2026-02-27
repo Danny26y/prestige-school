@@ -1,22 +1,18 @@
 /**
- * app.js - Prestige School of Health Benue
- * Frontend Logic
+ * app.js - Prestige School of Nursing
+ * Master Frontend Logic
  */
 
 document.addEventListener('DOMContentLoaded', () => {
-    // 1. Toast Notification System
-    const createToastContainer = () => {
+    // --- 1. UTILITY: Toast Notification System ---
+    const showToast = (message, type = 'info') => {
         let container = document.querySelector('.toast-container');
         if (!container) {
             container = document.createElement('div');
             container.className = 'toast-container';
             document.body.appendChild(container);
         }
-        return container;
-    };
-
-    window.showToast = (message, type = 'info') => {
-        const container = createToastContainer();
+        
         const toast = document.createElement('div');
         toast.className = `toast ${type}`;
         
@@ -27,18 +23,18 @@ document.addEventListener('DOMContentLoaded', () => {
         toast.innerHTML = `<span>${icon}</span> <span>${message}</span>`;
         container.appendChild(toast);
 
-        // Animate in
         setTimeout(() => toast.classList.add('show'), 10);
-
-        // Remove after 3 seconds
         setTimeout(() => {
             toast.classList.remove('show');
             setTimeout(() => toast.remove(), 300);
         }, 3000);
     };
 
-    // 2. Spinner Overlay Setup
-    const createSpinner = () => {
+    // Make showToast globally available if needed by inline scripts
+    window.showToast = showToast;
+
+    // --- 2. UTILITY: Spinner Overlay Setup ---
+    const showSpinner = () => {
         let spinner = document.querySelector('.spinner-overlay');
         if (!spinner) {
             spinner = document.createElement('div');
@@ -46,20 +42,48 @@ document.addEventListener('DOMContentLoaded', () => {
             spinner.innerHTML = '<div class="spinner"></div>';
             document.body.appendChild(spinner);
         }
-        return spinner;
-    };
-
-    window.showSpinner = () => {
-        const spinner = createSpinner();
         spinner.classList.add('active');
     };
 
-    window.hideSpinner = () => {
-        const spinner = createSpinner();
-        spinner.classList.remove('active');
+    const hideSpinner = () => {
+        const spinner = document.querySelector('.spinner-overlay');
+        if (spinner) spinner.classList.remove('active');
     };
 
-    // 3. Login Form Handling
+    // --- 3. REGISTRATION FLOW (New JAMB Verification) ---
+    const registerForm = document.getElementById('registerForm');
+    if (registerForm) {
+        registerForm.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            showSpinner();
+            
+            try {
+                // FormData automatically captures jamb_no, email, and password from the form
+                const formData = new FormData(registerForm);
+
+                const response = await fetch('/register', {
+                    method: 'POST',
+                    body: formData
+                });
+
+                const data = await response.json().catch(() => ({}));
+                
+                if (response.ok) {
+                    showToast(data.message || 'Registration successful!', 'success');
+                    setTimeout(() => window.location.href = '/login', 2000); // Send to login on success
+                } else {
+                    showToast(data.detail || 'Registration failed. Check your JAMB number.', 'error');
+                }
+            } catch (error) {
+                console.error('Registration error:', error);
+                showToast('A network error occurred during registration.', 'error');
+            } finally {
+                hideSpinner();
+            }
+        });
+    }
+
+    // --- 4. LOGIN FLOW (The Traffic Cop) ---
     const loginForm = document.getElementById('loginForm');
     if (loginForm) {
         loginForm.addEventListener('submit', async (e) => {
@@ -76,9 +100,9 @@ document.addEventListener('DOMContentLoaded', () => {
             showSpinner();
             
             try {
-                // Application/x-www-form-urlencoded format
+                // Backend expects application/x-www-form-urlencoded format
                 const formData = new URLSearchParams();
-                formData.append('username', email); // Assuming standard OAuth2/FastAPI naming or mapping
+                formData.append('email', email); 
                 formData.append('password', password);
 
                 const response = await fetch('/login', {
@@ -90,20 +114,21 @@ document.addEventListener('DOMContentLoaded', () => {
                 });
 
                 if (response.ok) {
-                    const data = await response.json();
-                    // Store user data in localStorage
-                    if (data.user) {
-                        localStorage.setItem('user', JSON.stringify(data.user));
-                    }
-                    if (data.access_token) {
-                        localStorage.setItem('token', data.access_token);
-                    }
+                    // Backend returns a flat object: {id, email, role}
+                    const user = await response.json();
+                    
+                    // Store the user session in localStorage
+                    localStorage.setItem('user', JSON.stringify(user));
                     
                     showToast('Login successful! Redirecting...', 'success');
                     
-                    // Redirect to dashboard (assuming backend handles redirect or frontend does it based on response)
+                    // --- THE TRAFFIC COP ROUTING ---
                     setTimeout(() => {
-                        window.location.href = data.redirect_url || '/dashboard';
+                        if (user.role && user.role.trim().toLowerCase() === 'admin') {
+                            window.location.href = '/admin'; // Send ICT Admin here
+                        } else {
+                            window.location.href = '/dashboard'; // Send Students here
+                        }
                     }, 1000);
                 } else {
                     const errorData = await response.json().catch(() => ({}));
@@ -118,39 +143,41 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
-    // 4. Admission Apply Form Handling
+    // --- 5. ADMISSION APPLICATION FLOW ---
     const applyForm = document.getElementById('applyForm');
     if (applyForm) {
         applyForm.addEventListener('submit', async (e) => {
             e.preventDefault();
             
+            // Verify user is logged in before allowing submission
+            const userString = localStorage.getItem('user');
+            if (!userString) {
+                showToast('Session expired. Please log in again.', 'error');
+                setTimeout(() => window.location.href = '/login', 2000);
+                return;
+            }
+
+            const user = JSON.parse(userString);
             showSpinner();
             
             try {
-                // Fetch automatically sets Content-Type to multipart/form-data when passing FormData
+                // Grabs fullName, phoneNumber, stateOfOrigin, passport, results
                 const formData = new FormData(applyForm);
                 
-                // Add Authorization header if a token exists
-                const token = localStorage.getItem('token');
-                const headers = {};
-                if (token) {
-                    headers['Authorization'] = `Bearer ${token}`;
-                }
+                // Append the required userId from the stored session
+                formData.append('userId', user.id);
 
                 const response = await fetch('/apply', {
                     method: 'POST',
-                    headers: headers,
-                    body: formData
+                    body: formData // Fetch sets multipart/form-data automatically
                 });
 
                 if (response.ok) {
                     showToast('Application submitted successfully!', 'success');
-                    setTimeout(() => {
-                        window.location.href = '/dashboard';
-                    }, 1500);
+                    setTimeout(() => window.location.href = '/dashboard', 1500);
                 } else {
                     const errorData = await response.json().catch(() => ({}));
-                    showToast(errorData.detail || 'Failed to submit application. Ensure all fields are valid.', 'error');
+                    showToast(errorData.detail || 'Failed to submit application.', 'error');
                 }
             } catch (error) {
                 console.error('Apply error:', error);
@@ -161,7 +188,7 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
     
-    // File inputs display name when selected
+    // --- 6. FILE UPLOAD VISUAL FEEDBACK ---
     const fileInputs = document.querySelectorAll('.file-upload input[type="file"]');
     fileInputs.forEach(input => {
         input.addEventListener('change', (e) => {
@@ -171,4 +198,35 @@ document.addEventListener('DOMContentLoaded', () => {
             }
         });
     });
+    // --- 7. ADMIN: CSV JAMB LIST UPLOAD ---
+    const csvUploadForm = document.getElementById('csvUploadForm');
+    if (csvUploadForm) {
+        csvUploadForm.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            showSpinner();
+            
+            const formData = new FormData(csvUploadForm);
+            
+            try {
+                const response = await fetch('/admin/import-jamb-list', {
+                    method: 'POST',
+                    body: formData
+                });
+
+                const data = await response.json().catch(() => ({}));
+                
+                if (response.ok) {
+                    showToast(data.message || 'CSV Uploaded Successfully!', 'success');
+                    csvUploadForm.reset(); // Clear the file input
+                } else {
+                    showToast(data.detail || 'Failed to upload CSV.', 'error');
+                }
+            } catch (error) {
+                console.error('CSV Upload Error:', error);
+                showToast('Network error while uploading CSV.', 'error');
+            } finally {
+                hideSpinner();
+            }
+        });
+    }
 });

@@ -5,12 +5,10 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Admission Application - Prestige School of Health Benue</title>
-    <!-- Google Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
 
-    <!-- CSS -->
     <link rel="stylesheet" href="{{ url_for('static', path='/css/style.css') }}">
     <style>
         .apply-card {
@@ -80,19 +78,19 @@
 
                 <div class="form-group">
                     <label class="form-label" for="full_name">Full Name</label>
-                    <input type="text" id="full_name" name="full_name" class="form-input" placeholder="Surname First"
+                    <input type="text" id="full_name" name="fullName" class="form-input" placeholder="Surname First"
                         required>
                 </div>
 
                 <div class="form-grid">
                     <div class="form-group">
                         <label class="form-label" for="phone">Phone Number</label>
-                        <input type="tel" id="phone" name="phone" class="form-input" placeholder="080XXXXXXXX" required>
+                        <input type="tel" id="phone" name="phoneNumber" class="form-input" placeholder="080XXXXXXXX" required>
                     </div>
 
                     <div class="form-group">
                         <label class="form-label" for="state">State of Origin</label>
-                        <select id="state" name="state" class="form-input" required>
+                        <select id="state" name="stateOfOrigin" class="form-input" required>
                             <option value="">Select State</option>
                             <option value="Benue">Benue</option>
                             <option value="Nasarawa">Nasarawa</option>
@@ -136,7 +134,7 @@
                             <polyline points="10 9 9 9 8 9"></polyline>
                         </svg>
                         <span>Click to select file (PDF, JPG, PNG)</span>
-                        <input type="file" name="olevel" accept=".pdf, .jpg, .jpeg, .png" required>
+                        <input type="file" name="results" accept=".pdf, .jpg, .jpeg, .png" required>
                     </label>
                 </div>
 
@@ -145,7 +143,6 @@
         </div>
     </div>
 
-    <!-- JS -->
     <script src="{{ url_for('static', path='/js/app.js') }}"></script>
 </body>
 

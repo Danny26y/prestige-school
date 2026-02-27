@@ -4,14 +4,30 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Admin Dashboard - Prestige School of Health Benue</title>
-    <!-- Google Fonts -->
+    <title>Admin Dashboard - Prestige School of Nursing</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
 
-    <!-- CSS -->
     <link rel="stylesheet" href="{{ url_for('static', path='/css/style.css') }}">
+    <style>
+        .search-container {
+            margin-bottom: 2rem;
+            display: flex;
+            gap: 1rem;
+        }
+        .search-input {
+            flex-grow: 1;
+            padding: 0.75rem 1rem;
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            font-family: inherit;
+        }
+        .search-btn {
+            width: auto;
+            padding: 0 1.5rem;
+        }
+    </style>
 </head>
 
 <body>
@@ -25,18 +41,37 @@
             </div>
 
             <ul class="nav-links">
-                <li><a href="#" class="nav-link active">Applications</a></li>
-                <li><a href="#" class="nav-link">Students</a></li>
-                <li><a href="#" class="nav-link">Settings</a></li>
-                <li><a href="#" class="nav-link">Logout</a></li>
+                <li><a href="/admin" class="nav-link active">Applications</a></li>
+                <li><a href="/admin/news" class="nav-link">News Editor</a></li>
+                <li><a href="/logout" class="nav-link">Logout</a></li>
             </ul>
         </aside>
 
         <main class="dashboard-content">
             <header class="mb-6">
                 <h1>Student Applications</h1>
-                <p style="color: var(--text-light);">Review and process pending admission applications.</p>
+                <p style="color: var(--text-light);">Review and process pending admission applications for the 2026/2027 session.</p>
             </header>
+
+            <div style="background: white; padding: 1.5rem; border-radius: 8px; box-shadow: 0 2px 4px rgba(0,0,0,0.05); margin-bottom: 2rem; border: 1px solid var(--border-color);">
+                <h3 style="margin-top: 0; margin-bottom: 0.5rem; color: #333;">Import Approved JAMB List</h3>
+                <p style="color: #666; font-size: 0.9rem; margin-bottom: 1rem;">
+                    Upload a CSV file containing two columns exactly named: <strong>jamb_no</strong> and <strong>full_name</strong>.
+                </p>
+                
+                <form id="csvUploadForm" style="display: flex; gap: 1rem; align-items: center;">
+                    <input type="file" name="file" accept=".csv" required 
+                           style="padding: 0.5rem; border: 1px solid #ccc; border-radius: 4px; flex-grow: 1; max-width: 400px; font-family: inherit;">
+                    
+                    <button type="submit" class="btn btn-primary" style="white-space: nowrap;">
+                        Upload CSV
+                    </button>
+                </form>
+            </div>
+            <form action="/admin" method="get" class="search-container">
+                <input type="text" name="jamb_search" class="search-input" placeholder="Search by Candidate Name..." value="{{ request.query_params.get('jamb_search', '') }}">
+                <button type="submit" class="btn btn-primary search-btn">Search</button>
+            </form>
 
             <div class="table-container">
                 <table>
@@ -46,61 +81,75 @@
                             <th>Date Applied</th>
                             <th>State</th>
                             <th>Passport</th>
+                            <th>Documents</th>
                             <th>Actions</th>
                         </tr>
                     </thead>
                     <tbody>
-                        <!-- Example Row 1 -->
+                        {% for app in applications %}
                         <tr>
                             <td>
-                                <strong>John Terdoo</strong><br>
-                                <span style="color: var(--text-light); font-size: 0.75rem;">08012345678</span>
+                                <strong>{{ app.fullName }}</strong><br>
+                                <span style="color: var(--text-light); font-size: 0.75rem;">{{ app.phoneNumber }}</span>
                             </td>
-                            <td>12 Oct 2026</td>
-                            <td>Benue</td>
+                            <td>{{ app.createdAt.strftime('%d %b %Y') }}</td>
+                            <td>{{ app.stateOfOrigin }}</td>
                             <td>
-                                <!-- Using a placeholder image for visual demo -->
-                                <img src="https://ui-avatars.com/api/?name=John+Terdoo&background=0D8ABC&color=fff"
-                                    alt="Passport" class="avatar">
+                                <img src="/{{ app.passportUrl }}" alt="Passport" class="avatar" 
+                                     onclick="window.open('/{{ app.passportUrl }}', '_blank')" style="cursor: pointer;">
+                            </td>
+                            <td>
+                                <a href="/{{ app.resultsUrl }}" target="_blank" class="btn btn-sm btn-outline" 
+                                   style="width: auto; padding: 0.4rem 0.8rem; font-size: 0.75rem;">
+                                    📄 View Results
+                                </a>
                             </td>
                             <td>
                                 <div class="actions">
-                                    <button class="btn btn-sm btn-approve"
-                                        onclick="window.showToast('Application Approved', 'success')">Approve</button>
-                                    <button class="btn btn-sm btn-reject"
-                                        onclick="window.showToast('Application Rejected', 'error')">Reject</button>
+                                    <button class="btn btn-sm btn-approve" onclick="updateStatus('{{ app.id }}', 'APPROVED')">Approve</button>
+                                    <button class="btn btn-sm btn-reject" onclick="updateStatus('{{ app.id }}', 'REJECTED')">Reject</button>
                                 </div>
                             </td>
                         </tr>
-                        <!-- Example Row 2 -->
+                        {% else %}
                         <tr>
-                            <td>
-                                <strong>Sarah Abuh</strong><br>
-                                <span style="color: var(--text-light); font-size: 0.75rem;">08198765432</span>
-                            </td>
-                            <td>13 Oct 2026</td>
-                            <td>Kogi</td>
-                            <td>
-                                <img src="https://ui-avatars.com/api/?name=Sarah+Abuh&background=0d9488&color=fff"
-                                    alt="Passport" class="avatar">
-                            </td>
-                            <td>
-                                <div class="actions">
-                                    <button class="btn btn-sm btn-approve"
-                                        onclick="window.showToast('Application Approved', 'success')">Approve</button>
-                                    <button class="btn btn-sm btn-reject"
-                                        onclick="window.showToast('Application Rejected', 'error')">Reject</button>
-                                </div>
+                            <td colspan="6" class="text-center" style="padding: 3rem;">
+                                <p style="color: var(--text-light);">No applications found matching your criteria.</p>
                             </td>
                         </tr>
+                        {% endfor %}
                     </tbody>
                 </table>
             </div>
         </main>
     </div>
 
-    <!-- JS -->
     <script src="{{ url_for('static', path='/js/app.js') }}"></script>
+    <script>
+        async function updateStatus(admissionId, newStatus) {
+            if (!confirm(`Are you sure you want to ${newStatus.toLowerCase()} this application?`)) return;
+            
+            const formData = new FormData();
+            formData.append('status', newStatus);
+
+            try {
+                const response = await fetch(`/admin/update-status/${admissionId}`, {
+                    method: 'POST',
+                    body: formData
+                });
+
+                if (response.ok) {
+                    window.showToast(`Application ${newStatus}`, 'success');
+                    setTimeout(() => location.reload(), 1000);
+                } else {
+                    const data = await response.json();
+                    window.showToast(data.detail || 'Update failed', 'error');
+                }
+            } catch (error) {
+                window.showToast('Network error', 'error');
+            }
+        }
+    </script>
 </body>
 
 </html>

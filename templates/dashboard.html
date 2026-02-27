@@ -5,12 +5,10 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Student Dashboard - Prestige School of Health Benue</title>
-    <!-- Google Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
 
-    <!-- CSS -->
     <link rel="stylesheet" href="{{ url_for('static', path='/css/style.css') }}">
 </head>
 
@@ -35,15 +33,14 @@
         <main class="dashboard-content">
             <header class="mb-6">
                 <h1>Welcome back, <span style="color: var(--medical-teal);">{{ user.email }}</span></h1>
-                <p style="color: var(--text-light);">Here is an overview of your admission status and next steps.</p>
+                <p style="color: var(--text-light); font-weight: 500;">JAMB Reg No: <span style="color: var(--deep-navy);">{{ user.jamb_reg_no }}</span></p>
+                <p style="color: var(--text-light); margin-top: 0.5rem;">Here is an overview of your admission status and next steps.</p>
             </header>
 
             <div class="status-grid">
-                <!-- Status Card -->
                 <div class="status-card">
                     <div>
                         <div class="status-title">Application Status</div>
-                        <!-- Provide Jinja fallback or assume application_status is passed -->
                         <div class="status-value mt-4">
                             {% if application_status == 'Pending' %}
                             <span class="status-badge badge-pending">Pending Review</span>
@@ -69,7 +66,6 @@
                     </div>
                 </div>
 
-                <!-- Next Steps Card -->
                 <div class="status-card" style="border-left-color: var(--deep-navy);">
                     <div>
                         <div class="status-title">Next Action</div>
@@ -80,7 +76,6 @@
                 </div>
             </div>
 
-            <!-- Content Section Placeholder -->
             <div class="card mt-6">
                 <h3>Recent Notifications</h3>
                 <p style="color: var(--text-light);">You have no new notifications.</p>
@@ -88,7 +83,6 @@
         </main>
     </div>
 
-    <!-- JS -->
     <script src="{{ url_for('static', path='/js/app.js') }}"></script>
 </body>
 

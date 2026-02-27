@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>News Editor - Prestige School Admin</title>
+    <link rel="stylesheet" href="{{ url_for('static', path='/css/style.css') }}">
+</head>
+<body>
+    <div class="dashboard-layout">
+        <aside class="sidebar">
+            <div class="sidebar-logo">
+                <img src="{{ url_for('static', path='/img/logo.svg') }}" alt="Logo" width="32" height="32" style="filter: brightness(0) invert(1);">
+                <h2>Admin Portal</h2>
+            </div>
+            <ul class="nav-links">
+                <li><a href="/admin" class="nav-link">Applications</a></li>
+                <li><a href="/admin/news" class="nav-link active">News Editor</a></li>
+                <li><a href="/login" class="nav-link">Logout</a></li>
+            </ul>
+        </aside>
+
+        <main class="dashboard-content">
+            <header class="mb-6">
+                <h1>News & Announcements</h1>
+                <p style="color: var(--text-light);">Post urgent updates to the school landing page.</p>
+            </header>
+
+            <div class="card">
+                <form id="newsForm">
+                    <div class="form-group">
+                        <label class="form-label">Headline / Title</label>
+                        <input type="text" name="title" class="form-input" placeholder="e.g. Admission Screening Date" required>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Announcement Content</label>
+                        <textarea name="content" class="form-input" rows="4" placeholder="Detailed description..." required></textarea>
+                    </div>
+                    <div class="form-group" style="display: flex; align-items: center; gap: 0.5rem;">
+                        <input type="checkbox" name="is_urgent" id="is_urgent">
+                        <label for="is_urgent" class="form-label" style="margin: 0;">Mark as Urgent (Shows in Ticker)</label>
+                    </div>
+                    <button type="submit" class="btn btn-primary">Post Announcement</button>
+                </form>
+            </div>
+        </main>
+    </div>
+    <script src="{{ url_for('static', path='/js/app.js') }}"></script>
+    <script>
+        document.getElementById('newsForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const formData = new FormData(e.target);
+            try {
+                const response = await fetch('/news', { method: 'POST', body: formData });
+                if (response.ok) {
+                    window.showToast('News Posted Successfully!', 'success');
+                    e.target.reset();
+                }
+            } catch (err) { window.showToast('Failed to post news', 'error'); }
+        });
+    </script>
+</body>
+</html>

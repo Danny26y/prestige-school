@@ -1,0 +1,227 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Home - Prestige School of Nursing Benue</title>
+    
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+    <link rel="stylesheet" href="{{ url_for('static', path='/css/style.css') }}">
+    
+    <style>
+        /* News Ticker */
+        .news-ticker {
+            background-color: var(--medical-teal);
+            color: var(--pure-white);
+            text-align: center;
+            padding: 0.5rem 1rem;
+            font-size: 0.875rem;
+            font-weight: 500;
+            letter-spacing: 0.02em;
+        }
+
+        /* Navigation */
+        .navbar {
+            background-color: var(--pure-white);
+            border-bottom: 1px solid var(--border-color);
+            padding: 1rem 0;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        .nav-container {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo-group {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+        }
+
+        .logo-group h2 {
+            margin: 0;
+            font-size: 1.25rem;
+            color: var(--deep-navy);
+        }
+
+        /* Hero Section */
+        .hero {
+            background: linear-gradient(135deg, var(--deep-navy) 0%, #1e40af 100%);
+            color: var(--pure-white);
+            padding: 6rem 1.5rem;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .hero::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            right: 0;
+            bottom: 0;
+            left: 0;
+            background-image: radial-gradient(circle at 80% 20%, rgba(13, 148, 136, 0.15) 0%, transparent 40%),
+                              radial-gradient(circle at 20% 80%, rgba(255, 255, 255, 0.05) 0%, transparent 40%);
+            pointer-events: none;
+        }
+
+        .hero-content {
+            position: relative;
+            z-index: 1;
+            max-width: 800px;
+            margin: 0 auto;
+        }
+
+        .hero h1 {
+            color: var(--pure-white);
+            font-size: 2.75rem;
+            font-weight: 700;
+            margin-bottom: 1.5rem;
+            line-height: 1.2;
+        }
+
+        .hero p {
+            font-size: 1.125rem;
+            color: rgba(255, 255, 255, 0.9);
+            margin-bottom: 2.5rem;
+        }
+
+        .hero-btns {
+            display: flex;
+            gap: 1rem;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+
+        .hero-btns .btn-outline {
+            color: var(--pure-white);
+            border-color: rgba(255, 255, 255, 0.5);
+        }
+
+        .hero-btns .btn-outline:hover {
+            background-color: rgba(255, 255, 255, 0.1);
+            border-color: var(--pure-white);
+        }
+
+        /* Value Cards Section */
+        .features-section {
+            padding: 5rem 0;
+            background-color: var(--medical-white);
+            flex-grow: 1;
+        }
+
+        .features-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2rem;
+            margin-top: 3rem;
+        }
+
+        .feature-icon {
+            color: var(--medical-teal);
+            margin-bottom: 1rem;
+        }
+        
+        /* Footer */
+        .footer {
+            background-color: var(--pure-white);
+            border-top: 1px solid var(--border-color);
+            padding: 2rem 0;
+            text-align: center;
+            color: var(--text-light);
+            font-size: 0.875rem;
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="news-ticker">
+        📢 Urgent Announcement: 2026/2027 Admission Screening Exercise Date: Oct 12th.
+    </div>
+
+    <nav class="navbar">
+        <div class="container nav-container">
+            <div class="logo-group">
+                <img src="{{ url_for('static', path='/img/logo.svg') }}" alt="Prestige Logo" width="32" height="32">
+                <h2>Prestige School of Nursing</h2>
+            </div>
+            <a href="/login" class="btn btn-outline btn-sm" style="width: auto;">Login</a>
+        </div>
+    </nav>
+
+    <section class="hero">
+        <div class="hero-content">
+            <h1>Empowering the Next Generation of Healthcare Leaders</h1>
+            <p>Join a premier institution dedicated to excellence in clinical practice, academic rigor, and compassionate patient care in Benue State.</p>
+            
+            <div class="hero-btns">
+                <button onclick="window.location.href='/register'" class="btn btn-primary" style="width: auto; padding: 0.875rem 2rem;">Apply Now</button>
+                <button onclick="window.location.href='/login'" class="btn btn-outline" style="width: auto; padding: 0.875rem 2rem;">Student Portal</button>
+            </div>
+        </div>
+    </section>
+
+    <section class="features-section">
+        <div class="container">
+            <div class="text-center">
+                <h2>Why Choose Prestige?</h2>
+                <p style="color: var(--text-light);">We provide a standard foundation for your medical career.</p>
+            </div>
+
+            <div class="features-grid">
+                <div class="card">
+                    <div class="feature-icon">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path>
+                        </svg>
+                    </div>
+                    <h3>Full Accreditation</h3>
+                    <p style="color: var(--text-light);">Fully accredited by the Nursing and Midwifery Council of Nigeria (NMCN), ensuring your certificate is recognized globally.</p>
+                </div>
+
+                <div class="card">
+                    <div class="feature-icon">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M22 12h-4l-3 9L9 3l-3 9H2"></path>
+                        </svg>
+                    </div>
+                    <h3>State-of-the-Art Facilities</h3>
+                    <p style="color: var(--text-light);">Learn in modern, well-equipped demonstration rooms and digital libraries designed to simulate real-world medical environments.</p>
+                </div>
+
+                <div class="card">
+                    <div class="feature-icon">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M2 12h20"></path>
+                            <path d="M12 2v20"></path>
+                            <path d="m4.93 4.93 14.14 14.14"></path>
+                            <path d="m4.93 19.07 14.14-14.14"></path>
+                        </svg>
+                    </div>
+                    <h3>Clinical Practice</h3>
+                    <p style="color: var(--text-light);">Gain hands-on experience through our extensive network of partner teaching hospitals and clinical placement programs.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <footer class="footer">
+        <div class="container">
+            &copy; 2026 Prestige School of Nursing Benue. All rights reserved.
+        </div>
+    </footer>
+
+    <script src="{{ url_for('static', path='/js/app.js') }}"></script>
+</body>
+
+</html>
