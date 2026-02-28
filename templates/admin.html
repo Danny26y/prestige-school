@@ -27,6 +27,36 @@
             width: auto;
             padding: 0 1.5rem;
         }
+
+        /* --- Mobile Hamburger Button --- */
+        .mobile-menu-btn {
+            display: none;
+            font-size: 2rem;
+            color: var(--secondary);
+            cursor: pointer;
+            background: none;
+            border: none;
+            padding: 0;
+            transition: color 0.2s ease;
+        }
+    @media (max-width: 768px) {
+        .dashboard-layout { flex-direction: column; }
+        .sidebar { width: 100%; height: auto; position: relative; padding: 1.25rem 1.5rem; flex-direction: column; }
+        .sidebar-logo { margin: 0; padding: 0; border: none; width: 100%; display: flex; justify-content: space-between; align-items: center; }
+        
+        .mobile-menu-btn { display: block; }
+        
+        .nav-links { 
+            display: none; 
+            width: 100%; 
+            margin-top: 1.5rem; 
+            padding-top: 1.5rem; 
+            border-top: 1px solid var(--border-color); 
+        }
+        .nav-links.active-mobile { display: flex; }
+        
+        .dashboard-content { margin-left: 0; padding: 1.5rem; }
+    }
     </style>
 </head>
 
@@ -35,9 +65,14 @@
     <div class="dashboard-layout">
         <aside class="sidebar">
             <div class="sidebar-logo">
-                <img src="{{ url_for('static', path='/img/logo.svg') }}" alt="Logo" width="32" height="32"
-                    style="filter: brightness(0) invert(1);">
-                <h2>Admin Portal</h2>
+                <div style="display: flex; align-items: center; gap: 0.75rem;">
+                    <img src="{{ url_for('static', path='/img/logo.svg') }}" alt="Logo" width="32" height="32"
+                        style="filter: brightness(0) invert(1);">
+                    <h2>Admin Portal</h2>
+                </div>
+                <button class="mobile-menu-btn" id="mobileToggle">
+                    <iconify-icon icon="mdi:menu"></iconify-icon>
+                </button>
             </div>
 
             <ul class="nav-links">
@@ -139,8 +174,22 @@
         </main>
     </div>
 
+    <script src="https://code.iconify.design/iconify-icon/1.0.7/iconify-icon.min.js"></script>
     <script src="{{ url_for('static', path='/js/app.js') }}"></script>
     <script>
+        const mobileToggle = document.getElementById('mobileToggle');
+        if (mobileToggle) {
+            mobileToggle.addEventListener('click', function() {
+                document.querySelector('.nav-links').classList.toggle('active-mobile');
+                const icon = this.querySelector('iconify-icon');
+                if (icon.getAttribute('icon') === 'mdi:menu') {
+                    icon.setAttribute('icon', 'mdi:close');
+                } else {
+                    icon.setAttribute('icon', 'mdi:menu');
+                }
+            });
+        }
+
         async function updateStatus(admissionId, newStatus) {
             if (!confirm(`Are you sure you want to ${newStatus.toLowerCase()} this application?`)) return;
             

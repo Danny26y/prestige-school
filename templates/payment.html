@@ -114,14 +114,36 @@
         }
 
         /* Responsive */
-        @media (max-width: 768px) {
-            body { flex-direction: column; }
-            .sidebar { width: 100%; height: auto; position: relative; padding: 1.5rem; flex-direction: row; justify-content: space-between; align-items: center; }
-            .sidebar-logo { margin: 0; padding: 0; border: none; }
-            .nav-links { display: none; } 
-            .dashboard-content { margin-left: 0; padding: 1.5rem; }
-            .coming-soon-card { padding: 3rem 2rem; }
+        /* --- Mobile Hamburger Button --- */
+        .mobile-menu-btn {
+            display: none;
+            font-size: 2rem;
+            color: var(--secondary);
+            cursor: pointer;
+            background: none;
+            border: none;
+            padding: 0;
+            transition: color 0.2s ease;
         }
+    @media (max-width: 768px) {
+        body { flex-direction: column; }
+        .sidebar { width: 100%; height: auto; position: relative; padding: 1.25rem 1.5rem; flex-direction: column; }
+        .sidebar-logo { margin: 0; padding: 0; border: none; width: 100%; display: flex; justify-content: space-between; align-items: center; }
+        
+        .mobile-menu-btn { display: block; }
+        
+        .nav-links { 
+            display: none; 
+            width: 100%; 
+            margin-top: 1.5rem; 
+            padding-top: 1.5rem; 
+            border-top: 1px solid var(--border-color); 
+        }
+        .nav-links.active-mobile { display: flex; }
+        
+        .dashboard-content { margin-left: 0; padding: 1.5rem; }
+        .coming-soon-card { padding: 3rem 2rem; }
+    }
     </style>
 </head>
 
@@ -129,8 +151,13 @@
 
     <aside class="sidebar">
         <div class="sidebar-logo">
-            <iconify-icon icon="healthicons:health-worker-form-outline" style="font-size: 2rem; color: var(--primary);"></iconify-icon>
-            <h2>PORTAL</h2>
+            <div style="display: flex; align-items: center; gap: 0.75rem;">
+                <iconify-icon icon="healthicons:health-worker-form-outline" style="font-size: 2rem; color: var(--primary);"></iconify-icon>
+                <h2>PORTAL</h2>
+            </div>
+            <button class="mobile-menu-btn" id="mobileToggle">
+                <iconify-icon icon="mdi:menu"></iconify-icon>
+            </button>
         </div>
 
         <ul class="nav-links">
@@ -154,6 +181,20 @@
         </div>
     </main>
 
+    <script>
+        const mobileToggle = document.getElementById('mobileToggle');
+        if (mobileToggle) {
+            mobileToggle.addEventListener('click', function() {
+                document.querySelector('.nav-links').classList.toggle('active-mobile');
+                const icon = this.querySelector('iconify-icon');
+                if (icon.getAttribute('icon') === 'mdi:menu') {
+                    icon.setAttribute('icon', 'mdi:close');
+                } else {
+                    icon.setAttribute('icon', 'mdi:menu');
+                }
+            });
+        }
+    </script>
     <script src="{{ url_for('static', path='/js/app.js') }}"></script>
 </body>
 </html>
