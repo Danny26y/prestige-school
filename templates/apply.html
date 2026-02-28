@@ -4,94 +4,266 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Admission Application - Prestige School of Health Benue</title>
+    <title>Admission Application - Prestige School of Nursing</title>
+    
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    
+    <script src="https://code.iconify.design/iconify-icon/1.0.7/iconify-icon.min.js"></script>
 
     <link rel="stylesheet" href="{{ url_for('static', path='/css/style.css') }}">
+    
     <style>
+        :root {
+            --primary: #059669; 
+            --primary-hover: #047857;
+            --secondary: #0f172a; 
+            --text-main: #1e293b;
+            --text-muted: #64748b;
+            --bg-body: #f8fafc;
+            --white: #ffffff;
+            --input-border: #cbd5e1;
+        }
+
+        body { 
+            background-color: var(--bg-body); 
+            font-family: 'Inter', sans-serif;
+            margin: 0;
+            color: var(--text-main);
+        }
+
+        /* --- Navbar (Simple Version for App flow) --- */
+        .app-navbar {
+            background: var(--white);
+            padding: 1rem 2rem;
+            border-bottom: 1px solid #e2e8f0;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .logo-group { display: flex; align-items: center; gap: 0.75rem; text-decoration: none; }
+        .logo-group h2 { color: var(--secondary); font-size: 1.25rem; font-weight: 800; margin: 0; letter-spacing: -0.02em; }
+        .logo-group span { color: var(--primary); }
+
+        /* --- Page Layout --- */
+        .page-wrapper {
+            max-width: 800px;
+            margin: 3rem auto;
+            padding: 0 1.5rem;
+            animation: fadeUp 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+
+        @keyframes fadeUp {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .header-section {
+            text-align: center;
+            margin-bottom: 3rem;
+        }
+        .header-section h1 {
+            color: var(--secondary);
+            font-size: 2rem;
+            font-weight: 800;
+            margin: 0 0 0.5rem 0;
+            letter-spacing: -0.02em;
+        }
+        .header-section p {
+            color: var(--text-muted);
+            margin: 0;
+            font-size: 1.05rem;
+        }
+
+        /* --- Form Container --- */
         .apply-card {
-            max-width: 600px;
-            margin: 2rem auto;
+            background: var(--white);
+            border-radius: 16px;
+            box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.05);
+            padding: 3rem;
+            border: 1px solid #e2e8f0;
+        }
+
+        .form-section-title {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            font-size: 1.25rem;
+            font-weight: 700;
+            color: var(--secondary);
+            margin-bottom: 1.5rem;
+            padding-bottom: 0.75rem;
+            border-bottom: 2px solid #f1f5f9;
+        }
+        .form-section-title iconify-icon {
+            color: var(--primary);
+            font-size: 1.5rem;
         }
 
         .form-grid {
             display: grid;
             grid-template-columns: 1fr 1fr;
             gap: 1.5rem;
+            margin-bottom: 2.5rem;
         }
 
-        @media (max-width: 640px) {
-            .form-grid {
-                grid-template-columns: 1fr;
-            }
+        /* --- Custom Inputs --- */
+        .form-group { margin-bottom: 1.5rem; }
+        .form-label {
+            display: block;
+            font-weight: 600;
+            font-size: 0.9rem;
+            color: var(--secondary);
+            margin-bottom: 0.5rem;
+        }
+        .form-input {
+            width: 100%;
+            padding: 0.85rem 1rem;
+            border: 1px solid var(--input-border);
+            border-radius: 8px;
+            font-family: inherit;
+            font-size: 1rem;
+            color: var(--text-main);
+            transition: all 0.2s ease;
+            box-sizing: border-box;
+            background: #fff;
+        }
+        .form-input:focus {
+            outline: none;
+            border-color: var(--primary);
+            box-shadow: 0 0 0 4px rgba(5, 150, 105, 0.1);
         }
 
-        .step-indicator {
-            display: flex;
-            justify-content: space-between;
-            margin-bottom: 2rem;
+        /* --- File Upload Zones --- */
+        .file-upload-wrapper {
             position: relative;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 2.5rem 1.5rem;
+            border: 2px dashed #cbd5e1;
+            border-radius: 12px;
+            background: #f8fafc;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            margin-bottom: 1.5rem;
+        }
+        
+        .file-upload-wrapper:hover {
+            border-color: var(--primary);
+            background: #ecfdf5;
         }
 
-        .step-indicator::before {
-            content: '';
+        .file-upload-wrapper input[type="file"] {
             position: absolute;
-            top: 50%;
+            width: 100%;
+            height: 100%;
+            top: 0;
             left: 0;
-            right: 0;
-            height: 2px;
-            background: var(--border-color);
-            z-index: 1;
+            opacity: 0;
+            cursor: pointer;
         }
 
-        .step {
-            background: white;
-            padding: 0 1rem;
-            z-index: 2;
-            color: var(--text-light);
-            font-size: 0.875rem;
-            font-weight: 500;
+        .file-upload-wrapper iconify-icon {
+            font-size: 2.5rem;
+            color: var(--primary);
+            margin-bottom: 0.75rem;
         }
 
-        .step.active {
-            color: var(--medical-teal);
+        .file-upload-wrapper span {
+            font-weight: 600;
+            color: var(--secondary);
+            margin-bottom: 0.25rem;
+        }
+
+        .file-upload-wrapper small {
+            color: var(--text-muted);
+            font-size: 0.8rem;
+        }
+
+        /* --- Button --- */
+        .btn-primary {
+            width: 100%;
+            padding: 1.1rem;
+            background: var(--primary);
+            color: var(--white);
+            border: none;
+            border-radius: 8px;
+            font-size: 1.1rem;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 6px -1px rgba(5, 150, 105, 0.3);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.5rem;
+        }
+
+        .btn-primary:hover {
+            background: var(--primary-hover);
+            transform: translateY(-2px);
+            box-shadow: 0 8px 15px -3px rgba(5, 150, 105, 0.4);
+        }
+
+        /* ==========================================
+           MOBILE RESPONSIVENESS
+           ========================================== */
+        @media (max-width: 640px) {
+            .form-grid { grid-template-columns: 1fr; gap: 0; }
+            .apply-card { padding: 2rem 1.5rem; }
+            .header-section h1 { font-size: 1.75rem; }
+            .page-wrapper { margin: 1.5rem auto; }
         }
     </style>
 </head>
 
-<body style="background-color: var(--medical-white);">
+<body>
 
-    <div class="container">
-        <div class="card apply-card">
-            <h2 class="text-center mb-6">Admission Application Form</h2>
+    <nav class="app-navbar">
+        <a href="/" class="logo-group">
+            <iconify-icon icon="healthicons:health-worker-form-outline" style="font-size: 1.8rem; color: var(--primary);"></iconify-icon>
+            <h2>PRESTIGE <span>NURSING</span></h2>
+        </a>
+        <a href="/dashboard" style="color: var(--text-muted); text-decoration: none; font-weight: 500; display: flex; align-items: center; gap: 0.5rem;">
+            <iconify-icon icon="mdi:close-circle-outline" style="font-size: 1.2rem;"></iconify-icon> Cancel
+        </a>
+    </nav>
 
-            <div class="step-indicator">
-                <span class="step active">1. Personal Info</span>
-                <span class="step">2. Documents</span>
-                <span class="step">3. Review</span>
-            </div>
+    <div class="page-wrapper">
+        <div class="header-section">
+            <h1>2026 Admission Application</h1>
+            <p>Please complete all required fields and upload clear, legible documents.</p>
+        </div>
 
+        <div class="apply-card">
+            
             <form id="applyForm" enctype="multipart/form-data">
-                <h4 class="mb-4">Personal Information</h4>
+                
+                <input type="hidden" name="userId" value="{{ user.id }}">
+
+                <div class="form-section-title">
+                    <iconify-icon icon="mdi:account-details-outline"></iconify-icon> Personal Information
+                </div>
 
                 <div class="form-group">
-                    <label class="form-label" for="full_name">Full Name</label>
-                    <input type="text" id="full_name" name="fullName" class="form-input" placeholder="Surname First"
-                        required>
+                    <label class="form-label" for="full_name">Full Legal Name</label>
+                    <input type="text" id="full_name" name="fullName" class="form-input" placeholder="Surname First" required>
                 </div>
 
                 <div class="form-grid">
                     <div class="form-group">
                         <label class="form-label" for="phone">Phone Number</label>
-                        <input type="tel" id="phone" name="phoneNumber" class="form-input" placeholder="080XXXXXXXX" required>
+                        <input type="tel" id="phone" name="phoneNumber" class="form-input" placeholder="e.g. 08012345678" required>
                     </div>
 
                     <div class="form-group">
                         <label class="form-label" for="state">State of Origin</label>
                         <select id="state" name="stateOfOrigin" class="form-input" required>
-                            <option value="">Select State</option>
+                            <option value="" disabled selected>Select your state...</option>
                             <option value="Benue">Benue</option>
                             <option value="Nasarawa">Nasarawa</option>
                             <option value="Kogi">Kogi</option>
@@ -102,48 +274,85 @@
                     </div>
                 </div>
 
-                <hr style="border: 0; border-top: 1px solid var(--border-color); margin: 2rem 0;">
-
-                <h4 class="mb-4">Document Upload</h4>
-
-                <div class="form-group">
-                    <label class="form-label">Recent Passport Photograph</label>
-                    <label class="file-upload">
-                        <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="none"
-                            stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
-                            style="color: var(--medical-teal); margin-bottom: 0.5rem;">
-                            <rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect>
-                            <circle cx="8.5" cy="8.5" r="1.5"></circle>
-                            <polyline points="21 15 16 10 5 21"></polyline>
-                        </svg>
-                        <span>Click to select image (Image only)</span>
-                        <input type="file" name="passport" accept="image/*" required>
-                    </label>
+                <div class="form-section-title">
+                    <iconify-icon icon="mdi:file-document-multiple-outline"></iconify-icon> Required Documents
                 </div>
 
-                <div class="form-group">
-                    <label class="form-label">O'Level Results (WAEC/NECO/NABTEB)</label>
-                    <label class="file-upload">
-                        <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="none"
-                            stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
-                            style="color: var(--medical-teal); margin-bottom: 0.5rem;">
-                            <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
-                            <polyline points="14 2 14 8 20 8"></polyline>
-                            <line x1="16" y1="13" x2="8" y2="13"></line>
-                            <line x1="16" y1="17" x2="8" y2="17"></line>
-                            <polyline points="10 9 9 9 8 9"></polyline>
-                        </svg>
-                        <span>Click to select file (PDF, JPG, PNG)</span>
-                        <input type="file" name="results" accept=".pdf, .jpg, .jpeg, .png" required>
-                    </label>
+                <div class="form-grid">
+                    <div class="form-group">
+                        <label class="form-label">Recent Passport Photograph</label>
+                        <div class="file-upload-wrapper">
+                            <iconify-icon icon="mdi:camera-account"></iconify-icon>
+                            <span>Click or Drag Image</span>
+                            <small>JPG, PNG (Max 2MB)</small>
+                            <input type="file" name="passport" accept="image/jpeg, image/png" required onchange="updateFileName(this)">
+                            <div class="file-name" style="color: var(--primary); font-size: 0.85rem; margin-top: 0.5rem; font-weight: 600;"></div>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="form-label">O'Level Results</label>
+                        <div class="file-upload-wrapper">
+                            <iconify-icon icon="mdi:file-certificate-outline"></iconify-icon>
+                            <span>Click or Drag Result</span>
+                            <small>PDF, JPG (WAEC/NECO)</small>
+                            <input type="file" name="results" accept=".pdf, .jpg, .jpeg, .png" required onchange="updateFileName(this)">
+                            <div class="file-name" style="color: var(--primary); font-size: 0.85rem; margin-top: 0.5rem; font-weight: 600;"></div>
+                        </div>
+                    </div>
                 </div>
 
-                <button type="submit" class="btn btn-primary mt-6">Submit Application</button>
+                <button type="submit" class="btn-primary" id="submitBtn">
+                    Submit Application <iconify-icon icon="mdi:arrow-right"></iconify-icon>
+                </button>
             </form>
         </div>
     </div>
 
-    <script src="{{ url_for('static', path='/js/app.js') }}"></script>
-</body>
+    <script>
+        function updateFileName(input) {
+            const fileNameDiv = input.parentElement.querySelector('.file-name');
+            if (input.files && input.files.length > 0) {
+                fileNameDiv.textContent = 'Selected: ' + input.files[0].name;
+            } else {
+                fileNameDiv.textContent = '';
+            }
+        }
+    </script>
 
+    <script>
+        document.getElementById('applyForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            
+            const btn = document.getElementById('submitBtn');
+            const originalHTML = btn.innerHTML;
+            btn.innerHTML = '<iconify-icon icon="mdi:loading" class="spin"></iconify-icon> Submitting...';
+            btn.disabled = true;
+
+            const formData = new FormData(e.target);
+            
+            try {
+                // Ensure this matches your FastAPI route in main.py
+                const response = await fetch('/apply', {
+                    method: 'POST',
+                    body: formData
+                });
+                
+                if (response.ok) {
+                    if (window.showToast) window.showToast('Application Submitted Successfully!', 'success');
+                    // Redirect back to dashboard to see status
+                    setTimeout(() => window.location.href = '/dashboard', 1000);
+                } else {
+                    const error = await response.json();
+                    alert(error.detail || 'Failed to submit application. Please check your files.');
+                }
+            } catch (err) {
+                alert('A network error occurred while submitting.');
+            } finally {
+                btn.innerHTML = originalHTML;
+                btn.disabled = false;
+            }
+        });
+    </script>
+</body>
 </html>

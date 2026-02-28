@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Payments - Prestige School of Nursing</title>
+    
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    
+    <script src="https://code.iconify.design/iconify-icon/1.0.7/iconify-icon.min.js"></script>
+    <link rel="stylesheet" href="{{ url_for('static', path='/css/style.css') }}">
+    
+    <style>
+        :root {
+            --primary: #059669; 
+            --secondary: #0f172a; 
+            --text-main: #1e293b;
+            --text-muted: #64748b;
+            --bg-body: #f8fafc;
+            --white: #ffffff;
+            --border-color: #e2e8f0;
+        }
+
+        body { font-family: 'Inter', sans-serif; background-color: var(--bg-body); color: var(--text-main); margin: 0; display: flex; min-height: 100vh; }
+
+        /* Sidebar */
+        .sidebar { width: 280px; background: var(--white); border-right: 1px solid var(--border-color); display: flex; flex-direction: column; padding: 2rem 1.5rem; position: fixed; height: 100vh; z-index: 50; }
+        .sidebar-logo { display: flex; align-items: center; gap: 0.75rem; margin-bottom: 3rem; padding-bottom: 1.5rem; border-bottom: 1px solid var(--border-color); }
+        .sidebar-logo h2 { color: var(--secondary); font-size: 1.25rem; font-weight: 800; margin: 0; }
+        .sidebar-logo span { color: var(--primary); }
+        .nav-links { list-style: none; padding: 0; margin: 0; display: flex; flex-direction: column; gap: 0.5rem; }
+        .nav-link { display: flex; align-items: center; gap: 1rem; padding: 0.85rem 1rem; color: var(--text-muted); text-decoration: none; font-weight: 600; border-radius: 8px; transition: all 0.2s ease; }
+        .nav-link:hover { background: #f1f5f9; color: var(--secondary); }
+        .nav-link.active { background: #ecfdf5; color: var(--primary); }
+        .logout-link { margin-top: auto; color: #ef4444; }
+        .logout-link:hover { background: #fee2e2; color: #dc2626; }
+
+        /* Main Content */
+        .dashboard-content { flex: 1; margin-left: 280px; padding: 3rem 4rem; display: flex; flex-direction: column; justify-content: center; align-items: center; min-height: 100vh; }
+
+        /* Coming Soon Card Custom Styling */
+        .coming-soon-card {
+            background: var(--white);
+            border-radius: 24px;
+            padding: 4rem 3rem;
+            text-align: center;
+            max-width: 500px;
+            width: 100%;
+            border: 1px solid var(--border-color);
+            box-shadow: 0 20px 40px -10px rgba(0,0,0,0.08);
+            animation: fadeUp 0.6s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+        }
+
+        @keyframes fadeUp {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* Floating Animation for the Icon */
+        .floating-icon {
+            display: inline-flex;
+            justify-content: center;
+            align-items: center;
+            width: 100px;
+            height: 100px;
+            background: #ecfdf5;
+            border-radius: 50%;
+            margin-bottom: 2rem;
+            position: relative;
+            animation: float 3s ease-in-out infinite;
+            box-shadow: 0 10px 25px -5px rgba(5, 150, 105, 0.2);
+        }
+
+        .floating-icon iconify-icon {
+            font-size: 3.5rem;
+            color: var(--primary);
+        }
+
+        @keyframes float {
+            0% { transform: translateY(0px); }
+            50% { transform: translateY(-15px); }
+            100% { transform: translateY(0px); }
+        }
+
+        .coming-soon-card h1 {
+            color: var(--secondary);
+            font-size: 2rem;
+            font-weight: 800;
+            margin-bottom: 1rem;
+            letter-spacing: -0.02em;
+        }
+
+        .coming-soon-card p {
+            color: var(--text-muted);
+            font-size: 1.05rem;
+            line-height: 1.6;
+            margin-bottom: 2.5rem;
+        }
+
+        .badge {
+            display: inline-block;
+            background: #f1f5f9;
+            color: var(--text-muted);
+            padding: 0.5rem 1.5rem;
+            border-radius: 99px;
+            font-weight: 700;
+            font-size: 0.85rem;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            border: 1px solid var(--border-color);
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            body { flex-direction: column; }
+            .sidebar { width: 100%; height: auto; position: relative; padding: 1.5rem; flex-direction: row; justify-content: space-between; align-items: center; }
+            .sidebar-logo { margin: 0; padding: 0; border: none; }
+            .nav-links { display: none; } 
+            .dashboard-content { margin-left: 0; padding: 1.5rem; }
+            .coming-soon-card { padding: 3rem 2rem; }
+        }
+    </style>
+</head>
+
+<body>
+
+    <aside class="sidebar">
+        <div class="sidebar-logo">
+            <iconify-icon icon="healthicons:health-worker-form-outline" style="font-size: 2rem; color: var(--primary);"></iconify-icon>
+            <h2>PORTAL</h2>
+        </div>
+
+        <ul class="nav-links">
+            <li><a href="/dashboard" class="nav-link"><iconify-icon icon="mdi:view-dashboard-outline"></iconify-icon> Dashboard</a></li>
+            <li><a href="/profile" class="nav-link"><iconify-icon icon="mdi:account-outline"></iconify-icon> My Profile</a></li>
+            <li><a href="/payment" class="nav-link active"><iconify-icon icon="mdi:credit-card-outline"></iconify-icon> Payments</a></li>
+            <li><a href="/logout" class="nav-link logout-link"><iconify-icon icon="mdi:logout"></iconify-icon> Sign Out</a></li>
+        </ul>
+    </aside>
+
+    <main class="dashboard-content">
+        <div class="coming-soon-card">
+            <div class="floating-icon">
+                <iconify-icon icon="mdi:bank-transfer"></iconify-icon>
+            </div>
+            <h1>Secure Payments Integration</h1>
+            <p>We are currently configuring our secure payment gateway for the 2026/2027 academic session. Admission and acceptance fee processing will be available here shortly.</p>
+            <div class="badge">
+                <iconify-icon icon="mdi:clock-outline" style="vertical-align: middle; margin-right: 0.25rem; font-size: 1.1rem;"></iconify-icon> Coming Soon
+            </div>
+        </div>
+    </main>
+
+    <script src="{{ url_for('static', path='/js/app.js') }}"></script>
+</body>
+</html>

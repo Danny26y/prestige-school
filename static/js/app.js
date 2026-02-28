@@ -143,51 +143,7 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
-    // --- 5. ADMISSION APPLICATION FLOW ---
-    const applyForm = document.getElementById('applyForm');
-    if (applyForm) {
-        applyForm.addEventListener('submit', async (e) => {
-            e.preventDefault();
-            
-            // Verify user is logged in before allowing submission
-            const userString = localStorage.getItem('user');
-            if (!userString) {
-                showToast('Session expired. Please log in again.', 'error');
-                setTimeout(() => window.location.href = '/login', 2000);
-                return;
-            }
 
-            const user = JSON.parse(userString);
-            showSpinner();
-            
-            try {
-                // Grabs fullName, phoneNumber, stateOfOrigin, passport, results
-                const formData = new FormData(applyForm);
-                
-                // Append the required userId from the stored session
-                formData.append('userId', user.id);
-
-                const response = await fetch('/apply', {
-                    method: 'POST',
-                    body: formData // Fetch sets multipart/form-data automatically
-                });
-
-                if (response.ok) {
-                    showToast('Application submitted successfully!', 'success');
-                    setTimeout(() => window.location.href = '/dashboard', 1500);
-                } else {
-                    const errorData = await response.json().catch(() => ({}));
-                    showToast(errorData.detail || 'Failed to submit application.', 'error');
-                }
-            } catch (error) {
-                console.error('Apply error:', error);
-                showToast('An error occurred uploading your application. Please try again.', 'error');
-            } finally {
-                hideSpinner();
-            }
-        });
-    }
-    
     // --- 6. FILE UPLOAD VISUAL FEEDBACK ---
     const fileInputs = document.querySelectorAll('.file-upload input[type="file"]');
     fileInputs.forEach(input => {

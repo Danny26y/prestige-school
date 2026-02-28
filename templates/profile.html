@@ -1,0 +1,176 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>My Profile - Prestige School of Nursing</title>
+    
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    
+    <script src="https://code.iconify.design/iconify-icon/1.0.7/iconify-icon.min.js"></script>
+
+    <link rel="stylesheet" href="{{ url_for('static', path='/css/style.css') }}">
+    
+    <style>
+        /* Inheriting standard dashboard variables */
+        :root {
+            --primary: #059669; 
+            --secondary: #0f172a; 
+            --text-main: #1e293b;
+            --text-muted: #64748b;
+            --bg-body: #f8fafc;
+            --white: #ffffff;
+            --border-color: #e2e8f0;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: var(--bg-body);
+            color: var(--text-main);
+            margin: 0;
+            display: flex;
+            min-height: 100vh;
+        }
+
+        /* Standard Sidebar (Same as Dashboard) */
+        .sidebar { width: 280px; background: var(--white); border-right: 1px solid var(--border-color); display: flex; flex-direction: column; padding: 2rem 1.5rem; position: fixed; height: 100vh; z-index: 50; }
+        .sidebar-logo { display: flex; align-items: center; gap: 0.75rem; margin-bottom: 3rem; padding-bottom: 1.5rem; border-bottom: 1px solid var(--border-color); }
+        .sidebar-logo h2 { color: var(--secondary); font-size: 1.25rem; font-weight: 800; margin: 0; }
+        .sidebar-logo span { color: var(--primary); }
+        .nav-links { list-style: none; padding: 0; margin: 0; display: flex; flex-direction: column; gap: 0.5rem; }
+        .nav-link { display: flex; align-items: center; gap: 1rem; padding: 0.85rem 1rem; color: var(--text-muted); text-decoration: none; font-weight: 600; border-radius: 8px; transition: all 0.2s ease; }
+        .nav-link:hover { background: #f1f5f9; color: var(--secondary); }
+        .nav-link.active { background: #ecfdf5; color: var(--primary); }
+        .logout-link { margin-top: auto; color: #ef4444; }
+        .logout-link:hover { background: #fee2e2; color: #dc2626; }
+
+        /* Main Content */
+        .dashboard-content { flex: 1; margin-left: 280px; padding: 3rem 4rem; animation: fadeUp 0.5s ease forwards; }
+        @keyframes fadeUp { from { opacity: 0; transform: translateY(15px); } to { opacity: 1; transform: translateY(0); } }
+
+        .header { margin-bottom: 3rem; }
+        .header h1 { font-size: 2rem; color: var(--secondary); font-weight: 800; margin: 0 0 0.5rem 0; letter-spacing: -0.02em; }
+        .header p { color: var(--text-muted); margin: 0; font-size: 1.05rem; }
+
+        /* Profile Cards */
+        .profile-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 2rem; }
+        
+        .profile-card {
+            background: var(--white);
+            border-radius: 16px;
+            padding: 2rem;
+            border: 1px solid var(--border-color);
+            box-shadow: 0 4px 6px -1px rgba(0,0,0,0.02);
+        }
+
+        .profile-card h3 {
+            font-size: 1.25rem;
+            color: var(--secondary);
+            margin-top: 0;
+            margin-bottom: 1.5rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            border-bottom: 2px solid #f1f5f9;
+            padding-bottom: 0.75rem;
+        }
+
+        .info-row {
+            margin-bottom: 1.25rem;
+            display: flex;
+            flex-direction: column;
+        }
+        .info-label { color: var(--text-muted); font-size: 0.85rem; font-weight: 600; text-transform: uppercase; margin-bottom: 0.25rem; }
+        .info-value { color: var(--secondary); font-size: 1.05rem; font-weight: 500; }
+
+        /* Responsive */
+        @media (max-width: 900px) { .profile-grid { grid-template-columns: 1fr; } }
+        @media (max-width: 768px) {
+            body { flex-direction: column; }
+            .sidebar { width: 100%; height: auto; position: relative; padding: 1.5rem; flex-direction: row; justify-content: space-between; align-items: center; }
+            .sidebar-logo { margin: 0; padding: 0; border: none; }
+            .nav-links { display: none; } 
+            .dashboard-content { margin-left: 0; padding: 1.5rem; }
+        }
+    </style>
+</head>
+
+<body>
+
+    <aside class="sidebar">
+        <div class="sidebar-logo">
+            <iconify-icon icon="healthicons:health-worker-form-outline" style="font-size: 2rem; color: var(--primary);"></iconify-icon>
+            <h2>PORTAL</h2>
+        </div>
+
+        <ul class="nav-links">
+            <li><a href="/dashboard" class="nav-link"><iconify-icon icon="mdi:view-dashboard-outline"></iconify-icon> Dashboard</a></li>
+            <li><a href="/profile" class="nav-link active"><iconify-icon icon="mdi:account-outline"></iconify-icon> My Profile</a></li>
+            <li><a href="#" class="nav-link"><iconify-icon icon="mdi:credit-card-outline"></iconify-icon> Payments</a></li>
+            <li><a href="/logout" class="nav-link logout-link"><iconify-icon icon="mdi:logout"></iconify-icon> Sign Out</a></li>
+        </ul>
+    </aside>
+
+    <main class="dashboard-content">
+        <header class="header">
+            <h1>My Profile</h1>
+            <p>Manage your account settings and personal information.</p>
+        </header>
+
+        <div class="profile-grid">
+            
+            <div class="profile-card">
+                <h3><iconify-icon icon="mdi:shield-account-outline" style="color: var(--primary);"></iconify-icon> Account Details</h3>
+                
+                <div class="info-row">
+                    <span class="info-label">Account Email</span>
+                    <span class="info-value">{{ user.email }}</span>
+                </div>
+                
+                <div class="info-row">
+                    <span class="info-label">JAMB Registration Number</span>
+                    <span class="info-value">{{ user.jamb_reg_no }}</span>
+                </div>
+                
+                <div class="info-row">
+                    <span class="info-label">Account Role</span>
+                    <span class="info-value" style="text-transform: capitalize;">{{ user.role }}</span>
+                </div>
+            </div>
+
+            <div class="profile-card">
+                <h3><iconify-icon icon="mdi:file-document-outline" style="color: var(--primary);"></iconify-icon> Admission Profile</h3>
+                
+                {% if application %}
+                <div class="info-row">
+                    <span class="info-label">Full Legal Name</span>
+                    <span class="info-value">{{ application.fullName }}</span>
+                </div>
+                
+                <div class="info-row">
+                    <span class="info-label">Registered Phone</span>
+                    <span class="info-value">{{ application.phoneNumber }}</span>
+                </div>
+
+                <div class="info-row">
+                    <span class="info-label">State of Origin</span>
+                    <span class="info-value">{{ application.stateOfOrigin }}</span>
+                </div>
+                {% else %}
+                <div style="text-align: center; padding: 2rem 0; color: var(--text-muted);">
+                    <iconify-icon icon="mdi:folder-hidden" style="font-size: 3rem; color: #cbd5e1; margin-bottom: 1rem;"></iconify-icon>
+                    <p>You have not submitted an admission form yet.</p>
+                    <a href="/apply" style="color: var(--primary); font-weight: 600; text-decoration: none;">Go to Application &rarr;</a>
+                </div>
+                {% endif %}
+            </div>
+
+        </div>
+    </main>
+
+    <script src="{{ url_for('static', path='/js/app.js') }}"></script>
+</body>
+</html>

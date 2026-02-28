@@ -35,6 +35,7 @@ class News(Base):
     id = Column(String, primary_key=True, default=lambda: str(uuid.uuid4()))
     title = Column(String, nullable=False)
     content = Column(Text, nullable=False)
+    imageUrl = Column(String, nullable=True)
     category = Column(String)  # e.g., "Admission", "Exam", "General"
     is_urgent = Column(Boolean, default=False)
     created_at = Column(DateTime, default=lambda: datetime.now(timezone.utc))

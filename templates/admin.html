@@ -95,11 +95,11 @@
                             <td>{{ app.createdAt.strftime('%d %b %Y') }}</td>
                             <td>{{ app.stateOfOrigin }}</td>
                             <td>
-                                <img src="/{{ app.passportUrl }}" alt="Passport" class="avatar" 
-                                     onclick="window.open('/{{ app.passportUrl }}', '_blank')" style="cursor: pointer;">
+                                <img src="{{ app.passportUrl }}" alt="Passport" class="avatar" 
+                                     onclick="window.open('{{ app.passportUrl }}', '_blank')" style="cursor: pointer;">
                             </td>
                             <td>
-                                <a href="/{{ app.resultsUrl }}" target="_blank" class="btn btn-sm btn-outline" 
+                                <a href="{{ app.resultsUrl }}" target="_blank" class="btn btn-sm btn-outline" 
                                    style="width: auto; padding: 0.4rem 0.8rem; font-size: 0.75rem;">
                                     📄 View Results
                                 </a>

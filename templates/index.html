@@ -4,141 +4,275 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Home - Prestige School of Nursing Benue</title>
+    <title>Prestige School of Nursing | Benue State Official Portal</title>
     
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    
+    <script src="https://code.iconify.design/iconify-icon/1.0.7/iconify-icon.min.js"></script>
 
     <link rel="stylesheet" href="{{ url_for('static', path='/css/style.css') }}">
     
     <style>
-        /* News Ticker */
-        .news-ticker {
-            background-color: var(--medical-teal);
-            color: var(--pure-white);
-            text-align: center;
-            padding: 0.5rem 1rem;
-            font-size: 0.875rem;
-            font-weight: 500;
-            letter-spacing: 0.02em;
+        :root {
+            --primary: #059669; 
+            --primary-hover: #047857;
+            --secondary: #0f172a; 
+            --accent: #f59e0b;
+            --text-main: #1e293b;
+            --text-muted: #64748b;
+            --bg-light: #f8fafc;
+            --white: #ffffff;
         }
 
-        /* Navigation */
+        * { box-sizing: border-box; }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            color: var(--text-main);
+            background-color: var(--white);
+            margin: 0;
+            padding: 0;
+            overflow-x: hidden; /* Prevents horizontal scroll on mobile */
+        }
+
+        .container { max-width: 1200px; margin: 0 auto; padding: 0 1.5rem; }
+
+        /* --- Animations --- */
+        @keyframes fadeUp {
+            from { opacity: 0; transform: translateY(30px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        @keyframes pulseGlow {
+            0% { box-shadow: 0 0 0 0 rgba(239, 68, 68, 0.4); }
+            70% { box-shadow: 0 0 0 10px rgba(239, 68, 68, 0); }
+            100% { box-shadow: 0 0 0 0 rgba(239, 68, 68, 0); }
+        }
+
+        .animate-up {
+            opacity: 0;
+            animation: fadeUp 0.8s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+        }
+        .delay-1 { animation-delay: 0.1s; }
+        .delay-2 { animation-delay: 0.3s; }
+        .delay-3 { animation-delay: 0.5s; }
+
+        /* --- Header & Navigation --- */
+        .news-ticker {
+            background-color: var(--primary);
+            color: var(--white);
+            padding: 0.75rem 0;
+            font-size: 0.85rem;
+            text-align: center;
+            font-weight: 600;
+            letter-spacing: 0.05em;
+            text-transform: uppercase;
+        }
+
         .navbar {
-            background-color: var(--pure-white);
-            border-bottom: 1px solid var(--border-color);
+            background: rgba(255, 255, 255, 0.98);
+            backdrop-filter: blur(10px);
+            border-bottom: 1px solid #e2e8f0;
             padding: 1rem 0;
             position: sticky;
             top: 0;
-            z-index: 100;
+            z-index: 1000;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.03);
+            transition: all 0.3s ease;
         }
 
-        .nav-container {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
+        .nav-container { display: flex; justify-content: space-between; align-items: center; }
+        .logo-group { display: flex; align-items: center; gap: 0.75rem; text-decoration: none; transition: transform 0.3s ease; }
+        .logo-group:hover { transform: scale(1.02); }
+        .logo-group h2 { color: var(--secondary); font-size: 1.5rem; font-weight: 800; margin: 0; letter-spacing: -0.02em; }
+        .logo-group span { color: var(--primary); }
+        .nav-links { display: flex; gap: 2rem; align-items: center; }
 
-        .logo-group {
-            display: flex;
-            align-items: center;
-            gap: 0.75rem;
-        }
-
-        .logo-group h2 {
-            margin: 0;
-            font-size: 1.25rem;
-            color: var(--deep-navy);
-        }
-
-        /* Hero Section */
+        /* --- Hero Section (FIXED CONTRAST) --- */
         .hero {
-            background: linear-gradient(135deg, var(--deep-navy) 0%, #1e40af 100%);
-            color: var(--pure-white);
-            padding: 6rem 1.5rem;
+            position: relative;
+            /* Darkened overlay from 0.85 to 0.92 for extreme contrast */
+            background: linear-gradient(rgba(15, 23, 42, 0.92), rgba(15, 23, 42, 0.75)), 
+                        url('https://images.unsplash.com/photo-1576091160550-2173dba999ef?q=80&w=2070&auto=format&fit=crop');
+            background-size: cover;
+            background-position: center;
+            padding: 14rem 1.5rem 16rem;
+            color: var(--white);
             text-align: center;
-            position: relative;
-            overflow: hidden;
-        }
-
-        .hero::after {
-            content: '';
-            position: absolute;
-            top: 0;
-            right: 0;
-            bottom: 0;
-            left: 0;
-            background-image: radial-gradient(circle at 80% 20%, rgba(13, 148, 136, 0.15) 0%, transparent 40%),
-                              radial-gradient(circle at 20% 80%, rgba(255, 255, 255, 0.05) 0%, transparent 40%);
-            pointer-events: none;
-        }
-
-        .hero-content {
-            position: relative;
-            z-index: 1;
-            max-width: 800px;
-            margin: 0 auto;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
         }
 
         .hero h1 {
-            color: var(--pure-white);
-            font-size: 2.75rem;
-            font-weight: 700;
+            font-size: clamp(2.5rem, 6vw, 4.5rem);
+            font-weight: 800;
+            line-height: 1.15;
             margin-bottom: 1.5rem;
-            line-height: 1.2;
+            letter-spacing: -0.03em;
+            /* Multi-layered shadow to pull text off the background */
+            text-shadow: 0 4px 20px rgba(0, 0, 0, 0.8), 0 0 40px rgba(0,0,0,0.5);
         }
 
         .hero p {
-            font-size: 1.125rem;
-            color: rgba(255, 255, 255, 0.9);
-            margin-bottom: 2.5rem;
+            font-size: clamp(1.1rem, 2vw, 1.25rem);
+            max-width: 700px;
+            margin: 0 auto 3rem;
+            color: #f1f5f9;
+            font-weight: 400;
+            line-height: 1.7;
+            text-shadow: 0 2px 10px rgba(0, 0, 0, 0.6);
         }
 
-        .hero-btns {
-            display: flex;
-            gap: 1rem;
-            justify-content: center;
-            flex-wrap: wrap;
-        }
+        .hero-buttons { display: flex; gap: 1.5rem; justify-content: center; }
 
-        .hero-btns .btn-outline {
-            color: var(--pure-white);
-            border-color: rgba(255, 255, 255, 0.5);
-        }
-
-        .hero-btns .btn-outline:hover {
-            background-color: rgba(255, 255, 255, 0.1);
-            border-color: var(--pure-white);
-        }
-
-        /* Value Cards Section */
-        .features-section {
-            padding: 5rem 0;
-            background-color: var(--medical-white);
-            flex-grow: 1;
-        }
-
-        .features-grid {
+        /* --- Stats Bridge --- */
+        .stats-wrapper { margin-top: -6rem; position: relative; z-index: 10; }
+        .stats-grid {
+            background: var(--white);
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-            gap: 2rem;
-            margin-top: 3rem;
+            grid-template-columns: repeat(4, 1fr);
+            border-radius: 16px;
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.15);
+            overflow: hidden;
+            border: 1px solid #f1f5f9;
         }
 
-        .feature-icon {
-            color: var(--medical-teal);
-            margin-bottom: 1rem;
+        .stat-card { 
+            padding: 3rem 2rem; 
+            text-align: center; 
+            border-right: 1px solid #f1f5f9; 
+            transition: background 0.3s ease, transform 0.3s ease;
+        }
+        .stat-card:hover { background: #f8fafc; transform: translateY(-5px); }
+        .stat-card:last-child { border-right: none; }
+        .stat-card iconify-icon { color: var(--primary); font-size: 3rem; margin-bottom: 1rem; transition: transform 0.3s ease; }
+        .stat-card:hover iconify-icon { transform: scale(1.1); }
+        .stat-card h3 { font-size: 2.2rem; font-weight: 800; color: var(--secondary); margin-bottom: 0.25rem; letter-spacing: -0.03em; }
+        .stat-card p { font-size: 0.85rem; color: var(--text-muted); font-weight: 600; text-transform: uppercase; letter-spacing: 0.05em; }
+
+        /* --- News Section --- */
+        .section-header { text-align: center; margin-bottom: 4rem; }
+        .section-header h2 { font-size: clamp(2rem, 4vw, 2.5rem); color: var(--secondary); font-weight: 800; letter-spacing: -0.03em; }
+        
+        .news-section { padding: 8rem 0; background-color: var(--bg-light); }
+        .news-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+            gap: 2.5rem;
+        }
+
+        .news-card {
+            background: var(--white);
+            border-radius: 16px;
+            overflow: hidden;
+            border: 1px solid #e2e8f0;
+            display: flex;
+            flex-direction: column;
+            box-shadow: 0 4px 6px -1px rgba(0,0,0,0.05);
+            transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+
+        .news-card:hover { 
+            transform: translateY(-12px); 
+            box-shadow: 0 25px 40px -10px rgba(0,0,0,0.1); 
+            border-color: var(--primary); 
         }
         
-        /* Footer */
-        .footer {
-            background-color: var(--pure-white);
-            border-top: 1px solid var(--border-color);
-            padding: 2rem 0;
+        .news-img {
+            width: 100%;
+            height: 220px;
+            object-fit: cover;
+            border-bottom: 1px solid #e2e8f0;
+            transition: transform 0.6s ease;
+        }
+        .news-card:hover .news-img { transform: scale(1.05); }
+
+        .news-content {
+            padding: 2.5rem;
+            display: flex;
+            flex-direction: column;
+            flex-grow: 1;
+            background: var(--white); /* ensures img scale doesn't show behind content */
+            position: relative;
+            z-index: 2;
+        }
+
+        .badge {
+            display: inline-flex;
+            padding: 0.35rem 0.85rem;
+            border-radius: 99px;
+            font-size: 0.75rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            margin-bottom: 1.5rem;
+            letter-spacing: 0.05em;
+        }
+        .badge-urgent { background: #fee2e2; color: #ef4444; animation: pulseGlow 2s infinite; }
+        .badge-info { background: #ecfdf5; color: var(--primary); }
+
+        /* --- Split Section --- */
+        .split-section {
+            display: grid; 
+            grid-template-columns: 1fr 1fr; 
+            gap: 6rem; 
+            align-items: center;
+        }
+
+        /* --- Buttons --- */
+        .btn-large {
+            padding: 1.25rem 2.5rem;
+            font-size: 1rem;
+            font-weight: 700;
+            border-radius: 8px;
+            text-decoration: none;
+            transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
             text-align: center;
-            color: var(--text-light);
-            font-size: 0.875rem;
+        }
+        .btn-primary-custom { background: var(--primary); color: white; border: none; box-shadow: 0 4px 15px rgba(5, 150, 105, 0.3); }
+        .btn-primary-custom:hover { background: var(--primary-hover); transform: translateY(-3px); box-shadow: 0 12px 20px -3px rgba(5, 150, 105, 0.4); }
+
+        .btn-outline-custom { background: rgba(255,255,255,0.05); backdrop-filter: blur(5px); color: white; border: 2px solid rgba(255,255,255,0.6); }
+        .btn-outline-custom:hover { background: rgba(255,255,255,0.15); border-color: white; transform: translateY(-3px); }
+
+        /* --- Footer --- */
+        .footer { background: var(--secondary); color: var(--white); padding: 5rem 0 2rem; }
+        .footer-grid { display: grid; grid-template-columns: 2fr 1fr 1fr; gap: 4rem; margin-bottom: 4rem; }
+        .footer h4 { color: var(--white); margin-bottom: 1.5rem; font-weight: 700; }
+        .footer p, .footer ul li { color: #94a3b8; line-height: 1.6; }
+        .footer a { color: inherit; text-decoration: none; transition: color 0.2s; }
+        .footer a:hover { color: var(--primary); }
+
+        /* ==========================================
+           MOBILE RESPONSIVENESS (MEDIA QUERIES)
+           ========================================== */
+        @media (max-width: 992px) {
+            .split-section { grid-template-columns: 1fr; gap: 4rem; }
+            .stats-grid { grid-template-columns: repeat(2, 1fr); }
+            .stat-card:nth-child(2) { border-right: none; } /* Fix borders for 2x2 grid */
+            .stat-card:nth-child(1), .stat-card:nth-child(2) { border-bottom: 1px solid #f1f5f9; }
+        }
+
+        @media (max-width: 768px) {
+            .nav-container { flex-direction: column; gap: 1rem; padding: 0.5rem 0; }
+            .nav-links { width: 100%; justify-content: center; gap: 1.5rem; }
+            
+            .hero { padding: 10rem 1.5rem 12rem; }
+            .hero-buttons { flex-direction: column; width: 100%; max-width: 400px; }
+            .btn-large { width: 100%; }
+
+            .footer-grid { grid-template-columns: 1fr; gap: 3rem; text-align: center; }
+        }
+
+        @media (max-width: 480px) {
+            .stats-grid { grid-template-columns: 1fr; }
+            .stat-card { border-right: none !important; border-bottom: 1px solid #f1f5f9; }
+            .stat-card:last-child { border-bottom: none; }
         }
     </style>
 </head>
@@ -146,82 +280,166 @@
 <body>
 
     <div class="news-ticker">
-        📢 Urgent Announcement: 2026/2027 Admission Screening Exercise Date: Oct 12th.
+        {% if latest_news %}
+            📢 Urgent Notice: {{ latest_news.title }}
+        {% else %}
+            Admission Alert: Screening Exercise for 2026/2027 Academic Session begins October 15th.
+        {% endif %}
     </div>
 
-    <nav class="navbar">
+    <nav class="navbar animate-up">
         <div class="container nav-container">
-            <div class="logo-group">
-                <img src="{{ url_for('static', path='/img/logo.svg') }}" alt="Prestige Logo" width="32" height="32">
-                <h2>Prestige School of Nursing</h2>
+            <a href="/" class="logo-group">
+                <iconify-icon icon="healthicons:health-worker-form-outline" style="font-size: 2.2rem; color: var(--primary);"></iconify-icon>
+                <h2>PRESTIGE <span>NURSING</span></h2>
+            </a>
+            <div class="nav-links">
+                <a href="/login" style="text-decoration: none; color: var(--secondary); font-weight: 700; font-size: 0.95rem; transition: color 0.2s;">STUDENT PORTAL</a>
+                <a href="/register" class="btn-large btn-primary-custom" style="padding: 0.6rem 1.2rem; font-size: 0.9rem; box-shadow: none;">APPLY NOW</a>
             </div>
-            <a href="/login" class="btn btn-outline btn-sm" style="width: auto;">Login</a>
         </div>
     </nav>
 
     <section class="hero">
-        <div class="hero-content">
-            <h1>Empowering the Next Generation of Healthcare Leaders</h1>
-            <p>Join a premier institution dedicated to excellence in clinical practice, academic rigor, and compassionate patient care in Benue State.</p>
-            
-            <div class="hero-btns">
-                <button onclick="window.location.href='/register'" class="btn btn-primary" style="width: auto; padding: 0.875rem 2rem;">Apply Now</button>
-                <button onclick="window.location.href='/login'" class="btn btn-outline" style="width: auto; padding: 0.875rem 2rem;">Student Portal</button>
+        <div class="container">
+            <h1 class="animate-up delay-1">Excellence in Clinical <br> Education & Care</h1>
+            <p class="animate-up delay-2">Empowering the next generation of nursing professionals with world-class facilities and expert-led training in the heart of Benue State.</p>
+            <div class="hero-buttons animate-up delay-3">
+                <a href="/register" class="btn-large btn-primary-custom">Begin 2026 Application</a>
+                <a href="#news" class="btn-large btn-outline-custom">View Announcements</a>
             </div>
         </div>
     </section>
 
-    <section class="features-section">
+    <section class="stats-wrapper animate-up delay-3">
         <div class="container">
-            <div class="text-center">
-                <h2>Why Choose Prestige?</h2>
-                <p style="color: var(--text-light);">We provide a standard foundation for your medical career.</p>
+            <div class="stats-grid">
+                <div class="stat-card">
+                    <iconify-icon icon="mdi:certificate-outline"></iconify-icon>
+                    <h3>NMCN</h3>
+                    <p>Fully Accredited</p>
+                </div>
+                <div class="stat-card">
+                    <iconify-icon icon="mdi:account-group-outline"></iconify-icon>
+                    <h3>100%</h3>
+                    <p>Clinical Placement</p>
+                </div>
+                <div class="stat-card">
+                    <iconify-icon icon="mdi:library-outline"></iconify-icon>
+                    <h3>24/7</h3>
+                    <p>E-Library Access</p>
+                </div>
+                <div class="stat-card">
+                    <iconify-icon icon="mdi:hospital-building"></iconify-icon>
+                    <h3>Top-Tier</h3>
+                    <p>Skill Lab Facilities</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="news-section" id="news">
+        <div class="container">
+            <div class="section-header">
+                <h2>Academic Announcements</h2>
+                <p style="color: var(--text-muted); max-width: 600px; margin: 1rem auto 0; font-size: 1.1rem; line-height: 1.6;">Stay updated with the latest news, exam dates, and administrative notices from the college.</p>
             </div>
 
-            <div class="features-grid">
-                <div class="card">
-                    <div class="feature-icon">
-                        <svg xmlns="http://www.w3.org/2000/svg" width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                            <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path>
-                        </svg>
-                    </div>
-                    <h3>Full Accreditation</h3>
-                    <p style="color: var(--text-light);">Fully accredited by the Nursing and Midwifery Council of Nigeria (NMCN), ensuring your certificate is recognized globally.</p>
-                </div>
+            <div class="news-grid">
+                {% for item in news %}
+                <div class="news-card">
+                    {% if item.imageUrl %}
+                        <img src="/{{ item.imageUrl }}" class="news-img" alt="News Image">
+                    {% else %}
+                        <img src="https://images.unsplash.com/photo-1584515159902-12938bccc151?q=80&w=800&auto=format&fit=crop" class="news-img" alt="Default News">
+                    {% endif %}
 
-                <div class="card">
-                    <div class="feature-icon">
-                        <svg xmlns="http://www.w3.org/2000/svg" width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                            <path d="M22 12h-4l-3 9L9 3l-3 9H2"></path>
-                        </svg>
+                    <div class="news-content">
+                        <div>
+                            {% if item.is_urgent %}
+                            <span class="badge badge-urgent">Urgent Notice</span>
+                            {% else %}
+                            <span class="badge badge-info">{{ item.category or 'General' }}</span>
+                            {% endif %}
+                        </div>
+                        <h3 style="font-size: 1.4rem; margin-bottom: 1rem; color: var(--secondary); font-weight: 800; line-height: 1.3;">{{ item.title }}</h3>
+                        <p style="color: var(--text-muted); line-height: 1.7; font-size: 0.95rem; margin-bottom: 2rem;">{{ item.content[:160] }}...</p>
+                        
+                        <div style="margin-top: auto; display: flex; align-items: center; gap: 0.5rem; color: var(--text-muted); font-weight: 600; font-size: 0.85rem;">
+                            <iconify-icon icon="mdi:calendar-clock-outline" style="font-size: 1.2rem; color: var(--primary);"></iconify-icon>
+                            {{ item.created_at.strftime('%B %d, %Y') }}
+                        </div>
                     </div>
-                    <h3>State-of-the-Art Facilities</h3>
-                    <p style="color: var(--text-light);">Learn in modern, well-equipped demonstration rooms and digital libraries designed to simulate real-world medical environments.</p>
                 </div>
+                {% else %}
+                <div style="grid-column: 1/-1; text-align: center; padding: 5rem 0; background: var(--white); border-radius: 16px; border: 1px dashed #cbd5e1;">
+                    <iconify-icon icon="mdi:tray-alert" style="font-size: 4rem; color: #cbd5e1; margin-bottom: 1rem;"></iconify-icon>
+                    <p style="color: var(--text-muted); font-size: 1.1rem;">No announcements have been published yet for this session.</p>
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+    </section>
 
-                <div class="card">
-                    <div class="feature-icon">
-                        <svg xmlns="http://www.w3.org/2000/svg" width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                            <path d="M2 12h20"></path>
-                            <path d="M12 2v20"></path>
-                            <path d="m4.93 4.93 14.14 14.14"></path>
-                            <path d="m4.93 19.07 14.14-14.14"></path>
-                        </svg>
+    <section style="padding: 8rem 0; border-top: 1px solid #f1f5f9; overflow: hidden;">
+        <div class="container split-section">
+            <div>
+                <h2 style="font-size: clamp(2rem, 4vw, 2.5rem); color: var(--secondary); font-weight: 800; margin-bottom: 1.5rem; letter-spacing: -0.03em;">Why Choose Prestige School of Nursing?</h2>
+                <p style="color: var(--text-muted); line-height: 1.8; margin-bottom: 2.5rem; font-size: 1.1rem;">Our curriculum is designed to exceed national standards, blending rigorous academic theory with hands-on clinical experience in Nigeria's leading teaching hospitals.</p>
+                
+                <div style="display: grid; gap: 1.5rem;">
+                    <div style="display: flex; gap: 1.25rem; align-items: center; transition: transform 0.2s ease;">
+                        <iconify-icon icon="mdi:check-decagram" style="color: var(--primary); font-size: 2.2rem;"></iconify-icon>
+                        <span style="font-weight: 600; font-size: 1.1rem; color: var(--secondary);">Standardized NMCN Curriculum</span>
                     </div>
-                    <h3>Clinical Practice</h3>
-                    <p style="color: var(--text-light);">Gain hands-on experience through our extensive network of partner teaching hospitals and clinical placement programs.</p>
+                    <div style="display: flex; gap: 1.25rem; align-items: center; transition: transform 0.2s ease;">
+                        <iconify-icon icon="mdi:check-decagram" style="color: var(--primary); font-size: 2.2rem;"></iconify-icon>
+                        <span style="font-weight: 600; font-size: 1.1rem; color: var(--secondary);">Modern Demonstration Labs</span>
+                    </div>
+                    <div style="display: flex; gap: 1.25rem; align-items: center; transition: transform 0.2s ease;">
+                        <iconify-icon icon="mdi:check-decagram" style="color: var(--primary); font-size: 2.2rem;"></iconify-icon>
+                        <span style="font-weight: 600; font-size: 1.1rem; color: var(--secondary);">Secure & Conducive Hostel Facilities</span>
+                    </div>
                 </div>
+            </div>
+            <div style="position: relative;">
+                <img src="https://images.unsplash.com/photo-1516549655169-df83a0774514?q=80&w=2070&auto=format&fit=crop" 
+                     style="width: 100%; border-radius: 24px; box-shadow: 0 30px 60px -12px rgba(0,0,0,0.3); border: 4px solid var(--white); transition: transform 0.5s ease;" 
+                     alt="Nursing Students"
+                     onmouseover="this.style.transform='scale(1.02)'" 
+                     onmouseout="this.style.transform='scale(1)'">
             </div>
         </div>
     </section>
 
     <footer class="footer">
         <div class="container">
-            &copy; 2026 Prestige School of Nursing Benue. All rights reserved.
+            <div class="footer-grid">
+                <div>
+                    <h4 style="font-size: 1.5rem; letter-spacing: -0.02em;">PRESTIGE <span style="color: var(--primary);">NURSING</span></h4>
+                    <p>The premier nursing institution in Benue State, dedicated to producing compassionate and competent healthcare leaders.</p>
+                </div>
+                <div>
+                    <h4>Quick Links</h4>
+                    <ul style="list-style: none; padding: 0;">
+                        <li><a href="/login">Portal Login</a></li>
+                        <li><a href="/register">Admission Guide</a></li>
+                        <li><a href="#">NMCN Accreditation</a></li>
+                        <li><a href="#">Contact Support</a></li>
+                    </ul>
+                </div>
+                <div>
+                    <h4>Contact Us</h4>
+                    <p>Benue State, Nigeria<br>
+                    support@prestigenursing.edu.ng<br>
+                    +234 (0) 800 PRESTIGE</p>
+                </div>
+            </div>
+            <div style="border-top: 1px solid rgba(255,255,255,0.1); padding-top: 2rem; text-align: center; color: #64748b; font-size: 0.85rem;">
+                &copy; 2026 Prestige School of Nursing Benue. Developed for Academic Excellence.
+            </div>
         </div>
     </footer>
 
-    <script src="{{ url_for('static', path='/js/app.js') }}"></script>
 </body>
-
 </html>

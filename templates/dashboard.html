@@ -4,86 +4,286 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Student Dashboard - Prestige School of Health Benue</title>
+    <title>Student Dashboard - Prestige School of Nursing</title>
+    
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    
+    <script src="https://code.iconify.design/iconify-icon/1.0.7/iconify-icon.min.js"></script>
 
     <link rel="stylesheet" href="{{ url_for('static', path='/css/style.css') }}">
+    
+    <style>
+        :root {
+            --primary: #059669; 
+            --primary-hover: #047857;
+            --secondary: #0f172a; 
+            --text-main: #1e293b;
+            --text-muted: #64748b;
+            --bg-body: #f8fafc;
+            --white: #ffffff;
+            --border-color: #e2e8f0;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: var(--bg-body);
+            color: var(--text-main);
+            margin: 0;
+            display: flex;
+            min-height: 100vh;
+        }
+
+        /* --- Sidebar Navigation --- */
+        .sidebar {
+            width: 280px;
+            background: var(--white);
+            border-right: 1px solid var(--border-color);
+            display: flex;
+            flex-direction: column;
+            padding: 2rem 1.5rem;
+            position: fixed;
+            height: 100vh;
+            box-shadow: 4px 0 15px rgba(0,0,0,0.02);
+            z-index: 50;
+        }
+
+        .sidebar-logo {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            margin-bottom: 3rem;
+            padding-bottom: 1.5rem;
+            border-bottom: 1px solid var(--border-color);
+        }
+        .sidebar-logo h2 { color: var(--secondary); font-size: 1.25rem; font-weight: 800; margin: 0; }
+        .sidebar-logo span { color: var(--primary); }
+
+        .nav-links {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
+        }
+
+        .nav-link {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            padding: 0.85rem 1rem;
+            color: var(--text-muted);
+            text-decoration: none;
+            font-weight: 600;
+            border-radius: 8px;
+            transition: all 0.2s ease;
+        }
+
+        .nav-link:hover { background: #f1f5f9; color: var(--secondary); }
+        .nav-link.active { background: #ecfdf5; color: var(--primary); }
+        
+        .nav-link iconify-icon { font-size: 1.25rem; }
+
+        .logout-link { margin-top: auto; color: #ef4444; }
+        .logout-link:hover { background: #fee2e2; color: #dc2626; }
+
+        /* --- Main Content Area --- */
+        .dashboard-content {
+            flex: 1;
+            margin-left: 280px;
+            padding: 3rem 4rem;
+            animation: fadeUp 0.5s ease forwards;
+        }
+
+        @keyframes fadeUp {
+            from { opacity: 0; transform: translateY(15px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .header { margin-bottom: 3rem; }
+        .header h1 { font-size: 2rem; color: var(--secondary); font-weight: 800; margin: 0 0 0.5rem 0; letter-spacing: -0.02em; }
+        .header p { color: var(--text-muted); margin: 0; font-size: 1.05rem; }
+
+        /* --- Status Cards Grid --- */
+        .status-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2rem;
+            margin-bottom: 3rem;
+        }
+
+        .status-card {
+            background: var(--white);
+            border-radius: 16px;
+            padding: 2rem;
+            border: 1px solid var(--border-color);
+            box-shadow: 0 4px 6px -1px rgba(0,0,0,0.02);
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            transition: transform 0.2s ease;
+        }
+        
+        .status-card:hover { transform: translateY(-4px); box-shadow: 0 10px 20px -5px rgba(0,0,0,0.05); }
+
+        .status-title { color: var(--text-muted); font-size: 0.9rem; font-weight: 600; text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 1rem; }
+        
+        .status-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0.5rem 1rem;
+            border-radius: 99px;
+            font-weight: 700;
+            font-size: 0.95rem;
+        }
+        
+        .badge-none { background: #f1f5f9; color: var(--text-muted); }
+        .badge-pending { background: #fef3c7; color: #d97706; }
+        .badge-approved { background: #ecfdf5; color: var(--primary); }
+        .badge-rejected { background: #fee2e2; color: #dc2626; }
+
+        .action-value { font-size: 1.25rem; font-weight: 700; color: var(--secondary); }
+
+        /* --- Call to Action Banner --- */
+        .cta-banner {
+            background: linear-gradient(135deg, var(--secondary) 0%, #1e293b 100%);
+            border-radius: 16px;
+            padding: 3rem;
+            color: var(--white);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1);
+        }
+
+        .cta-banner h3 { font-size: 1.5rem; font-weight: 800; margin: 0 0 0.5rem 0; }
+        .cta-banner p { color: #94a3b8; margin: 0; font-size: 1rem; }
+
+        .btn-primary {
+            padding: 1rem 2rem;
+            background: var(--primary);
+            color: var(--white);
+            border: none;
+            border-radius: 8px;
+            font-size: 1rem;
+            font-weight: 700;
+            cursor: pointer;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            transition: all 0.3s ease;
+        }
+        .btn-primary:hover { background: var(--primary-hover); transform: translateY(-2px); box-shadow: 0 8px 15px -3px rgba(5, 150, 105, 0.4); }
+
+        /* --- Responsive Design --- */
+        @media (max-width: 1024px) {
+            .dashboard-content { padding: 2.5rem; }
+        }
+
+        @media (max-width: 768px) {
+            body { flex-direction: column; }
+            .sidebar { width: 100%; height: auto; position: relative; padding: 1.5rem; flex-direction: row; justify-content: space-between; align-items: center; }
+            .sidebar-logo { margin: 0; padding: 0; border: none; }
+            .nav-links { display: none; } /* Hide full nav on mobile, use a hamburger menu in a real app */
+            .dashboard-content { margin-left: 0; padding: 1.5rem; }
+            .cta-banner { flex-direction: column; text-align: center; gap: 2rem; padding: 2rem; }
+        }
+    </style>
 </head>
 
 <body>
 
-    <div class="dashboard-layout">
-        <aside class="sidebar">
-            <div class="sidebar-logo">
-                <img src="{{ url_for('static', path='/img/logo.svg') }}" alt="Logo" width="32" height="32"
-                    style="filter: brightness(0) invert(1);">
-                <h2>Portal</h2>
+    <aside class="sidebar">
+        <div class="sidebar-logo">
+            <iconify-icon icon="healthicons:health-worker-form-outline" style="font-size: 2rem; color: var(--primary);"></iconify-icon>
+            <h2>PORTAL</h2>
+        </div>
+
+        <ul class="nav-links">
+            <li><a href="/dashboard" class="nav-link active"><iconify-icon icon="mdi:view-dashboard-outline"></iconify-icon> Dashboard</a></li>
+            <li><a href="/profile" class="nav-link"><iconify-icon icon="mdi:account-outline"></iconify-icon> My Profile</a></li>
+            <li><a href="/payment" class="nav-link"><iconify-icon icon="mdi:credit-card-outline"></iconify-icon> Payments</a></li>
+            <li><a href="/logout" class="nav-link logout-link"><iconify-icon icon="mdi:logout"></iconify-icon> Sign Out</a></li>
+        </ul>
+    </aside>
+
+    <main class="dashboard-content">
+        <header class="header">
+            <h1>Welcome back, {{ user.email.split('@')[0] | capitalize }}</h1>
+            <p>JAMB Registration No: <strong style="color: var(--secondary);">{{ user.jamb_reg_no }}</strong></p>
+        </header>
+
+        <div class="status-grid">
+            <div class="status-card">
+                <div>
+                    <div class="status-title">Admission Status</div>
+                    
+                    {% if not application %}
+                        <div class="status-badge badge-none">
+                            <iconify-icon icon="mdi:file-hidden"></iconify-icon> Not Submitted
+                        </div>
+                    {% elif application.status == 'PENDING' %}
+                        <div class="status-badge badge-pending">
+                            <iconify-icon icon="mdi:clock-outline"></iconify-icon> Awaiting Review
+                        </div>
+                    {% elif application.status == 'APPROVED' %}
+                        <div class="status-badge badge-approved">
+                            <iconify-icon icon="mdi:check-decagram"></iconify-icon> Admission Offered
+                        </div>
+                    {% elif application.status == 'REJECTED' %}
+                        <div class="status-badge badge-rejected">
+                            <iconify-icon icon="mdi:close-circle-outline"></iconify-icon> Not Admitted
+                        </div>
+                    {% endif %}
+                    
+                </div>
+                <iconify-icon icon="mdi:file-document-check-outline" style="font-size: 3rem; color: #cbd5e1;"></iconify-icon>
             </div>
 
-            <ul class="nav-links">
-                <li><a href="#" class="nav-link active">Home</a></li>
-                <li><a href="#" class="nav-link">Apply</a></li>
-                <li><a href="#" class="nav-link">Payment</a></li>
-                <li><a href="#" class="nav-link">Profile</a></li>
-            </ul>
-        </aside>
-
-        <main class="dashboard-content">
-            <header class="mb-6">
-                <h1>Welcome back, <span style="color: var(--medical-teal);">{{ user.email }}</span></h1>
-                <p style="color: var(--text-light); font-weight: 500;">JAMB Reg No: <span style="color: var(--deep-navy);">{{ user.jamb_reg_no }}</span></p>
-                <p style="color: var(--text-light); margin-top: 0.5rem;">Here is an overview of your admission status and next steps.</p>
-            </header>
-
-            <div class="status-grid">
-                <div class="status-card">
-                    <div>
-                        <div class="status-title">Application Status</div>
-                        <div class="status-value mt-4">
-                            {% if application_status == 'Pending' %}
-                            <span class="status-badge badge-pending">Pending Review</span>
-                            {% elif application_status == 'Approved' %}
-                            <span class="status-badge badge-approved">Admission Offered</span>
-                            {% elif application_status == 'Rejected' %}
-                            <span class="status-badge badge-rejected">Not Admitted</span>
-                            {% else %}
-                            <span class="status-badge badge-pending">Not Submitted</span>
-                            {% endif %}
-                        </div>
-                    </div>
-                    <div>
-                        <svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" viewBox="0 0 24 24" fill="none"
-                            stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"
-                            style="color: var(--border-color);">
-                            <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
-                            <polyline points="14 2 14 8 20 8"></polyline>
-                            <line x1="16" y1="13" x2="8" y2="13"></line>
-                            <line x1="16" y1="17" x2="8" y2="17"></line>
-                            <polyline points="10 9 9 9 8 9"></polyline>
-                        </svg>
+            <div class="status-card">
+                <div>
+                    <div class="status-title">Next Action Required</div>
+                    
+                    <div class="action-value mt-4">
+                        {% if not application %}
+                            Complete 2026 Form
+                        {% elif application.status == 'PENDING' %}
+                            Await ICT Verification
+                        {% elif application.status == 'APPROVED' %}
+                            Print Admission Letter
+                        {% else %}
+                            Contact Admissions
+                        {% endif %}
                     </div>
                 </div>
-
-                <div class="status-card" style="border-left-color: var(--deep-navy);">
-                    <div>
-                        <div class="status-title">Next Action</div>
-                        <div class="status-value mt-4" style="font-size: 1.125rem;">
-                            Complete Application Form
-                        </div>
-                    </div>
-                </div>
+                <iconify-icon icon="mdi:arrow-right-circle-outline" style="font-size: 3rem; color: var(--primary);"></iconify-icon>
             </div>
+        </div>
 
-            <div class="card mt-6">
-                <h3>Recent Notifications</h3>
-                <p style="color: var(--text-light);">You have no new notifications.</p>
+        {% if not application %}
+        <div class="cta-banner">
+            <div>
+                <h3>Complete Your Application</h3>
+                <p>You need to upload your passport and O'Level results to be considered for the 2026 session.</p>
             </div>
-        </main>
-    </div>
+            <a href="/apply" class="btn-primary">
+                Start Application <iconify-icon icon="mdi:arrow-right"></iconify-icon>
+            </a>
+        </div>
+        {% else %}
+        <div style="background: var(--white); border-radius: 16px; padding: 2rem; border: 1px solid var(--border-color);">
+            <h3 style="margin-top: 0; color: var(--secondary);">Application Details</h3>
+            <p style="color: var(--text-muted); margin-bottom: 0;"><strong>Full Name:</strong> {{ application.fullName }}</p>
+            <p style="color: var(--text-muted); margin-bottom: 0;"><strong>Phone:</strong> {{ application.phoneNumber }}</p>
+            <p style="color: var(--text-muted); margin-bottom: 0;"><strong>State:</strong> {{ application.stateOfOrigin }}</p>
+        </div>
+        {% endif %}
 
-    <script src="{{ url_for('static', path='/js/app.js') }}"></script>
+    </main>
+
 </body>
-
 </html>
