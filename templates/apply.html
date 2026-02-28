@@ -320,6 +320,8 @@
         }
     </script>
 
+    <script src="{{ url_for('static', path='/js/app.js') }}"></script>
+
     <script>
         document.getElementById('applyForm').addEventListener('submit', async (e) => {
             e.preventDefault();
@@ -332,22 +334,23 @@
             const formData = new FormData(e.target);
             
             try {
-                // Ensure this matches your FastAPI route in main.py
                 const response = await fetch('/apply', {
                     method: 'POST',
                     body: formData
                 });
                 
                 if (response.ok) {
-                    if (window.showToast) window.showToast('Application Submitted Successfully!', 'success');
-                    // Redirect back to dashboard to see status
-                    setTimeout(() => window.location.href = '/dashboard', 1000);
+                    // Replaced alert with showToast
+                    window.showToast('Application Submitted Successfully!', 'success');
+                    setTimeout(() => window.location.href = '/dashboard', 1500);
                 } else {
                     const error = await response.json();
-                    alert(error.detail || 'Failed to submit application. Please check your files.');
+                    // Replaced alert with showToast
+                    window.showToast(error.detail || 'Failed to submit application. Please check your files.', 'error');
                 }
             } catch (err) {
-                alert('A network error occurred while submitting.');
+                // Replaced alert with showToast
+                window.showToast('A network error occurred while submitting.', 'error');
             } finally {
                 btn.innerHTML = originalHTML;
                 btn.disabled = false;

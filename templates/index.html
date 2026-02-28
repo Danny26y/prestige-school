@@ -349,7 +349,7 @@
                 {% for item in news %}
                 <div class="news-card">
                     {% if item.imageUrl %}
-                        <img src="/{{ item.imageUrl }}" class="news-img" alt="News Image">
+                        <img src="{{ item.imageUrl }}" class="news-img" alt="News Image">
                     {% else %}
                         <img src="https://images.unsplash.com/photo-1584515159902-12938bccc151?q=80&w=800&auto=format&fit=crop" class="news-img" alt="Default News">
                     {% endif %}

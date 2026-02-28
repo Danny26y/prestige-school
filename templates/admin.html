@@ -82,6 +82,7 @@
                             <th>State</th>
                             <th>Passport</th>
                             <th>Documents</th>
+                            <th>Status</th>
                             <th>Actions</th>
                         </tr>
                     </thead>
@@ -105,15 +106,29 @@
                                 </a>
                             </td>
                             <td>
+                                {% if app.status == 'PENDING' %}
+                                    <span style="padding: 0.35rem 0.65rem; border-radius: 4px; background: #fef3c7; color: #d97706; font-size: 0.75rem; font-weight: 700;">PENDING</span>
+                                {% elif app.status == 'APPROVED' %}
+                                    <span style="padding: 0.35rem 0.65rem; border-radius: 4px; background: #d1fae5; color: #059669; font-size: 0.75rem; font-weight: 700;">APPROVED</span>
+                                {% else %}
+                                    <span style="padding: 0.35rem 0.65rem; border-radius: 4px; background: #fee2e2; color: #dc2626; font-size: 0.75rem; font-weight: 700;">REJECTED</span>
+                                {% endif %}
+                            </td>
+                            
+                            <td>
                                 <div class="actions">
-                                    <button class="btn btn-sm btn-approve" onclick="updateStatus('{{ app.id }}', 'APPROVED')">Approve</button>
-                                    <button class="btn btn-sm btn-reject" onclick="updateStatus('{{ app.id }}', 'REJECTED')">Reject</button>
+                                    {% if app.status == 'PENDING' %}
+                                        <button class="btn btn-sm btn-approve" onclick="updateStatus('{{ app.id }}', 'APPROVED')">Approve</button>
+                                        <button class="btn btn-sm btn-reject" onclick="updateStatus('{{ app.id }}', 'REJECTED')">Reject</button>
+                                    {% else %}
+                                        <button class="btn btn-sm btn-outline" onclick="updateStatus('{{ app.id }}', 'PENDING')" style="font-size: 0.75rem; padding: 0.3rem 0.6rem;">Undo Decision</button>
+                                    {% endif %}
                                 </div>
                             </td>
                         </tr>
                         {% else %}
                         <tr>
-                            <td colspan="6" class="text-center" style="padding: 3rem;">
+                            <td colspan="7" class="text-center" style="padding: 3rem;">
                                 <p style="color: var(--text-light);">No applications found matching your criteria.</p>
                             </td>
                         </tr>
