@@ -34,7 +34,7 @@ templates = Jinja2Templates(directory="templates")
 
 # Mount Static and Upload folders for asset accessibility
 app.mount("/static", StaticFiles(directory="static"), name="static")
-app.mount("/uploads", StaticFiles(directory="uploads"), name="uploads")
+# app.mount("/uploads", StaticFiles(directory="uploads"), name="uploads")
 
 
 
