@@ -188,13 +188,23 @@
                 <p>You must have a verified JAMB Registration Number on the ICT clearance list to create an account.</p>
             </div>
 
-            <form id="registerForm">
+            <form id="verifyForm">
                 <div class="form-group">
-                    <label for="jamb_no" class="form-label">JAMB Registration Number</label>
+                    <label for="verify_jamb_no" class="form-label">JAMB Registration Number</label>
                     <div class="input-icon-wrapper">
                         <iconify-icon icon="mdi:card-account-details-outline"></iconify-icon>
-                        <input type="text" id="jamb_no" name="jamb_no" class="form-input" placeholder="e.g. 202612345678AB" required>
+                        <input type="text" id="verify_jamb_no" name="jamb_no" class="form-input" placeholder="e.g. 202612345678AB" required>
                     </div>
+                </div>
+                <button type="submit" class="btn-primary" id="verifyBtn">Verify JAMB</button>
+            </form>
+
+            <form id="registerForm" style="display: none;">
+                <input type="hidden" id="jamb_no" name="jamb_no" required>
+
+                <div class="info-box" style="margin-top: 1rem;">
+                    <iconify-icon icon="mdi:check-circle"></iconify-icon>
+                    <p id="verifiedNameDisplay">JAMB Verified! Complete your registration below.</p>
                 </div>
 
                 <div class="form-group">
@@ -213,7 +223,7 @@
                     </div>
                 </div>
 
-                <button type="submit" class="btn-primary">Verify & Create Account</button>
+                <button type="submit" class="btn-primary">Create Account</button>
             </form>
             
             <div class="auth-links">
@@ -227,15 +237,55 @@
             document.getElementById('mobile-back').style.display = 'inline-flex';
         }
 
-        document.getElementById('registerForm').addEventListener('submit', async (e) => {
+        const verifyForm = document.getElementById('verifyForm');
+        const registerForm = document.getElementById('registerForm');
+        const verifyBtn = document.getElementById('verifyBtn');
+        const verifiedNameDisplay = document.getElementById('verifiedNameDisplay');
+        const hiddenJambNo = document.getElementById('jamb_no');
+
+        verifyForm.addEventListener('submit', async (e) => {
+            e.preventDefault();
+
+            const originalText = verifyBtn.innerHTML;
+            verifyBtn.innerHTML = '<iconify-icon icon="mdi:loading" class="spin"></iconify-icon> Verifying...';
+            verifyBtn.disabled = true;
+
+            const formData = new FormData(verifyForm);
+
+            try {
+                const response = await fetch('/verify-jamb', {
+                    method: 'POST',
+                    body: formData
+                });
+
+                if (response.ok) {
+                    const data = await response.json();
+                    // Show next step
+                    verifyForm.style.display = 'none';
+                    registerForm.style.display = 'block';
+                    hiddenJambNo.value = data.jamb_no;
+                    verifiedNameDisplay.innerText = `Verified: ${data.full_name}. Complete your registration.`;
+                } else {
+                    const error = await response.json();
+                    alert(error.detail || 'JAMB Number verification failed.');
+                }
+            } catch (err) {
+                alert('A network error occurred. Please check your connection.');
+            } finally {
+                verifyBtn.innerHTML = originalText;
+                verifyBtn.disabled = false;
+            }
+        });
+
+        registerForm.addEventListener('submit', async (e) => {
             e.preventDefault();
             
             const btn = e.target.querySelector('button');
             const originalText = btn.innerHTML;
-            btn.innerHTML = '<iconify-icon icon="mdi:loading" class="spin"></iconify-icon> Verifying JAMB...';
+            btn.innerHTML = '<iconify-icon icon="mdi:loading" class="spin"></iconify-icon> Creating Account...';
             btn.disabled = true;
 
-            const formData = new FormData(e.target);
+            const formData = new FormData(registerForm);
             
             try {
                 const response = await fetch('/register', {
@@ -249,7 +299,7 @@
                     window.location.href = '/login';
                 } else {
                     const error = await response.json();
-                    alert(error.detail || 'Registration failed. Please check your JAMB number.');
+                    alert(error.detail || 'Registration failed.');
                 }
             } catch (err) {
                 alert('A network error occurred. Please check your connection.');

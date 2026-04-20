@@ -101,6 +101,17 @@ async def get_register(request: Request):
 
 # --- AUTHENTICATION ACTIONS ---
 
+@app.post("/verify-jamb")
+def verify_jamb_endpoint(jamb_no: str = Form(...), db: Session = Depends(get_db)):
+    """Verifies if a given JAMB Registration Number is authorized."""
+    jamb_no_upper = jamb_no.strip().upper()
+    is_verified = db.query(models.VerifiedJAMB).filter(models.VerifiedJAMB.jamb_no == jamb_no_upper).first()
+
+    if not is_verified:
+        raise HTTPException(status_code=404, detail="JAMB Number not found in official list.")
+
+    return {"status": "success", "full_name": is_verified.full_name, "jamb_no": is_verified.jamb_no}
+
 @app.post("/register")
 def register_candidate(
     email: str = Form(...),
@@ -244,13 +255,22 @@ async def admin_portal(
 async def import_jamb_list(file: UploadFile = File(...), db: Session = Depends(get_db), admin: models.User = Depends(require_admin)):
     """Bulk imports authorized students from a CSV file"""
     content = await file.read()
-    reader = csv.DictReader(io.StringIO(content.decode('utf-8')))
+    decoded_content = content.decode('utf-8')
+    reader = csv.DictReader(io.StringIO(decoded_content))
+
+    # Normalize headers to lowercase and strip whitespace to handle standard JAMB CAPS export formats
+    reader.fieldnames = [name.strip().lower() for name in reader.fieldnames]
 
     count = 0
     for row in reader:
-        jamb_no = row.get('jamb_no').strip().upper()
+        raw_jamb_no = row.get('jamb_no') or row.get('jamb registration number') or row.get('reg_no')
+        if not raw_jamb_no:
+            continue
+        jamb_no = str(raw_jamb_no).strip().upper()
+        full_name = row.get('full_name') or row.get('candidate name') or row.get('name', '')
+
         if not db.query(models.VerifiedJAMB).filter_by(jamb_no=jamb_no).first():
-            new_entry = models.VerifiedJAMB(jamb_no=jamb_no, full_name=row.get('full_name'))
+            new_entry = models.VerifiedJAMB(jamb_no=jamb_no, full_name=full_name)
             db.add(new_entry)
             count += 1
     db.commit()
