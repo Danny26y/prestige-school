@@ -1,6 +1,10 @@
+import os
 import bcrypt
+from dotenv import load_dotenv
 from database import SessionLocal
 import models
+
+load_dotenv()
 
 def create_initial_admin():
     db = SessionLocal()
@@ -9,7 +13,8 @@ def create_initial_admin():
         print("Admin already exists.")
         return
 
-    hashed = bcrypt.hashpw("AdminPassword2026".encode('utf-8'), bcrypt.gensalt()).decode('utf-8')
+    admin_password = os.getenv("ADMIN_PASSWORD", "AdminPassword2026")
+    hashed = bcrypt.hashpw(admin_password.encode('utf-8'), bcrypt.gensalt()).decode('utf-8')
     admin = models.User(
         email="admin@prestigesoh.com.ng",
         passwordHash=hashed,
