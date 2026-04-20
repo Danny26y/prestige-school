@@ -9,6 +9,8 @@ import os
 import uuid
 import csv
 import io
+from datetime import datetime, timedelta, timezone
+import jwt
 
 from dotenv import load_dotenv
 import cloudinary
@@ -43,11 +45,22 @@ models.Base.metadata.create_all(bind=engine)
 
 # --- DEPENDENCIES (SESSION MANAGEMENT) ---
 
+SECRET_KEY = os.getenv("SECRET_KEY", "fallback")
+ALGORITHM = "HS256"
+
 def get_current_user_from_cookie(request: Request, db: Session = Depends(get_db)):
-    """Extracts the user from the secure browser cookie."""
-    user_id = request.cookies.get("user_id")
-    if not user_id:
+    """Extracts the user from the secure browser cookie using JWT."""
+    access_token = request.cookies.get("access_token")
+    if not access_token:
         return None
+    try:
+        payload = jwt.decode(access_token, SECRET_KEY, algorithms=[ALGORITHM])
+        user_id = payload.get("sub")
+        if not user_id:
+            return None
+    except (jwt.ExpiredSignatureError, jwt.PyJWTError):
+        return None
+
     return db.query(models.User).filter(models.User.id == str(user_id)).first()
 
 def require_admin(user: models.User = Depends(get_current_user_from_cookie)):
@@ -129,14 +142,20 @@ def login(email: str = Form(...), password: str = Form(...), db: Session = Depen
     if not user or not bcrypt.checkpw(password.encode('utf-8'), user.passwordHash.encode('utf-8')):
         raise HTTPException(status_code=401, detail="Invalid credentials")
 
+    access_token = jwt.encode(
+        {"sub": str(user.id), "exp": datetime.now(timezone.utc) + timedelta(days=1)},
+        SECRET_KEY,
+        algorithm=ALGORITHM
+    )
+
     response = JSONResponse(content={"id": user.id, "email": user.email, "role": user.role})
-    response.set_cookie(key="user_id", value=str(user.id), httponly=True, max_age=86400)
+    response.set_cookie(key="access_token", value=access_token, httponly=True, max_age=86400)
     return response
 
 @app.get("/logout")
 async def logout():
     response = RedirectResponse(url="/login", status_code=303)
-    response.delete_cookie(key="user_id")
+    response.delete_cookie(key="access_token")
     return response
 
 # --- STUDENT DASHBOARD & APPLICATIONS ---
