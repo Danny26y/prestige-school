@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admission Letter - Prestige School of Health Technology</title>
+    <style>
+        body {
+            font-family: 'Times New Roman', Times, serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f4f4f4;
+            color: #000;
+        }
+
+        .letter-container {
+            width: 210mm; /* A4 width */
+            min-height: 297mm; /* A4 height */
+            margin: 20mm auto;
+            background-color: #fff;
+            padding: 20mm;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            box-sizing: border-box;
+        }
+
+        .header {
+            text-align: center;
+            border-bottom: 2px solid #000;
+            padding-bottom: 10px;
+            margin-bottom: 30px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-direction: column;
+        }
+
+        .header img {
+            width: 150px;
+            margin-bottom: 10px;
+        }
+
+        .header h1 {
+            font-size: 24px;
+            margin: 0;
+            text-transform: uppercase;
+        }
+
+        .header p {
+            margin: 5px 0 0;
+            font-size: 14px;
+            font-weight: bold;
+        }
+
+        .contact-info {
+            text-align: left;
+            margin-bottom: 30px;
+            font-size: 14px;
+            line-height: 1.5;
+        }
+
+        .contact-info strong {
+            display: inline-block;
+            width: 50px;
+        }
+
+        .content {
+            font-size: 16px;
+            line-height: 1.6;
+        }
+
+        .content h2 {
+            text-align: center;
+            font-size: 18px;
+            text-decoration: underline;
+            margin-bottom: 20px;
+        }
+
+        .signature-area {
+            margin-top: 50px;
+            display: flex;
+            justify-content: flex-end;
+        }
+
+        .signature {
+            text-align: center;
+        }
+
+        .signature p {
+            margin: 0;
+            font-weight: bold;
+        }
+
+        .signature .line {
+            border-top: 1px solid #000;
+            width: 200px;
+            margin-bottom: 5px;
+        }
+
+        .print-btn {
+            display: block;
+            width: 200px;
+            margin: 20px auto;
+            padding: 10px;
+            background-color: #059669;
+            color: #fff;
+            text-align: center;
+            text-decoration: none;
+            font-weight: bold;
+            border-radius: 5px;
+            cursor: pointer;
+            border: none;
+            font-size: 16px;
+        }
+
+        @media print {
+            body {
+                background-color: #fff;
+            }
+            .letter-container {
+                margin: 0;
+                box-shadow: none;
+                width: 100%;
+                padding: 0;
+            }
+            .print-btn {
+                display: none;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <button class="print-btn" onclick="window.print()">Print Letter</button>
+
+    <div class="letter-container">
+        <div class="header">
+            <img src="/static/img/prestige_logo.png" alt="Prestige School of Health Technology Logo">
+            <h1>PRESTIGE SCHOOL OF HEALTH TECHNOLOGY</h1>
+            <p>AKOODO WANNUNA TARKA LOCAL GOVERNMENT, BENUE STATE</p>
+        </div>
+
+        <div class="contact-info">
+            <p><strong>Email:</strong> <a href="mailto:prestigeschoolofhealthtech.@gmail.com">prestigeschoolofhealthtech.@gmail.com</a></p>
+            <p><strong>Date:</strong> {{ date }}</p>
+        </div>
+
+        <div class="content">
+            <h2>PROVISIONAL ADMISSION LETTER</h2>
+
+            <p>Dear <strong>{{ application.fullName }}</strong>,</p>
+
+            <p>Following your recent application and successful screening process, we are pleased to inform you that you have been offered provisional admission into the Prestige School of Health Technology.</p>
+
+            <p>This offer is based on your stated qualifications and state of origin (<strong>{{ application.stateOfOrigin }}</strong>) as provided during the application process. Please note that this admission is provisional and subject to the verification of all your credentials. Any discovery of falsified information will lead to automatic withdrawal of this offer.</p>
+
+            <p>You are required to proceed to the school campus with your original credentials for final clearance and registration.</p>
+
+            <p>Congratulations, and we look forward to welcoming you to the Prestige School of Health Technology.</p>
+        </div>
+
+        <div class="signature-area">
+            <div class="signature">
+                <div class="line"></div>
+                <p>Registrar</p>
+                <p>Prestige School of Health Technology</p>
+            </div>
+        </div>
+    </div>
+
+</body>
+</html>

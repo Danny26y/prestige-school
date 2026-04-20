@@ -187,6 +187,23 @@ async def get_dashboard(request: Request, db: Session = Depends(get_db), current
         "application": application
     })
 
+@app.get("/dashboard/print-letter", response_class=HTMLResponse)
+async def print_admission_letter(request: Request, db: Session = Depends(get_db), current_user: models.User = Depends(get_current_user_from_cookie)):
+    if not current_user:
+        return RedirectResponse(url="/login", status_code=303)
+
+    application = db.query(models.Admission).filter(models.Admission.userId == current_user.id).first()
+
+    if not application or application.status != "APPROVED":
+        raise HTTPException(status_code=403, detail="You do not have an approved admission to print.")
+
+    return templates.TemplateResponse("admission_letter.html", {
+        "request": request,
+        "user": current_user,
+        "application": application,
+        "date": datetime.now().strftime("%B %d, %Y")
+    })
+
 @app.post("/apply")
 async def apply_for_admission(
     userId: str = Form(...),
@@ -199,21 +216,38 @@ async def apply_for_admission(
 ):
     """Processes file uploads to Cloudinary and saves application records"""
     
-    # 1. Upload Passport to Cloudinary
-    passport_upload = cloudinary.uploader.upload(
-        passport.file, 
-        folder="prestige_passports",
-        public_id=f"passport_{uuid.uuid4()}"
-    )
-    passport_secure_url = passport_upload.get("secure_url")
+    ALLOWED_TYPES = ["image/jpeg", "image/png", "application/pdf"]
+    MAX_SIZE = 2 * 1024 * 1024 # 2MB
 
-    # 2. Upload Results to Cloudinary
-    results_upload = cloudinary.uploader.upload(
-        results.file, 
-        folder="prestige_results",
-        public_id=f"results_{uuid.uuid4()}"
-    )
-    results_secure_url = results_upload.get("secure_url")
+    for file_obj, name in [(passport, "Passport"), (results, "Results")]:
+        if file_obj.content_type not in ALLOWED_TYPES:
+            raise HTTPException(status_code=400, detail=f"Invalid file type for {name}. Allowed types: JPEG, PNG, PDF.")
+
+        file_obj.file.seek(0, 2)
+        size = file_obj.file.tell()
+        file_obj.file.seek(0)
+
+        if size > MAX_SIZE:
+            raise HTTPException(status_code=400, detail=f"{name} file size exceeds 2MB limit.")
+
+    try:
+        # 1. Upload Passport to Cloudinary
+        passport_upload = cloudinary.uploader.upload(
+            passport.file,
+            folder="prestige_passports",
+            public_id=f"passport_{uuid.uuid4()}"
+        )
+        passport_secure_url = passport_upload.get("secure_url")
+
+        # 2. Upload Results to Cloudinary
+        results_upload = cloudinary.uploader.upload(
+            results.file,
+            folder="prestige_results",
+            public_id=f"results_{uuid.uuid4()}"
+        )
+        results_secure_url = results_upload.get("secure_url")
+    except Exception as e:
+        raise HTTPException(status_code=500, detail="An error occurred while uploading files. Please try again.")
 
     # 3. Save the Cloud URLs to Neon Database
     new_admission = models.Admission(
