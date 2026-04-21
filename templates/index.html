@@ -483,34 +483,16 @@
             </div>
 
             <div class="gallery-grid">
-                <!-- Gallery Images -->
+                {% for img in gallery_images %}
                 <div class="gallery-item">
-                    <img src="{{ url_for('static', path='img/1776722738390.jpg') }}" alt="Campus Image 1">
+                    <img src="{{ img.imageUrl }}" alt="{{ img.caption or 'Campus Image' }}">
                 </div>
-                <div class="gallery-item">
-                    <img src="{{ url_for('static', path='img/1776722738410.jpg') }}" alt="Campus Image 2">
+                {% else %}
+                <div style="grid-column: 1/-1; text-align: center; padding: 4rem 0; background: var(--bg-light); border-radius: 12px; border: 1px dashed #cbd5e1;">
+                    <iconify-icon icon="mdi:image-off-outline" style="font-size: 3rem; color: #cbd5e1; margin-bottom: 1rem;"></iconify-icon>
+                    <p style="color: var(--text-muted); font-size: 1rem;">No campus photos available.</p>
                 </div>
-                <div class="gallery-item">
-                    <img src="{{ url_for('static', path='img/1776722738417.jpg') }}" alt="Campus Image 3">
-                </div>
-                <div class="gallery-item">
-                    <img src="{{ url_for('static', path='img/1776722738428.jpg') }}" alt="Campus Image 4">
-                </div>
-                <div class="gallery-item">
-                    <img src="{{ url_for('static', path='img/1776722738434.jpg') }}" alt="Campus Image 5">
-                </div>
-                <div class="gallery-item">
-                    <img src="{{ url_for('static', path='img/1776722738439.jpg') }}" alt="Campus Image 6">
-                </div>
-                <div class="gallery-item">
-                    <img src="{{ url_for('static', path='img/1776761084465.jpg') }}" alt="Campus Image 7">
-                </div>
-                <div class="gallery-item">
-                    <img src="{{ url_for('static', path='img/1776761084472.jpg') }}" alt="Campus Image 8">
-                </div>
-                <div class="gallery-item">
-                    <img src="{{ url_for('static', path='img/1776761084477.jpg') }}" alt="Campus Image 9">
-                </div>
+                {% endfor %}
             </div>
         </section>
 

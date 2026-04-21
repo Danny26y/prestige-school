@@ -13,7 +13,9 @@ def create_initial_admin():
         print("Admin already exists.")
         return
 
-    admin_password = os.getenv("ADMIN_PASSWORD", "AdminPassword2026")
+    admin_password = os.getenv("ADMIN_PASSWORD")
+    if not admin_password:
+        raise ValueError("ADMIN_PASSWORD environment variable not set")
     hashed = bcrypt.hashpw(admin_password.encode('utf-8'), bcrypt.gensalt()).decode('utf-8')
     admin = models.User(
         email="admin@prestigesoh.com.ng",

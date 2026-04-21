@@ -46,7 +46,9 @@ models.Base.metadata.create_all(bind=engine)
 
 # --- DEPENDENCIES (SESSION MANAGEMENT) ---
 
-SECRET_KEY = os.getenv("SECRET_KEY", "fallback")
+SECRET_KEY = os.getenv("SECRET_KEY")
+if not SECRET_KEY:
+    raise ValueError("SECRET_KEY environment variable not set")
 ALGORITHM = "HS256"
 
 def get_current_user_from_cookie(request: Request, db: Session = Depends(get_db)):
@@ -88,12 +90,16 @@ async def home(request: Request, db: Session = Depends(get_db)):
 
     # Fetch departments
     departments = db.query(models.Department).all()
+
+    # Fetch gallery images
+    gallery_images = db.query(models.GalleryImage).order_by(models.GalleryImage.created_at.desc()).all()
     
     return templates.TemplateResponse("index.html", {
         "request": request, 
         "news": news_list, 
         "latest_news": latest_news,
-        "departments": departments
+        "departments": departments,
+        "gallery_images": gallery_images
     })
 
 @app.get("/news", response_class=HTMLResponse)
@@ -565,3 +571,63 @@ async def initialize_payment(request: Request, db: Session = Depends(get_db), cu
 
     # In a real scenario, you'd call Paystack API here and get an authorization URL.
     return {"status": "success", "reference": reference, "amount": fee}
+@app.get("/admin/gallery", response_class=HTMLResponse)
+async def get_admin_gallery(request: Request, db: Session = Depends(get_db), admin: models.User = Depends(require_admin)):
+    images = db.query(models.GalleryImage).order_by(models.GalleryImage.created_at.desc()).all()
+    return templates.TemplateResponse("admin_gallery.html", {
+        "request": request,
+        "gallery_images": images
+    })
+
+@app.post("/admin/gallery/add")
+async def add_gallery_image(
+    caption: str = Form(""),
+    image: UploadFile = File(...),
+    db: Session = Depends(get_db),
+    admin: models.User = Depends(require_admin)
+):
+    ALLOWED_TYPES = ["image/jpeg", "image/png", "image/webp"]
+    if image.content_type not in ALLOWED_TYPES:
+        raise HTTPException(status_code=400, detail="Invalid image format. Allowed: JPEG, PNG, WEBP.")
+
+    try:
+        upload_result = cloudinary.uploader.upload(
+            image.file,
+            folder="prestige_gallery",
+            resource_type="image"
+        )
+
+        new_img = models.GalleryImage(
+            imageUrl=upload_result.get('secure_url'),
+            caption=caption
+        )
+        db.add(new_img)
+        db.commit()
+        return {"status": "success"}
+    except Exception as e:
+        print(f"Cloudinary upload error: {e}")
+        raise HTTPException(status_code=500, detail="Upload failed.")
+
+@app.post("/admin/gallery/delete/{image_id}")
+async def delete_gallery_image(
+    image_id: str,
+    db: Session = Depends(get_db),
+    admin: models.User = Depends(require_admin)
+):
+    img = db.query(models.GalleryImage).filter(models.GalleryImage.id == image_id).first()
+    if not img:
+        return RedirectResponse(url="/admin/gallery", status_code=303)
+
+    try:
+        # Extract public_id from secure_url (assuming standard cloudinary url format)
+        url_parts = img.imageUrl.split('/')
+        file_with_ext = url_parts[-1]
+        public_id = "prestige_gallery/" + file_with_ext.split('.')[0]
+
+        cloudinary.uploader.destroy(public_id, resource_type="image")
+    except Exception as e:
+        print(f"Cloudinary cleanup error: {e}")
+
+    db.delete(img)
+    db.commit()
+    return RedirectResponse(url="/admin/gallery", status_code=303)

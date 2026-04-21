@@ -58,3 +58,10 @@ class Department(Base):
     description = Column(Text, nullable=True)
     head_of_department = Column(String, nullable=True)
     imageUrl = Column(String, nullable=True)
+class GalleryImage(Base):
+    __tablename__ = "GalleryImage"
+
+    id = Column(String, primary_key=True, default=lambda: str(uuid.uuid4()))
+    imageUrl = Column(String, nullable=False)
+    caption = Column(String, nullable=True)
+    created_at = Column(DateTime, default=lambda: datetime.now(timezone.utc))
