@@ -398,18 +398,31 @@ async def delete_news(
     db: Session = Depends(get_db), 
     admin: models.User = Depends(require_admin)
 ):
-    """Safely removes a post and its physical image from storage"""
+    """Safely removes a post and its cloud image from storage"""
     news_item = db.query(models.News).filter(models.News.id == news_id).first()
     
     if not news_item:
         raise HTTPException(status_code=404, detail="News post not found")
 
-    # Clean up physical storage on your Dell laptop
-    if news_item.imageUrl and os.path.exists(news_item.imageUrl):
+    # Clean up cloud storage
+    if news_item.imageUrl:
         try:
-            os.remove(news_item.imageUrl)
+            # Extract public_id from Cloudinary URL: e.g. .../upload/v12345/folder/id.extension
+            # Assuming standard Cloudinary URLs, the public_id includes the folder structure
+            parts = news_item.imageUrl.split('/')
+            if 'upload' in parts:
+                upload_index = parts.index('upload')
+                # Join the parts after upload (excluding version if it exists, though usually it's 'v' followed by digits)
+                # For simplicity, we can extract everything after upload/v.../ or upload/ up to the extension
+                path_parts = parts[upload_index+1:]
+                if path_parts[0].startswith('v') and path_parts[0][1:].isdigit():
+                    path_parts = path_parts[1:]
+
+                file_with_ext = "/".join(path_parts)
+                public_id = file_with_ext.rsplit('.', 1)[0]
+                cloudinary.uploader.destroy(public_id)
         except Exception as e:
-            print(f"File cleanup error: {e}")
+            print(f"Cloudinary cleanup error: {e}")
 
     db.delete(news_item)
     db.commit()
