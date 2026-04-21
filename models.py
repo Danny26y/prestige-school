@@ -25,6 +25,7 @@ class Admission(Base):
     stateOfOrigin = Column(String)
     passportUrl = Column(String)  # Path to the uploaded photo
     resultsUrl = Column(String)   # Path to the uploaded PDF/Image
+    course = Column(String, default="ND Community Health") # Admitted Course
     status = Column(String, default="PENDING") # PENDING, APPROVED, REJECTED
     createdAt = Column(DateTime(timezone=True), server_default=func.now())
 

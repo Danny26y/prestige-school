@@ -210,6 +210,7 @@ async def apply_for_admission(
     fullName: str = Form(...),
     phoneNumber: str = Form(...),
     stateOfOrigin: str = Form(...),
+    course: str = Form("ND Community Health"),
     passport: UploadFile = File(...),
     results: UploadFile = File(...),
     db: Session = Depends(get_db)
@@ -256,6 +257,7 @@ async def apply_for_admission(
         fullName=fullName,
         phoneNumber=phoneNumber,
         stateOfOrigin=stateOfOrigin,
+        course=course,
         passportUrl=passport_secure_url, 
         resultsUrl=results_secure_url,   
         status="PENDING"
@@ -425,11 +427,43 @@ async def get_profile(request: Request, db: Session = Depends(get_db), current_u
 
 @app.get("/payment", response_class=HTMLResponse)
 async def get_payment_page(request: Request, db: Session = Depends(get_db), current_user: models.User = Depends(get_current_user_from_cookie)):
-    """Renders the coming soon payment portal"""
+    """Renders the payment portal with calculated fees based on admitted course"""
     if not current_user:
         return RedirectResponse(url="/login", status_code=303)
     
     if current_user.role == "admin":
         return RedirectResponse(url="/admin", status_code=303)
 
-    return templates.TemplateResponse("payment.html", {"request": request, "user": current_user})
+    application = db.query(models.Admission).filter(models.Admission.userId == current_user.id).first()
+
+    fee = 50000 # Default
+    course = "Not Selected"
+    if application:
+        course = application.course
+        if course == "ND Medical Laboratory":
+            fee = 60000
+        else:
+            fee = 50000
+
+    return templates.TemplateResponse("payment.html", {
+        "request": request,
+        "user": current_user,
+        "application": application,
+        "fee": fee,
+        "course": course
+    })
+
+@app.post("/payment/initialize")
+async def initialize_payment(request: Request, db: Session = Depends(get_db), current_user: models.User = Depends(get_current_user_from_cookie)):
+    if not current_user:
+        raise HTTPException(status_code=401, detail="Unauthorized")
+
+    application = db.query(models.Admission).filter(models.Admission.userId == current_user.id).first()
+    fee = 50000
+    if application and application.course == "ND Medical Laboratory":
+        fee = 60000
+
+    reference = f"REF-{uuid.uuid4().hex}"
+
+    # In a real scenario, you'd call Paystack API here and get an authorization URL.
+    return {"status": "success", "reference": reference, "amount": fee}
