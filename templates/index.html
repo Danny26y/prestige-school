@@ -24,6 +24,7 @@
             --text-muted: #64748b;
             --bg-light: #f8fafc;
             --white: #ffffff;
+            --sidebar-width: 280px;
         }
 
         * { box-sizing: border-box; }
@@ -31,13 +32,93 @@
         body {
             font-family: 'Inter', sans-serif;
             color: var(--text-main);
-            background-color: var(--white);
+            background-color: var(--bg-light);
             margin: 0;
             padding: 0;
-            overflow-x: hidden; /* Prevents horizontal scroll on mobile */
+            overflow-x: hidden;
+            display: flex;
         }
 
-        .container { max-width: 1200px; margin: 0 auto; padding: 0 1.5rem; }
+        /* --- Sidebar --- */
+        .sidebar {
+            width: var(--sidebar-width);
+            background: var(--white);
+            height: 100vh;
+            position: fixed;
+            top: 0;
+            left: 0;
+            border-right: 1px solid #e2e8f0;
+            display: flex;
+            flex-direction: column;
+            z-index: 1000;
+            box-shadow: 4px 0 15px rgba(0,0,0,0.03);
+            transition: transform 0.3s ease;
+        }
+
+        .sidebar-header {
+            padding: 2rem 1.5rem;
+            border-bottom: 1px solid #e2e8f0;
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            text-decoration: none;
+        }
+
+        .sidebar-header h2 {
+            color: var(--secondary);
+            font-size: 1.25rem;
+            font-weight: 800;
+            margin: 0;
+            letter-spacing: -0.02em;
+            line-height: 1.2;
+        }
+        .sidebar-header span { color: var(--primary); }
+
+        .sidebar-nav {
+            padding: 2rem 0;
+            flex-grow: 1;
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
+        }
+
+        .sidebar-link {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            padding: 1rem 2rem;
+            color: var(--text-main);
+            text-decoration: none;
+            font-weight: 600;
+            transition: all 0.2s ease;
+            border-left: 4px solid transparent;
+        }
+
+        .sidebar-link:hover, .sidebar-link.active {
+            background: #f1f5f9;
+            color: var(--primary);
+            border-left-color: var(--primary);
+        }
+
+        .sidebar-link iconify-icon {
+            font-size: 1.5rem;
+            color: var(--text-muted);
+            transition: color 0.2s ease;
+        }
+        .sidebar-link:hover iconify-icon, .sidebar-link.active iconify-icon {
+            color: var(--primary);
+        }
+
+        /* --- Main Content --- */
+        .main-content {
+            margin-left: var(--sidebar-width);
+            flex-grow: 1;
+            width: calc(100% - var(--sidebar-width));
+            display: flex;
+            flex-direction: column;
+        }
+
+        .container { max-width: 1200px; margin: 0 auto; padding: 0 2rem; width: 100%; }
 
         /* --- Animations --- */
         @keyframes fadeUp {
@@ -59,7 +140,7 @@
         .delay-2 { animation-delay: 0.3s; }
         .delay-3 { animation-delay: 0.5s; }
 
-        /* --- Header & Navigation --- */
+        /* --- Header & News Ticker --- */
         .news-ticker {
             background-color: var(--primary);
             color: var(--white);
@@ -71,34 +152,14 @@
             text-transform: uppercase;
         }
 
-        .navbar {
-            background: rgba(255, 255, 255, 0.98);
-            backdrop-filter: blur(10px);
-            border-bottom: 1px solid #e2e8f0;
-            padding: 1rem 0;
-            position: sticky;
-            top: 0;
-            z-index: 1000;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.03);
-            transition: all 0.3s ease;
-        }
-
-        .nav-container { display: flex; justify-content: space-between; align-items: center; }
-        .logo-group { display: flex; align-items: center; gap: 0.75rem; text-decoration: none; transition: transform 0.3s ease; }
-        .logo-group:hover { transform: scale(1.02); }
-        .logo-group h2 { color: var(--secondary); font-size: 1.5rem; font-weight: 800; margin: 0; letter-spacing: -0.02em; }
-        .logo-group span { color: var(--primary); }
-        .nav-links { display: flex; gap: 2rem; align-items: center; }
-
-        /* --- Hero Section (FIXED CONTRAST) --- */
+        /* --- Hero Section --- */
         .hero {
             position: relative;
-            /* Darkened overlay from 0.85 to 0.92 for extreme contrast */
-            background: linear-gradient(rgba(15, 23, 42, 0.92), rgba(15, 23, 42, 0.75)), 
+            background: linear-gradient(rgba(15, 23, 42, 0.85), rgba(15, 23, 42, 0.7)),
                         url('https://images.unsplash.com/photo-1576091160550-2173dba999ef?q=80&w=2070&auto=format&fit=crop');
             background-size: cover;
             background-position: center;
-            padding: 14rem 1.5rem 16rem;
+            padding: 8rem 0 10rem;
             color: var(--white);
             text-align: center;
             display: flex;
@@ -107,17 +168,16 @@
         }
 
         .hero h1 {
-            font-size: clamp(2.5rem, 6vw, 4.5rem);
+            font-size: clamp(2.5rem, 5vw, 4rem);
             font-weight: 800;
             line-height: 1.15;
             margin-bottom: 1.5rem;
             letter-spacing: -0.03em;
-            /* Multi-layered shadow to pull text off the background */
-            text-shadow: 0 4px 20px rgba(0, 0, 0, 0.8), 0 0 40px rgba(0,0,0,0.5);
+            text-shadow: 0 4px 20px rgba(0, 0, 0, 0.8);
         }
 
         .hero p {
-            font-size: clamp(1.1rem, 2vw, 1.25rem);
+            font-size: clamp(1.1rem, 1.5vw, 1.25rem);
             max-width: 700px;
             margin: 0 auto 3rem;
             color: #f1f5f9;
@@ -129,7 +189,7 @@
         .hero-buttons { display: flex; gap: 1.5rem; justify-content: center; }
 
         /* --- Stats Bridge --- */
-        .stats-wrapper { margin-top: -6rem; position: relative; z-index: 10; }
+        .stats-wrapper { margin-top: -4rem; position: relative; z-index: 10; padding: 0 2rem; }
         .stats-grid {
             background: var(--white);
             display: grid;
@@ -141,63 +201,85 @@
         }
 
         .stat-card { 
-            padding: 3rem 2rem; 
+            padding: 2.5rem 1.5rem;
             text-align: center; 
             border-right: 1px solid #f1f5f9; 
             transition: background 0.3s ease, transform 0.3s ease;
         }
         .stat-card:hover { background: #f8fafc; transform: translateY(-5px); }
         .stat-card:last-child { border-right: none; }
-        .stat-card iconify-icon { color: var(--primary); font-size: 3rem; margin-bottom: 1rem; transition: transform 0.3s ease; }
+        .stat-card iconify-icon { color: var(--primary); font-size: 2.5rem; margin-bottom: 1rem; transition: transform 0.3s ease; }
         .stat-card:hover iconify-icon { transform: scale(1.1); }
-        .stat-card h3 { font-size: 2.2rem; font-weight: 800; color: var(--secondary); margin-bottom: 0.25rem; letter-spacing: -0.03em; }
-        .stat-card p { font-size: 0.85rem; color: var(--text-muted); font-weight: 600; text-transform: uppercase; letter-spacing: 0.05em; }
+        .stat-card h3 { font-size: 2rem; font-weight: 800; color: var(--secondary); margin-bottom: 0.25rem; letter-spacing: -0.03em; }
+        .stat-card p { font-size: 0.8rem; color: var(--text-muted); font-weight: 600; text-transform: uppercase; letter-spacing: 0.05em; }
+
+        /* --- Sections --- */
+        .section-header { text-align: center; margin-bottom: 3.5rem; }
+        .section-header h2 { font-size: clamp(2rem, 3vw, 2.5rem); color: var(--secondary); font-weight: 800; letter-spacing: -0.03em; }
+        
+        .section-padding { padding: 6rem 0; }
+
+        /* --- Gallery Section --- */
+        .gallery-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 1.5rem;
+            padding: 0 2rem;
+        }
+        .gallery-item {
+            position: relative;
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: 0 4px 6px -1px rgba(0,0,0,0.1);
+            aspect-ratio: 4/3;
+        }
+        .gallery-item img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: transform 0.5s ease;
+        }
+        .gallery-item:hover img {
+            transform: scale(1.05);
+        }
 
         /* --- News Section --- */
-        .section-header { text-align: center; margin-bottom: 4rem; }
-        .section-header h2 { font-size: clamp(2rem, 4vw, 2.5rem); color: var(--secondary); font-weight: 800; letter-spacing: -0.03em; }
-        
-        .news-section { padding: 8rem 0; background-color: var(--bg-light); }
         .news-grid {
             display: grid;
             grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
-            gap: 2.5rem;
+            gap: 2rem;
+            padding: 0 2rem;
         }
 
         .news-card {
             background: var(--white);
-            border-radius: 16px;
+            border-radius: 12px;
             overflow: hidden;
             border: 1px solid #e2e8f0;
             display: flex;
             flex-direction: column;
             box-shadow: 0 4px 6px -1px rgba(0,0,0,0.05);
-            transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+            transition: all 0.3s ease;
         }
 
         .news-card:hover { 
-            transform: translateY(-12px); 
-            box-shadow: 0 25px 40px -10px rgba(0,0,0,0.1); 
+            transform: translateY(-8px);
+            box-shadow: 0 20px 25px -5px rgba(0,0,0,0.1);
             border-color: var(--primary); 
         }
         
         .news-img {
             width: 100%;
-            height: 220px;
+            height: 200px;
             object-fit: cover;
             border-bottom: 1px solid #e2e8f0;
-            transition: transform 0.6s ease;
         }
-        .news-card:hover .news-img { transform: scale(1.05); }
 
         .news-content {
-            padding: 2.5rem;
+            padding: 2rem;
             display: flex;
             flex-direction: column;
             flex-grow: 1;
-            background: var(--white); /* ensures img scale doesn't show behind content */
-            position: relative;
-            z-index: 2;
         }
 
         .badge {
@@ -207,7 +289,7 @@
             font-size: 0.75rem;
             font-weight: 700;
             text-transform: uppercase;
-            margin-bottom: 1.5rem;
+            margin-bottom: 1rem;
             letter-spacing: 0.05em;
         }
         .badge-urgent { background: #fee2e2; color: #ef4444; animation: pulseGlow 2s infinite; }
@@ -217,81 +299,91 @@
         .split-section {
             display: grid; 
             grid-template-columns: 1fr 1fr; 
-            gap: 6rem; 
+            gap: 4rem;
             align-items: center;
         }
 
         /* --- Buttons --- */
-        .btn-large {
-            padding: 1.25rem 2.5rem;
+        .btn {
+            padding: 1rem 2rem;
             font-size: 1rem;
             font-weight: 700;
             border-radius: 8px;
             text-decoration: none;
-            transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+            transition: all 0.3s ease;
             display: inline-flex;
             align-items: center;
             justify-content: center;
-            text-align: center;
         }
-        .btn-primary-custom { background: var(--primary); color: white; border: none; box-shadow: 0 4px 15px rgba(5, 150, 105, 0.3); }
-        .btn-primary-custom:hover { background: var(--primary-hover); transform: translateY(-3px); box-shadow: 0 12px 20px -3px rgba(5, 150, 105, 0.4); }
-
-        .btn-outline-custom { background: rgba(255,255,255,0.05); backdrop-filter: blur(5px); color: white; border: 2px solid rgba(255,255,255,0.6); }
-        .btn-outline-custom:hover { background: rgba(255,255,255,0.15); border-color: white; transform: translateY(-3px); }
+        .btn-primary { background: var(--primary); color: white; border: none; box-shadow: 0 4px 15px rgba(5, 150, 105, 0.3); }
+        .btn-primary:hover { background: var(--primary-hover); transform: translateY(-2px); box-shadow: 0 12px 20px -3px rgba(5, 150, 105, 0.4); }
 
         .btn-outline {
-            background: transparent;
-            border: 2px solid var(--primary);
-            color: var(--primary);
-            transition: all 0.3s ease;
+            background: rgba(255,255,255,0.1);
+            backdrop-filter: blur(5px);
+            color: white;
+            border: 2px solid rgba(255,255,255,0.8);
         }
         .btn-outline:hover {
-            background: var(--primary);
-            color: var(--white);
+            background: rgba(255,255,255,0.2);
+            border-color: white;
+            transform: translateY(-2px);
         }
 
         /* --- Footer --- */
-        .footer { background: var(--secondary); color: var(--white); padding: 5rem 0 2rem; }
-        .footer-grid { display: grid; grid-template-columns: 2fr 1fr 1fr; gap: 4rem; margin-bottom: 4rem; }
+        .footer { background: var(--secondary); color: var(--white); padding: 4rem 0 2rem; }
+        .footer-grid { display: grid; grid-template-columns: 2fr 1fr 1fr; gap: 3rem; margin-bottom: 3rem; padding: 0 2rem; }
         .footer h4 { color: var(--white); margin-bottom: 1.5rem; font-weight: 700; }
-        .footer p, .footer ul li { color: #94a3b8; line-height: 1.6; }
+        .footer p, .footer ul li { color: #94a3b8; line-height: 1.6; font-size: 0.95rem; }
         .footer a { color: inherit; text-decoration: none; transition: color 0.2s; }
         .footer a:hover { color: var(--primary); }
+        .footer ul { list-style: none; padding: 0; margin: 0; display: flex; flex-direction: column; gap: 0.75rem; }
+
+        /* Mobile Nav Toggle */
+        .mobile-nav-toggle {
+            display: none;
+            position: fixed;
+            top: 1rem;
+            left: 1rem;
+            z-index: 2000;
+            background: var(--primary);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            padding: 0.5rem;
+            cursor: pointer;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+        }
 
         /* ==========================================
-           MOBILE RESPONSIVENESS (MEDIA QUERIES)
+           RESPONSIVENESS (MEDIA QUERIES)
            ========================================== */
-        @media (max-width: 992px) {
-            .split-section { grid-template-columns: 1fr; gap: 4rem; }
-            .stats-grid { grid-template-columns: repeat(2, 1fr); }
-            .stat-card:nth-child(2) { border-right: none; } /* Fix borders for 2x2 grid */
-            .stat-card:nth-child(1), .stat-card:nth-child(2) { border-bottom: 1px solid #f1f5f9; }
+        @media (max-width: 1024px) {
+            :root { --sidebar-width: 240px; }
+            .split-section { grid-template-columns: 1fr; gap: 3rem; }
         }
 
         @media (max-width: 768px) {
-            .nav-container { flex-direction: column; gap: 1rem; padding: 0.5rem 0; }
-            .nav-links { width: 100%; justify-content: center; gap: 1.5rem; }
+            .mobile-nav-toggle { display: block; }
             
-            .hero { padding: 10rem 1.5rem 12rem; }
+            .sidebar {
+                transform: translateX(-100%);
+            }
+            .sidebar.open {
+                transform: translateX(0);
+            }
 
-            .hero-buttons { 
-                display: flex;
-                flex-direction: column; 
-                gap: 1rem; /* Prevents overlapping */
+            .main-content {
+                margin-left: 0;
                 width: 100%;
-                padding: 0 1.5rem;
-                box-sizing: border-box;
-            }
-            .hero-buttons .btn {
-                width: 100%; 
-                padding: 0.85rem 1rem; /* Reduces massive mobile size */
-                font-size: 1rem; 
-                text-align: center;
-                justify-content: center;
             }
 
-            .footer-grid { grid-template-columns: 1fr; gap: 3rem; text-align: center; }
+            .stats-grid { grid-template-columns: repeat(2, 1fr); }
+            .stat-card:nth-child(2) { border-right: none; }
+            .stat-card:nth-child(1), .stat-card:nth-child(2) { border-bottom: 1px solid #f1f5f9; }
+
+            .hero { padding: 6rem 1.5rem 8rem; }
+            .footer-grid { grid-template-columns: 1fr; gap: 2rem; text-align: center; }
         }
 
         @media (max-width: 480px) {
@@ -304,40 +396,62 @@
 
 <body>
 
-    <div class="news-ticker">
-        {% if latest_news %}
-            📢 Urgent Notice: {{ latest_news.title }}
-        {% else %}
-            Admission Alert: Screening Exercise for 2026/2027 Academic Session begins October 15th.
-        {% endif %}
-    </div>
+    <button class="mobile-nav-toggle" onclick="toggleSidebar()">
+        <iconify-icon icon="mdi:menu" style="font-size: 1.5rem;"></iconify-icon>
+    </button>
 
-    <nav class="navbar animate-up">
-        <div class="container nav-container">
-            <a href="/" class="logo-group">
-                <iconify-icon icon="healthicons:health-worker-form-outline" style="font-size: 2.2rem; color: var(--primary);"></iconify-icon>
-                <h2>PRESTIGE <span>NURSING</span></h2>
+    <aside class="sidebar" id="sidebar">
+        <a href="/" class="sidebar-header">
+            <iconify-icon icon="healthicons:health-worker-form-outline" style="font-size: 2.2rem; color: var(--primary);"></iconify-icon>
+            <h2>PRESTIGE<br><span>NURSING</span></h2>
+        </a>
+        <nav class="sidebar-nav">
+            <a href="/" class="sidebar-link active">
+                <iconify-icon icon="mdi:home-outline"></iconify-icon>
+                Home
             </a>
-            <div class="nav-links">
-                <a href="/login" style="text-decoration: none; color: var(--secondary); font-weight: 700; font-size: 0.95rem; transition: color 0.2s;">STUDENT PORTAL</a>
-                <a href="/register" class="btn-large btn-primary-custom" style="padding: 0.6rem 1.2rem; font-size: 0.9rem; box-shadow: none;">APPLY NOW</a>
+            <a href="#departments" class="sidebar-link">
+                <iconify-icon icon="mdi:domain"></iconify-icon>
+                Departments
+            </a>
+            <a href="#campus" class="sidebar-link">
+                <iconify-icon icon="mdi:image-multiple-outline"></iconify-icon>
+                Campus Life
+            </a>
+            <a href="#news" class="sidebar-link">
+                <iconify-icon icon="mdi:newspaper-variant-outline"></iconify-icon>
+                News & Notices
+            </a>
+            <div style="margin-top: auto; padding: 0 1.5rem; margin-bottom: 2rem;">
+                <a href="/login" class="btn btn-primary" style="width: 100%; justify-content: center; padding: 0.75rem;">
+                    <iconify-icon icon="mdi:login" style="margin-right: 0.5rem; font-size: 1.2rem;"></iconify-icon>
+                    Student Portal
+                </a>
             </div>
-        </div>
-    </nav>
+        </nav>
+    </aside>
 
-    <section class="hero">
-        <div class="container">
-            <h1 class="animate-up delay-1">Excellence in Clinical <br> Education & Care</h1>
-            <p class="animate-up delay-2">Empowering the next generation of nursing professionals with world-class facilities and expert-led training in the heart of Benue State.</p>
-            <div class="hero-buttons animate-up delay-3">
-                <a href="/register" class="btn btn-primary">Begin 2026 Application</a>
-                <a href="#news" class="btn btn-outline">View Announcements</a>
+    <main class="main-content">
+        <div class="news-ticker">
+            {% if latest_news %}
+                📢 Urgent Notice: {{ latest_news.title }}
+            {% else %}
+                Welcome to Prestige School of Nursing & Health Technology - Empowering Future Healthcare Leaders
+            {% endif %}
+        </div>
+
+        <section class="hero">
+            <div class="container">
+                <h1 class="animate-up delay-1">Excellence in Clinical <br> Education & Care</h1>
+                <p class="animate-up delay-2">Empowering the next generation of nursing professionals with world-class facilities and expert-led training in the heart of Benue State.</p>
+                <div class="hero-buttons animate-up delay-3">
+                    <a href="#campus" class="btn btn-primary">Explore Campus</a>
+                    <a href="#news" class="btn btn-outline">View Announcements</a>
+                </div>
             </div>
-        </div>
-    </section>
+        </section>
 
-    <section class="stats-wrapper animate-up delay-3">
-        <div class="container">
+        <section class="stats-wrapper animate-up delay-3">
             <div class="stats-grid">
                 <div class="stat-card">
                     <iconify-icon icon="mdi:certificate-outline"></iconify-icon>
@@ -360,85 +474,47 @@
                     <p>Skill Lab Facilities</p>
                 </div>
             </div>
-        </div>
-    </section>
+        </section>
 
-    <section class="news-section" id="news">
-        <div class="container">
+        <section class="section-padding" style="background: var(--white);" id="campus">
             <div class="section-header">
-                <h2>Academic Announcements</h2>
-                <p style="color: var(--text-muted); max-width: 600px; margin: 1rem auto 0; font-size: 1.1rem; line-height: 1.6;">Stay updated with the latest news, exam dates, and administrative notices from the college.</p>
+                <h2>Our Campus & Facilities</h2>
+                <p style="color: var(--text-muted); max-width: 600px; margin: 1rem auto 0; font-size: 1.1rem; line-height: 1.6;">Take a glimpse into the vibrant environment and state-of-the-art facilities where our students train and learn.</p>
             </div>
 
-            <div class="news-grid">
-                {% for item in news %}
-                <div class="news-card">
-                    {% if item.imageUrl %}
-                        <img src="{{ item.imageUrl }}" class="news-img" alt="News Image">
-                    {% else %}
-                        <img src="https://images.unsplash.com/photo-1584515159902-12938bccc151?q=80&w=800&auto=format&fit=crop" class="news-img" alt="Default News">
-                    {% endif %}
-
-                    <div class="news-content">
-                        <div>
-                            {% if item.is_urgent %}
-                            <span class="badge badge-urgent">Urgent Notice</span>
-                            {% else %}
-                            <span class="badge badge-info">{{ item.category or 'General' }}</span>
-                            {% endif %}
-                        </div>
-                        <h3 style="font-size: 1.4rem; margin-bottom: 1rem; color: var(--secondary); font-weight: 800; line-height: 1.3;">{{ item.title }}</h3>
-                        <p style="color: var(--text-muted); line-height: 1.7; font-size: 0.95rem; margin-bottom: 2rem;">{{ item.content[:160] }}...</p>
-                        
-                        <div style="margin-top: auto; display: flex; align-items: center; gap: 0.5rem; color: var(--text-muted); font-weight: 600; font-size: 0.85rem;">
-                            <iconify-icon icon="mdi:calendar-clock-outline" style="font-size: 1.2rem; color: var(--primary);"></iconify-icon>
-                            {{ item.created_at.strftime('%B %d, %Y') }}
-                        </div>
-                    </div>
+            <div class="gallery-grid">
+                <!-- Gallery Images -->
+                <div class="gallery-item">
+                    <img src="{{ url_for('static', path='img/1776722738390.jpg') }}" alt="Campus Image 1">
                 </div>
-                {% else %}
-                <div style="grid-column: 1/-1; text-align: center; padding: 5rem 0; background: var(--white); border-radius: 16px; border: 1px dashed #cbd5e1;">
-                    <iconify-icon icon="mdi:tray-alert" style="font-size: 4rem; color: #cbd5e1; margin-bottom: 1rem;"></iconify-icon>
-                    <p style="color: var(--text-muted); font-size: 1.1rem;">No announcements have been published yet for this session.</p>
+                <div class="gallery-item">
+                    <img src="{{ url_for('static', path='img/1776722738410.jpg') }}" alt="Campus Image 2">
                 </div>
-                {% endfor %}
-            </div>
-        </div>
-    </section>
-
-    <section style="padding: 8rem 0; border-top: 1px solid #f1f5f9; overflow: hidden;">
-        <div class="container split-section">
-            <div>
-                <h2 style="font-size: clamp(2rem, 4vw, 2.5rem); color: var(--secondary); font-weight: 800; margin-bottom: 1.5rem; letter-spacing: -0.03em;">Why Choose Prestige School of Health Technology?</h2>
-                <p style="color: var(--text-muted); line-height: 1.8; margin-bottom: 2.5rem; font-size: 1.1rem;">Our curriculum is designed to exceed national standards, blending rigorous academic theory with hands-on clinical experience. We proudly offer NBTE-approved courses including ND Community Health Technology and ND Medical Laboratory Technology.</p>
-                
-                <div style="display: grid; gap: 1.5rem;">
-                    <div style="display: flex; gap: 1.25rem; align-items: center; transition: transform 0.2s ease;">
-                        <iconify-icon icon="mdi:check-decagram" style="color: var(--primary); font-size: 2.2rem;"></iconify-icon>
-                        <span style="font-weight: 600; font-size: 1.1rem; color: var(--secondary);">NBTE Approved Programs</span>
-                    </div>
-                    <div style="display: flex; gap: 1.25rem; align-items: center; transition: transform 0.2s ease;">
-                        <iconify-icon icon="mdi:check-decagram" style="color: var(--primary); font-size: 2.2rem;"></iconify-icon>
-                        <span style="font-weight: 600; font-size: 1.1rem; color: var(--secondary);">Modern Demonstration Labs</span>
-                    </div>
-                    <div style="display: flex; gap: 1.25rem; align-items: center; transition: transform 0.2s ease;">
-                        <iconify-icon icon="mdi:check-decagram" style="color: var(--primary); font-size: 2.2rem;"></iconify-icon>
-                        <span style="font-weight: 600; font-size: 1.1rem; color: var(--secondary);">Secure & Conducive Hostel Facilities</span>
-                    </div>
+                <div class="gallery-item">
+                    <img src="{{ url_for('static', path='img/1776722738417.jpg') }}" alt="Campus Image 3">
+                </div>
+                <div class="gallery-item">
+                    <img src="{{ url_for('static', path='img/1776722738428.jpg') }}" alt="Campus Image 4">
+                </div>
+                <div class="gallery-item">
+                    <img src="{{ url_for('static', path='img/1776722738434.jpg') }}" alt="Campus Image 5">
+                </div>
+                <div class="gallery-item">
+                    <img src="{{ url_for('static', path='img/1776722738439.jpg') }}" alt="Campus Image 6">
+                </div>
+                <div class="gallery-item">
+                    <img src="{{ url_for('static', path='img/1776761084465.jpg') }}" alt="Campus Image 7">
+                </div>
+                <div class="gallery-item">
+                    <img src="{{ url_for('static', path='img/1776761084472.jpg') }}" alt="Campus Image 8">
+                </div>
+                <div class="gallery-item">
+                    <img src="{{ url_for('static', path='img/1776761084477.jpg') }}" alt="Campus Image 9">
                 </div>
             </div>
-            <div style="position: relative;">
-                <img src="https://images.unsplash.com/photo-1516549655169-df83a0774514?q=80&w=2070&auto=format&fit=crop" 
-                     style="width: 100%; border-radius: 24px; box-shadow: 0 30px 60px -12px rgba(0,0,0,0.3); border: 4px solid var(--white); transition: transform 0.5s ease;" 
-                     alt="Health Technology Students"
-                     onmouseover="this.style.transform='scale(1.02)'" 
-                     onmouseout="this.style.transform='scale(1)'">
-            </div>
-        </div>
-    </section>
+        </section>
 
-    <section style="padding: 5rem 0; background-color: var(--white);">
-        <div class="container">
+        <section class="section-padding" style="background: var(--bg-light);" id="departments">
             <div class="section-header">
                 <h2>Our Departments</h2>
                 <p style="color: var(--text-muted); max-width: 600px; margin: 1rem auto 0; font-size: 1.1rem; line-height: 1.6;">Explore our NBTE-approved programs tailored to give you the best medical and health technology education.</p>
@@ -463,17 +539,89 @@
                     </div>
                 </div>
                 {% else %}
-                <div style="grid-column: 1/-1; text-align: center; padding: 5rem 0; background: var(--bg-body); border-radius: 16px; border: 1px dashed #cbd5e1;">
-                    <iconify-icon icon="mdi:office-building-outline" style="font-size: 4rem; color: #cbd5e1; margin-bottom: 1rem;"></iconify-icon>
-                    <p style="color: var(--text-muted); font-size: 1.1rem;">Departments will be updated shortly.</p>
+                <div style="grid-column: 1/-1; text-align: center; padding: 4rem 0; background: var(--white); border-radius: 12px; border: 1px dashed #cbd5e1;">
+                    <iconify-icon icon="mdi:office-building-outline" style="font-size: 3rem; color: #cbd5e1; margin-bottom: 1rem;"></iconify-icon>
+                    <p style="color: var(--text-muted); font-size: 1rem;">Departments will be updated shortly.</p>
                 </div>
                 {% endfor %}
             </div>
-        </div>
-    </section>
+        </section>
 
-    <footer class="footer">
-        <div class="container">
+        <section class="section-padding" style="background: var(--white);" id="news">
+            <div class="section-header">
+                <h2>Academic Announcements</h2>
+                <p style="color: var(--text-muted); max-width: 600px; margin: 1rem auto 0; font-size: 1.1rem; line-height: 1.6;">Stay updated with the latest news, exam dates, and administrative notices from the college.</p>
+            </div>
+
+            <div class="news-grid">
+                {% for item in news %}
+                <div class="news-card">
+                    {% if item.imageUrl %}
+                        <img src="{{ item.imageUrl }}" class="news-img" alt="News Image">
+                    {% else %}
+                        <img src="https://images.unsplash.com/photo-1584515159902-12938bccc151?q=80&w=800&auto=format&fit=crop" class="news-img" alt="Default News">
+                    {% endif %}
+
+                    <div class="news-content">
+                        <div>
+                            {% if item.is_urgent %}
+                            <span class="badge badge-urgent">Urgent Notice</span>
+                            {% else %}
+                            <span class="badge badge-info">{{ item.category or 'General' }}</span>
+                            {% endif %}
+                        </div>
+                        <h3 style="font-size: 1.3rem; margin-bottom: 1rem; color: var(--secondary); font-weight: 800; line-height: 1.3;">{{ item.title }}</h3>
+                        <p style="color: var(--text-muted); line-height: 1.6; font-size: 0.9rem; margin-bottom: 1.5rem;">{{ item.content[:140] }}...</p>
+                        
+                        <div style="margin-top: auto; display: flex; align-items: center; gap: 0.5rem; color: var(--text-muted); font-weight: 600; font-size: 0.85rem;">
+                            <iconify-icon icon="mdi:calendar-clock-outline" style="font-size: 1.1rem; color: var(--primary);"></iconify-icon>
+                            {{ item.created_at.strftime('%B %d, %Y') }}
+                        </div>
+                    </div>
+                </div>
+                {% else %}
+                <div style="grid-column: 1/-1; text-align: center; padding: 4rem 0; background: var(--bg-light); border-radius: 12px; border: 1px dashed #cbd5e1;">
+                    <iconify-icon icon="mdi:tray-alert" style="font-size: 3rem; color: #cbd5e1; margin-bottom: 1rem;"></iconify-icon>
+                    <p style="color: var(--text-muted); font-size: 1rem;">No announcements have been published yet.</p>
+                </div>
+                {% endfor %}
+            </div>
+
+            <div style="text-align: center; margin-top: 3rem;">
+                <a href="/news" class="btn btn-outline" style="color: var(--primary); border-color: var(--primary);">View All Announcements</a>
+            </div>
+        </section>
+
+        <section class="section-padding" style="background: var(--bg-light); border-top: 1px solid #e2e8f0;">
+            <div class="container split-section">
+                <div>
+                    <h2 style="font-size: clamp(2rem, 3vw, 2.5rem); color: var(--secondary); font-weight: 800; margin-bottom: 1.5rem; letter-spacing: -0.03em;">Why Choose Prestige?</h2>
+                    <p style="color: var(--text-muted); line-height: 1.8; margin-bottom: 2.5rem; font-size: 1.05rem;">Our curriculum is designed to exceed national standards, blending rigorous academic theory with hands-on clinical experience. We proudly offer NBTE-approved courses.</p>
+
+                    <div style="display: grid; gap: 1.25rem;">
+                        <div style="display: flex; gap: 1rem; align-items: center;">
+                            <iconify-icon icon="mdi:check-decagram" style="color: var(--primary); font-size: 1.8rem;"></iconify-icon>
+                            <span style="font-weight: 600; font-size: 1.05rem; color: var(--secondary);">NBTE Approved Programs</span>
+                        </div>
+                        <div style="display: flex; gap: 1rem; align-items: center;">
+                            <iconify-icon icon="mdi:check-decagram" style="color: var(--primary); font-size: 1.8rem;"></iconify-icon>
+                            <span style="font-weight: 600; font-size: 1.05rem; color: var(--secondary);">Modern Demonstration Labs</span>
+                        </div>
+                        <div style="display: flex; gap: 1rem; align-items: center;">
+                            <iconify-icon icon="mdi:check-decagram" style="color: var(--primary); font-size: 1.8rem;"></iconify-icon>
+                            <span style="font-weight: 600; font-size: 1.05rem; color: var(--secondary);">Secure & Conducive Hostels</span>
+                        </div>
+                    </div>
+                </div>
+                <div style="position: relative;">
+                    <img src="https://images.unsplash.com/photo-1516549655169-df83a0774514?q=80&w=2070&auto=format&fit=crop"
+                         style="width: 100%; border-radius: 16px; box-shadow: 0 20px 40px -10px rgba(0,0,0,0.2); border: 4px solid var(--white);"
+                         alt="Health Technology Students">
+                </div>
+            </div>
+        </section>
+
+        <footer class="footer">
             <div class="footer-grid">
                 <div>
                     <h4 style="font-size: 1.5rem; letter-spacing: -0.02em;">PRESTIGE <span style="color: var(--primary);">HEALTH TECH</span></h4>
@@ -481,11 +629,11 @@
                 </div>
                 <div>
                     <h4>Quick Links</h4>
-                    <ul style="list-style: none; padding: 0;">
-                        <li><a href="/login">Portal Login</a></li>
-                        <li><a href="/register">Admission Guide</a></li>
-                        <li><a href="#">NMCN Accreditation</a></li>
-                        <li><a href="#">Contact Support</a></li>
+                    <ul>
+                        <li><a href="/login">Student Portal</a></li>
+                        <li><a href="#campus">Campus Facilities</a></li>
+                        <li><a href="#departments">Academic Departments</a></li>
+                        <li><a href="#news">Latest News</a></li>
                     </ul>
                 </div>
                 <div>
@@ -495,11 +643,38 @@
                     +234 (0) 800 PRESTIGE</p>
                 </div>
             </div>
-            <div style="border-top: 1px solid rgba(255,255,255,0.1); padding-top: 2rem; text-align: center; color: #64748b; font-size: 0.85rem;">
+            <div style="border-top: 1px solid rgba(255,255,255,0.1); padding-top: 2rem; text-align: center; color: #64748b; font-size: 0.85rem; margin: 0 2rem;">
                 &copy; 2026 Prestige School of Nursing Benue. Developed for Academic Excellence.
             </div>
-        </div>
-    </footer>
+        </footer>
+    </main>
 
+    <script>
+        // Simple sidebar toggle for mobile
+        function toggleSidebar() {
+            document.getElementById('sidebar').classList.toggle('open');
+        }
+
+        // Highlight active sidebar link based on scroll position (simplified)
+        const sections = document.querySelectorAll("section[id]");
+        const navLinks = document.querySelectorAll(".sidebar-nav .sidebar-link[href^='#']");
+
+        window.addEventListener("scroll", () => {
+            let current = "";
+            sections.forEach(section => {
+                const sectionTop = section.offsetTop;
+                if (scrollY >= sectionTop - 100) {
+                    current = section.getAttribute("id");
+                }
+            });
+
+            navLinks.forEach(link => {
+                link.classList.remove("active");
+                if (link.getAttribute("href") === `#${current}`) {
+                    link.classList.add("active");
+                }
+            });
+        });
+    </script>
 </body>
 </html>
