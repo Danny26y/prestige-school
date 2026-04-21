@@ -217,6 +217,7 @@
                     <p id="verifiedNameDisplay">JAMB Verified! Complete your registration below.</p>
                 </div>
 
+                <h4 style="margin: 0 0 1rem 0; color: var(--secondary); border-bottom: 1px solid var(--input-border); padding-bottom: 0.5rem;">Basic Information</h4>
                 <div class="form-group">
                     <label for="fullName" class="form-label">Full Name</label>
                     <div class="input-icon-wrapper">
@@ -241,6 +242,50 @@
                     </div>
                 </div>
 
+                <h4 style="margin: 1.5rem 0 1rem 0; color: var(--secondary); border-bottom: 1px solid var(--input-border); padding-bottom: 0.5rem;">Personal Details</h4>
+                <div class="form-group">
+                    <label for="gender" class="form-label">Gender</label>
+                    <div class="input-icon-wrapper select-wrapper">
+                        <iconify-icon icon="mdi:gender-male-female"></iconify-icon>
+                        <select id="gender" name="gender" class="form-input" required>
+                            <option value="">Select Gender</option>
+                            <option value="Male">Male</option>
+                            <option value="Female">Female</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label for="religion" class="form-label">Religion</label>
+                    <div class="input-icon-wrapper select-wrapper">
+                        <iconify-icon icon="mdi:hands-pray"></iconify-icon>
+                        <select id="religion" name="religion" class="form-input" required>
+                            <option value="">Select Religion</option>
+                            <option value="Christianity">Christianity</option>
+                            <option value="Islam">Islam</option>
+                            <option value="Traditional">Traditional</option>
+                            <option value="Other">Other</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label for="ethnicity" class="form-label">Ethnicity</label>
+                    <div class="input-icon-wrapper">
+                        <iconify-icon icon="mdi:account-group-outline"></iconify-icon>
+                        <input type="text" id="ethnicity" name="ethnicity" class="form-input" placeholder="e.g. Tiv, Idoma, Igbo" required>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label for="address" class="form-label">Residential Address</label>
+                    <div class="input-icon-wrapper">
+                        <iconify-icon icon="mdi:home-outline"></iconify-icon>
+                        <input type="text" id="address" name="address" class="form-input" placeholder="Full residential address" required>
+                    </div>
+                </div>
+
+                <h4 style="margin: 1.5rem 0 1rem 0; color: var(--secondary); border-bottom: 1px solid var(--input-border); padding-bottom: 0.5rem;">Origin Details</h4>
                 <div class="form-group">
                     <label for="stateOfOrigin" class="form-label">State of Origin</label>
                     <div class="input-icon-wrapper select-wrapper">
@@ -260,6 +305,40 @@
                     </div>
                 </div>
 
+                <div class="form-group">
+                    <label for="lga_of_origin" class="form-label">LGA of Origin</label>
+                    <div class="input-icon-wrapper">
+                        <iconify-icon icon="mdi:map-marker-radius-outline"></iconify-icon>
+                        <input type="text" id="lga_of_origin" name="lga_of_origin" class="form-input" placeholder="Local Government Area" required>
+                    </div>
+                </div>
+
+                <h4 style="margin: 1.5rem 0 1rem 0; color: var(--secondary); border-bottom: 1px solid var(--input-border); padding-bottom: 0.5rem;">Next of Kin Details</h4>
+                <div class="form-group">
+                    <label for="next_of_kin_name" class="form-label">Next of Kin Full Name</label>
+                    <div class="input-icon-wrapper">
+                        <iconify-icon icon="mdi:account-tie-outline"></iconify-icon>
+                        <input type="text" id="next_of_kin_name" name="next_of_kin_name" class="form-input" placeholder="Surname First" required>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label for="next_of_kin_phone" class="form-label">Next of Kin Phone</label>
+                    <div class="input-icon-wrapper">
+                        <iconify-icon icon="mdi:phone-in-talk-outline"></iconify-icon>
+                        <input type="text" id="next_of_kin_phone" name="next_of_kin_phone" class="form-input" placeholder="08012345678" required>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label for="next_of_kin_address" class="form-label">Next of Kin Address</label>
+                    <div class="input-icon-wrapper">
+                        <iconify-icon icon="mdi:home-city-outline"></iconify-icon>
+                        <input type="text" id="next_of_kin_address" name="next_of_kin_address" class="form-input" placeholder="Full residential address" required>
+                    </div>
+                </div>
+
+                <h4 style="margin: 1.5rem 0 1rem 0; color: var(--secondary); border-bottom: 1px solid var(--input-border); padding-bottom: 0.5rem;">Account Security</h4>
                 <div class="form-group">
                     <label for="password" class="form-label">Create Password</label>
                     <div class="input-icon-wrapper">

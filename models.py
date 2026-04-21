@@ -22,7 +22,22 @@ class Admission(Base):
     userId = Column(String, ForeignKey("User.id"))
     fullName = Column(String)
     phoneNumber = Column(String)
+
+    # New Personal Fields
+    gender = Column(String, nullable=True)
+    religion = Column(String, nullable=True)
+    ethnicity = Column(String, nullable=True)
+    address = Column(Text, nullable=True)
+
+    # Origin Fields
     stateOfOrigin = Column(String)
+    lga_of_origin = Column(String, nullable=True)
+
+    # Next of Kin Fields
+    next_of_kin_name = Column(String, nullable=True)
+    next_of_kin_phone = Column(String, nullable=True)
+    next_of_kin_address = Column(Text, nullable=True)
+
     passportUrl = Column(String)  # Path to the uploaded photo
     resultsUrl = Column(String)   # Path to the uploaded PDF/Image
     course = Column(String, default="ND Community Health") # Admitted Course
