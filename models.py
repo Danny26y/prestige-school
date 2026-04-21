@@ -63,6 +63,7 @@ class VerifiedJAMB(Base):
     id = Column(Integer, primary_key=True, index=True)
     jamb_no = Column(String, unique=True, index=True, nullable=False)
     full_name = Column(String, nullable=False)
+    course = Column(String, nullable=True)
     created_at = Column(DateTime, default=lambda: datetime.now(timezone.utc))
 
 class Department(Base):

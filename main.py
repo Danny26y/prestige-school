@@ -245,6 +245,7 @@ async def register_candidate(
         next_of_kin_address=next_of_kin_address,
         passportUrl=passport_upload.get('secure_url'),
         resultsUrl=results_upload.get('secure_url'),
+        course=is_verified.course if is_verified.course else "ND Community Health",
         status="PENDING"
     )
     db.add(new_admission)
@@ -422,9 +423,10 @@ async def import_jamb_list(file: UploadFile = File(...), db: Session = Depends(g
             continue
         jamb_no = str(raw_jamb_no).strip().upper()
         full_name = row.get('full_name') or row.get('candidate name') or row.get('name', '')
+        course = row.get('course_name') or row.get('course', '')
 
         if not db.query(models.VerifiedJAMB).filter_by(jamb_no=jamb_no).first():
-            new_entry = models.VerifiedJAMB(jamb_no=jamb_no, full_name=full_name)
+            new_entry = models.VerifiedJAMB(jamb_no=jamb_no, full_name=full_name, course=course)
             db.add(new_entry)
             count += 1
     db.commit()
