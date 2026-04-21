@@ -141,23 +141,68 @@ def verify_jamb_endpoint(jamb_no: str = Form(...), db: Session = Depends(get_db)
     return {"status": "success", "full_name": is_verified.full_name, "jamb_no": is_verified.jamb_no}
 
 @app.post("/register")
-def register_candidate(
+async def register_candidate(
     email: str = Form(...),
     jamb_no: str = Form(...),
     password: str = Form(...),
+    fullName: str = Form(...),
+    phoneNumber: str = Form(...),
+    stateOfOrigin: str = Form(...),
+    passport: UploadFile = File(...),
+    results: UploadFile = File(...),
     db: Session = Depends(get_db)
 ):
-    """Verifies JAMB eligibility before allowing registration"""
+    """Verifies JAMB eligibility, handles file uploads, and creates user + admission record."""
     jamb_no_upper = jamb_no.strip().upper()
 
+    # 1. Verify JAMB eligibility
     is_verified = db.query(models.VerifiedJAMB).filter(models.VerifiedJAMB.jamb_no == jamb_no_upper).first()
     if not is_verified:
         raise HTTPException(status_code=403, detail="JAMB Number not found in official list.")
 
+    # 2. Check for existing user
     existing_user = db.query(models.User).filter((models.User.email == email) | (models.User.jamb_reg_no == jamb_no_upper)).first()
     if existing_user:
         raise HTTPException(status_code=400, detail="Account already exists.")
 
+    # 3. Validate files
+    ALLOWED_TYPES = ["image/jpeg", "image/png", "application/pdf"]
+    MAX_SIZE = 2 * 1024 * 1024 # 2MB
+
+    for file_obj, name in [(passport, "Passport"), (results, "Results")]:
+        if file_obj.content_type not in ALLOWED_TYPES:
+            raise HTTPException(status_code=400, detail=f"Invalid file type for {name}. Allowed types: JPEG, PNG, PDF.")
+
+        file_obj.file.seek(0, 2)
+        size = file_obj.file.tell()
+        file_obj.file.seek(0)
+
+        if size > MAX_SIZE:
+            raise HTTPException(status_code=400, detail=f"{name} file size exceeds 2MB limit.")
+
+    try:
+        # 4. Upload to Cloudinary
+        passport_upload = cloudinary.uploader.upload(
+            passport.file,
+            folder="prestige_passports",
+            resource_type="image"
+        )
+
+        # Results could be pdf or image
+        resource_type = "image"
+        if results.content_type == "application/pdf":
+            resource_type = "raw"
+
+        results_upload = cloudinary.uploader.upload(
+            results.file,
+            folder="prestige_results",
+            resource_type=resource_type
+        )
+    except Exception as e:
+        print(f"Cloudinary upload error: {e}")
+        raise HTTPException(status_code=500, detail="Failed to upload files. Please try again.")
+
+    # 5. Create User and Admission
     salt = bcrypt.gensalt()
     hashed_password = bcrypt.hashpw(password.encode('utf-8'), salt).decode('utf-8')
 
@@ -168,10 +213,33 @@ def register_candidate(
         passwordHash=hashed_password,
         role="student"
     )
-
     db.add(new_user)
-    db.commit()
-    return {"status": "success", "message": f"Welcome, {is_verified.full_name}!"}
+    db.flush() # flush to get the user ID
+
+    new_admission = models.Admission(
+        userId=new_user.id,
+        fullName=fullName,
+        phoneNumber=phoneNumber,
+        stateOfOrigin=stateOfOrigin,
+        passportUrl=passport_upload.get('secure_url'),
+        resultsUrl=results_upload.get('secure_url'),
+        status="PENDING"
+    )
+    db.add(new_admission)
+
+    try:
+        db.commit()
+    except Exception as e:
+        db.rollback()
+        # Clean up uploaded files if DB commit fails
+        try:
+            cloudinary.uploader.destroy(passport_upload.get('public_id'))
+            cloudinary.uploader.destroy(results_upload.get('public_id'), resource_type=resource_type)
+        except:
+            pass
+        raise HTTPException(status_code=500, detail="Failed to create account due to a database error.")
+
+    return {"status": "success", "message": f"Welcome, {is_verified.full_name}! Application submitted."}
 
 @app.post("/login")
 def login(email: str = Form(...), password: str = Form(...), db: Session = Depends(get_db)):
@@ -427,18 +495,7 @@ async def delete_news(
     db.delete(news_item)
     db.commit()
     return RedirectResponse(url="/admin/news", status_code=303)
-@app.get("/apply", response_class=HTMLResponse)
-async def get_apply_page(request: Request, db: Session = Depends(get_db), current_user: models.User = Depends(get_current_user_from_cookie)):
-    # Block unauthorized access
-    if not current_user:
-        return RedirectResponse(url="/login", status_code=303)
-    
-    # Block if they already applied
-    existing_app = db.query(models.Admission).filter(models.Admission.userId == current_user.id).first()
-    if existing_app:
-        return RedirectResponse(url="/dashboard", status_code=303)
 
-    return templates.TemplateResponse("apply.html", {"request": request, "user": current_user})
 
 # --- DIAGNOSTICS ---
 
