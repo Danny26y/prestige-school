@@ -49,3 +49,12 @@ class VerifiedJAMB(Base):
     jamb_no = Column(String, unique=True, index=True, nullable=False)
     full_name = Column(String, nullable=False)
     created_at = Column(DateTime, default=lambda: datetime.now(timezone.utc))
+
+class Department(Base):
+    __tablename__ = "Department"
+
+    id = Column(String, primary_key=True, default=lambda: str(uuid.uuid4()))
+    name = Column(String, nullable=False)
+    description = Column(Text, nullable=True)
+    head_of_department = Column(String, nullable=True)
+    imageUrl = Column(String, nullable=True)

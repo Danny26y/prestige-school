@@ -409,13 +409,13 @@
     <section style="padding: 8rem 0; border-top: 1px solid #f1f5f9; overflow: hidden;">
         <div class="container split-section">
             <div>
-                <h2 style="font-size: clamp(2rem, 4vw, 2.5rem); color: var(--secondary); font-weight: 800; margin-bottom: 1.5rem; letter-spacing: -0.03em;">Why Choose Prestige School of Nursing?</h2>
-                <p style="color: var(--text-muted); line-height: 1.8; margin-bottom: 2.5rem; font-size: 1.1rem;">Our curriculum is designed to exceed national standards, blending rigorous academic theory with hands-on clinical experience in Nigeria's leading teaching hospitals.</p>
+                <h2 style="font-size: clamp(2rem, 4vw, 2.5rem); color: var(--secondary); font-weight: 800; margin-bottom: 1.5rem; letter-spacing: -0.03em;">Why Choose Prestige School of Health Technology?</h2>
+                <p style="color: var(--text-muted); line-height: 1.8; margin-bottom: 2.5rem; font-size: 1.1rem;">Our curriculum is designed to exceed national standards, blending rigorous academic theory with hands-on clinical experience. We proudly offer NBTE-approved courses including ND Community Health Technology and ND Medical Laboratory Technology.</p>
                 
                 <div style="display: grid; gap: 1.5rem;">
                     <div style="display: flex; gap: 1.25rem; align-items: center; transition: transform 0.2s ease;">
                         <iconify-icon icon="mdi:check-decagram" style="color: var(--primary); font-size: 2.2rem;"></iconify-icon>
-                        <span style="font-weight: 600; font-size: 1.1rem; color: var(--secondary);">Standardized NMCN Curriculum</span>
+                        <span style="font-weight: 600; font-size: 1.1rem; color: var(--secondary);">NBTE Approved Programs</span>
                     </div>
                     <div style="display: flex; gap: 1.25rem; align-items: center; transition: transform 0.2s ease;">
                         <iconify-icon icon="mdi:check-decagram" style="color: var(--primary); font-size: 2.2rem;"></iconify-icon>
@@ -430,9 +430,44 @@
             <div style="position: relative;">
                 <img src="https://images.unsplash.com/photo-1516549655169-df83a0774514?q=80&w=2070&auto=format&fit=crop" 
                      style="width: 100%; border-radius: 24px; box-shadow: 0 30px 60px -12px rgba(0,0,0,0.3); border: 4px solid var(--white); transition: transform 0.5s ease;" 
-                     alt="Nursing Students"
+                     alt="Health Technology Students"
                      onmouseover="this.style.transform='scale(1.02)'" 
                      onmouseout="this.style.transform='scale(1)'">
+            </div>
+        </div>
+    </section>
+
+    <section style="padding: 5rem 0; background-color: var(--white);">
+        <div class="container">
+            <div class="section-header">
+                <h2>Our Departments</h2>
+                <p style="color: var(--text-muted); max-width: 600px; margin: 1rem auto 0; font-size: 1.1rem; line-height: 1.6;">Explore our NBTE-approved programs tailored to give you the best medical and health technology education.</p>
+            </div>
+            <div class="news-grid">
+                {% for dept in departments %}
+                <div class="news-card">
+                    {% if dept.imageUrl %}
+                        <img src="{{ dept.imageUrl }}" class="news-img" alt="{{ dept.name }}">
+                    {% else %}
+                        <img src="https://images.unsplash.com/photo-1576091160550-2173dba999ef?q=80&w=800&auto=format&fit=crop" class="news-img" alt="Default Department Image">
+                    {% endif %}
+                    <div class="news-content">
+                        <h3 style="font-size: 1.4rem; margin-bottom: 1rem; color: var(--secondary); font-weight: 800; line-height: 1.3;">{{ dept.name }}</h3>
+                        <p style="color: var(--text-muted); line-height: 1.7; font-size: 0.95rem; margin-bottom: 2rem;">{{ dept.description }}</p>
+                        {% if dept.head_of_department %}
+                        <div style="margin-top: auto; display: flex; align-items: center; gap: 0.5rem; color: var(--text-muted); font-weight: 600; font-size: 0.85rem;">
+                            <iconify-icon icon="mdi:account-tie" style="font-size: 1.2rem; color: var(--primary);"></iconify-icon>
+                            HOD: {{ dept.head_of_department }}
+                        </div>
+                        {% endif %}
+                    </div>
+                </div>
+                {% else %}
+                <div style="grid-column: 1/-1; text-align: center; padding: 5rem 0; background: var(--bg-body); border-radius: 16px; border: 1px dashed #cbd5e1;">
+                    <iconify-icon icon="mdi:office-building-outline" style="font-size: 4rem; color: #cbd5e1; margin-bottom: 1rem;"></iconify-icon>
+                    <p style="color: var(--text-muted); font-size: 1.1rem;">Departments will be updated shortly.</p>
+                </div>
+                {% endfor %}
             </div>
         </div>
     </section>
@@ -441,8 +476,8 @@
         <div class="container">
             <div class="footer-grid">
                 <div>
-                    <h4 style="font-size: 1.5rem; letter-spacing: -0.02em;">PRESTIGE <span style="color: var(--primary);">NURSING</span></h4>
-                    <p>The premier nursing institution in Benue State, dedicated to producing compassionate and competent healthcare leaders.</p>
+                    <h4 style="font-size: 1.5rem; letter-spacing: -0.02em;">PRESTIGE <span style="color: var(--primary);">HEALTH TECH</span></h4>
+                    <p>The premier health technology institution in Benue State, dedicated to producing compassionate and competent healthcare leaders.</p>
                 </div>
                 <div>
                     <h4>Quick Links</h4>

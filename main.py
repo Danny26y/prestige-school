@@ -84,11 +84,15 @@ async def home(request: Request, db: Session = Depends(get_db)):
     latest_news = db.query(models.News).filter(models.News.is_urgent == True).order_by(
         models.News.created_at.desc()
     ).first()
+
+    # Fetch departments
+    departments = db.query(models.Department).all()
     
     return templates.TemplateResponse("index.html", {
         "request": request, 
         "news": news_list, 
-        "latest_news": latest_news
+        "latest_news": latest_news,
+        "departments": departments
     })
 
 @app.get("/login", response_class=HTMLResponse)
