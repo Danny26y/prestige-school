@@ -1,0 +1,327 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>News Archive | Prestige School of Health Technology</title>
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+
+    <script src="https://code.iconify.design/iconify-icon/1.0.7/iconify-icon.min.js"></script>
+
+    <link rel="stylesheet" href="{{ url_for('static', path='/css/style.css') }}">
+
+    <style>
+        :root {
+            --primary: #059669; /* Medical Teal */
+            --primary-hover: #047857;
+            --secondary: #0f172a; /* Deep Navy */
+            --text-main: #1e293b;
+            --text-muted: #64748b;
+            --bg-light: #f8fafc;
+            --white: #ffffff;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            color: var(--text-main);
+            background-color: var(--bg-light);
+            margin: 0;
+            padding: 0;
+        }
+
+        .container { max-width: 1200px; margin: 0 auto; padding: 0 1.5rem; }
+
+        @keyframes pulseGlow {
+            0% { box-shadow: 0 0 0 0 rgba(239, 68, 68, 0.4); }
+            70% { box-shadow: 0 0 0 10px rgba(239, 68, 68, 0); }
+            100% { box-shadow: 0 0 0 0 rgba(239, 68, 68, 0); }
+        }
+
+        .badge {
+            display: inline-block;
+            padding: 0.35rem 1rem;
+            border-radius: 99px;
+            font-size: 0.75rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            margin-bottom: 1rem;
+        }
+        .badge-urgent { background: #fee2e2; color: #ef4444; animation: pulseGlow 2s infinite; }
+        .badge-info { background: #ecfdf5; color: var(--primary); }
+
+        .navbar {
+            background-color: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            border-bottom: 1px solid rgba(0,0,0,0.05);
+            padding: 1rem 0;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+        .nav-container { display: flex; justify-content: space-between; align-items: center; }
+        .logo-group { display: flex; align-items: center; gap: 0.75rem; text-decoration: none; }
+        .logo-group h2 { margin: 0; color: var(--secondary); font-size: 1.4rem; font-weight: 800; letter-spacing: -0.02em; }
+        .logo-group span { color: var(--primary); }
+        .nav-links { display: flex; gap: 2rem; align-items: center; }
+        .nav-links a { text-decoration: none; color: var(--secondary); font-weight: 700; font-size: 0.95rem; transition: color 0.2s; }
+        .nav-links a:hover { color: var(--primary); }
+
+        .page-header {
+            background-color: var(--secondary);
+            color: var(--white);
+            padding: 4rem 0;
+            text-align: center;
+        }
+        .page-header h1 {
+            font-size: 2.5rem;
+            font-weight: 800;
+            margin-bottom: 1rem;
+            letter-spacing: -0.02em;
+        }
+        .page-header p {
+            color: #94a3b8;
+            font-size: 1.1rem;
+            max-width: 600px;
+            margin: 0 auto;
+            line-height: 1.6;
+        }
+
+        .news-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+            gap: 2.5rem;
+            padding: 4rem 0;
+        }
+
+        .news-card {
+            background: var(--white);
+            border-radius: 16px;
+            overflow: hidden;
+            box-shadow: 0 10px 25px -5px rgba(0,0,0,0.05);
+            border: 1px solid rgba(0,0,0,0.03);
+            display: flex;
+            flex-direction: column;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+        .news-card:hover {
+            transform: translateY(-8px);
+            box-shadow: 0 20px 40px -10px rgba(0,0,0,0.1);
+        }
+
+        .news-img {
+            width: 100%;
+            height: 220px;
+            object-fit: cover;
+            border-bottom: 1px solid #f1f5f9;
+        }
+
+        .news-content {
+            padding: 2rem;
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .news-content h3 {
+            font-size: 1.3rem;
+            margin-bottom: 1rem;
+            color: var(--secondary);
+            font-weight: 800;
+            line-height: 1.4;
+        }
+
+        .news-content p {
+            color: var(--text-muted);
+            line-height: 1.7;
+            font-size: 0.95rem;
+            margin-bottom: 2rem;
+        }
+
+        .news-meta {
+            margin-top: auto;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            color: var(--text-muted);
+            font-weight: 600;
+            font-size: 0.85rem;
+        }
+
+        .pagination {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 1.5rem;
+            padding-bottom: 4rem;
+        }
+
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0.8rem 1.5rem;
+            font-size: 0.95rem;
+            font-weight: 700;
+            border-radius: 8px;
+            text-decoration: none;
+            transition: all 0.2s ease;
+            cursor: pointer;
+            border: none;
+        }
+
+        .btn-primary {
+            background-color: var(--primary);
+            color: var(--white);
+            box-shadow: 0 4px 6px -1px rgba(5, 150, 105, 0.3);
+        }
+        .btn-primary:hover {
+            background-color: var(--primary-hover);
+            transform: translateY(-2px);
+        }
+
+        .btn-disabled {
+            background-color: #cbd5e1;
+            color: #f1f5f9;
+            cursor: not-allowed;
+            pointer-events: none;
+            box-shadow: none;
+        }
+
+        .page-indicator {
+            font-weight: 600;
+            color: var(--secondary);
+            font-size: 1rem;
+        }
+
+        .footer {
+            background-color: var(--secondary);
+            color: var(--white);
+            padding: 4rem 0 2rem;
+            border-top: 5px solid var(--primary);
+        }
+        .footer-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 3rem;
+            margin-bottom: 3rem;
+        }
+        .footer p { color: #94a3b8; line-height: 1.8; margin-top: 1.5rem; font-size: 0.95rem; }
+
+        @media (max-width: 768px) {
+            .nav-links { display: none; }
+            .page-header h1 { font-size: 2rem; }
+        }
+    </style>
+</head>
+
+<body>
+
+    <nav class="navbar">
+        <div class="container nav-container">
+            <a href="/" class="logo-group">
+                <iconify-icon icon="healthicons:health-worker-form-outline" style="font-size: 2.2rem; color: var(--primary);"></iconify-icon>
+                <h2>PRESTIGE <span>HEALTH TECH</span></h2>
+            </a>
+            <div class="nav-links">
+                <a href="/">Home</a>
+                <a href="/login">Student Portal</a>
+            </div>
+        </div>
+    </nav>
+
+    <header class="page-header">
+        <div class="container">
+            <h1>News & Announcements</h1>
+            <p>Stay informed with the latest updates, circulars, and events from the Prestige School of Health Technology.</p>
+        </div>
+    </header>
+
+    <main class="container">
+        <div class="news-grid">
+            {% for item in news %}
+            <div class="news-card">
+                {% if item.imageUrl %}
+                    <img src="{{ item.imageUrl }}" class="news-img" alt="{{ item.title }}">
+                {% else %}
+                    <img src="https://images.unsplash.com/photo-1584515159902-12938bccc151?q=80&w=800&auto=format&fit=crop" class="news-img" alt="Default News Image">
+                {% endif %}
+
+                <div class="news-content">
+                    <div>
+                        {% if item.is_urgent %}
+                        <span class="badge badge-urgent">Urgent Notice</span>
+                        {% else %}
+                        <span class="badge badge-info">{{ item.category or 'General' }}</span>
+                        {% endif %}
+                    </div>
+                    <h3>{{ item.title }}</h3>
+                    <p>{{ item.content[:150] }}{% if item.content|length > 150 %}...{% endif %}</p>
+
+                    <div class="news-meta">
+                        <iconify-icon icon="mdi:calendar-clock-outline" style="font-size: 1.2rem; color: var(--primary);"></iconify-icon>
+                        {{ item.created_at.strftime('%B %d, %Y') }}
+                    </div>
+                </div>
+            </div>
+            {% else %}
+            <div style="grid-column: 1/-1; text-align: center; padding: 5rem 0; background: var(--white); border-radius: 16px; border: 1px dashed #cbd5e1;">
+                <iconify-icon icon="mdi:newspaper-variant-outline" style="font-size: 4rem; color: #cbd5e1; margin-bottom: 1rem;"></iconify-icon>
+                <p style="color: var(--text-muted); font-size: 1.1rem;">No announcements found.</p>
+            </div>
+            {% endfor %}
+        </div>
+
+        {% if total_pages > 1 %}
+        <div class="pagination">
+            {% if page > 1 %}
+            <a href="/news?page={{ page - 1 }}" class="btn btn-primary">
+                <iconify-icon icon="mdi:arrow-left"></iconify-icon> Previous
+            </a>
+            {% else %}
+            <button class="btn btn-disabled" disabled>
+                <iconify-icon icon="mdi:arrow-left"></iconify-icon> Previous
+            </button>
+            {% endif %}
+
+            <span class="page-indicator">Page {{ page }} of {{ total_pages }}</span>
+
+            {% if page < total_pages %}
+            <a href="/news?page={{ page + 1 }}" class="btn btn-primary">
+                Next <iconify-icon icon="mdi:arrow-right"></iconify-icon>
+            </a>
+            {% else %}
+            <button class="btn btn-disabled" disabled>
+                Next <iconify-icon icon="mdi:arrow-right"></iconify-icon>
+            </button>
+            {% endif %}
+        </div>
+        {% endif %}
+    </main>
+
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-grid">
+                <div>
+                    <h4 style="font-size: 1.5rem; letter-spacing: -0.02em; margin: 0;">PRESTIGE <span style="color: var(--primary);">HEALTH TECH</span></h4>
+                    <p>The premier health technology institution in Benue State, dedicated to producing compassionate and competent healthcare leaders.</p>
+                </div>
+                <div>
+                    <h4 style="margin: 0 0 1rem 0;">Contact Us</h4>
+                    <p style="margin:0;">Benue State, Nigeria<br>
+                    support@prestigehealth.edu.ng<br>
+                    +234 (0) 800 PRESTIGE</p>
+                </div>
+            </div>
+            <div style="border-top: 1px solid rgba(255,255,255,0.1); padding-top: 2rem; text-align: center; color: #94a3b8; font-size: 0.85rem;">
+                &copy; 2026 Prestige School of Health Technology Benue. Developed for Academic Excellence.
+            </div>
+        </div>
+    </footer>
+
+</body>
+</html>

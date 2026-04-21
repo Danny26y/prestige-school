@@ -9,6 +9,7 @@ import os
 import uuid
 import csv
 import io
+import math
 from datetime import datetime, timedelta, timezone
 import jwt
 
@@ -93,6 +94,29 @@ async def home(request: Request, db: Session = Depends(get_db)):
         "news": news_list, 
         "latest_news": latest_news,
         "departments": departments
+    })
+
+@app.get("/news", response_class=HTMLResponse)
+async def news_archive(request: Request, page: int = 1, db: Session = Depends(get_db)):
+    """Dedicated News Archive Page with Pagination"""
+    limit = 6
+    offset = (page - 1) * limit
+
+    # Count total
+    total_news = db.query(models.News).count()
+    total_pages = math.ceil(total_news / limit) if total_news > 0 else 1
+
+    # Fetch paginated items, prioritizing urgent
+    news_list = db.query(models.News).order_by(
+        models.News.is_urgent.desc(),
+        models.News.created_at.desc()
+    ).offset(offset).limit(limit).all()
+
+    return templates.TemplateResponse("news_archive.html", {
+        "request": request,
+        "news": news_list,
+        "page": page,
+        "total_pages": total_pages
     })
 
 @app.get("/login", response_class=HTMLResponse)
