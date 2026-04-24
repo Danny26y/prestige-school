@@ -40,81 +40,6 @@
             display: flex;
         }
 
-        /* --- Sidebar --- */
-        .sidebar {
-            width: var(--sidebar-width);
-            background: var(--white);
-            height: 100vh;
-            position: fixed;
-            top: 0;
-            left: 0;
-            border-right: 1px solid #e2e8f0;
-            display: flex;
-            flex-direction: column;
-            z-index: 1000;
-            box-shadow: 4px 0 15px rgba(0,0,0,0.03);
-            transition: transform 0.3s ease;
-            transform: translateX(-100%);
-        }
-
-        .sidebar.open {
-            transform: translateX(0);
-        }
-
-        .sidebar-header {
-            padding: 2rem 1.5rem;
-            border-bottom: 1px solid #e2e8f0;
-            display: flex;
-            align-items: center;
-            gap: 0.75rem;
-            text-decoration: none;
-        }
-
-        .sidebar-header h2 {
-            color: var(--secondary);
-            font-size: 1.25rem;
-            font-weight: 800;
-            margin: 0;
-            letter-spacing: -0.02em;
-            line-height: 1.2;
-        }
-        .sidebar-header span { color: var(--primary); }
-
-        .sidebar-nav {
-            padding: 2rem 0;
-            flex-grow: 1;
-            display: flex;
-            flex-direction: column;
-            gap: 0.5rem;
-        }
-
-        .sidebar-link {
-            display: flex;
-            align-items: center;
-            gap: 1rem;
-            padding: 1rem 2rem;
-            color: var(--text-main);
-            text-decoration: none;
-            font-weight: 600;
-            transition: all 0.2s ease;
-            border-left: 4px solid transparent;
-        }
-
-        .sidebar-link:hover, .sidebar-link.active {
-            background: #f1f5f9;
-            color: var(--primary);
-            border-left-color: var(--primary);
-        }
-
-        .sidebar-link iconify-icon {
-            font-size: 1.5rem;
-            color: var(--text-muted);
-            transition: color 0.2s ease;
-        }
-        .sidebar-link:hover iconify-icon, .sidebar-link.active iconify-icon {
-            color: var(--primary);
-        }
-
         /* --- Main Content --- */
         .main-content {
             margin-left: 0;
@@ -145,55 +70,6 @@
         .delay-1 { animation-delay: 0.1s; }
         .delay-2 { animation-delay: 0.3s; }
         .delay-3 { animation-delay: 0.5s; }
-
-        /* --- Header & News Ticker --- */
-        .news-ticker {
-            background-color: var(--primary);
-            color: var(--white);
-            padding: 0.75rem 0;
-            font-size: 0.85rem;
-            text-align: center;
-            font-weight: 600;
-            letter-spacing: 0.05em;
-            text-transform: uppercase;
-        }
-
-        /* --- Hero Section --- */
-        .hero {
-            position: relative;
-            background: linear-gradient(rgba(15, 23, 42, 0.85), rgba(15, 23, 42, 0.7)),
-                        url('{{ url_for("static", path="/img/1776761084472.jpg") }}');
-            background-size: cover;
-            background-position: center;
-            padding: 8rem 0 10rem;
-            color: var(--white);
-            text-align: center;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-        }
-
-        .hero h1 {
-            font-size: clamp(2.5rem, 5vw, 4rem);
-            font-weight: 800;
-            line-height: 1.15;
-            margin-bottom: 1.5rem;
-            letter-spacing: -0.03em;
-            text-shadow: 0 4px 20px rgba(0, 0, 0, 0.8);
-            color: var(--white);
-        }
-
-        .hero p {
-            font-size: clamp(1.1rem, 1.5vw, 1.25rem);
-            max-width: 700px;
-            margin: 0 auto 3rem;
-            color: #f1f5f9;
-            font-weight: 400;
-            line-height: 1.7;
-            text-shadow: 0 2px 10px rgba(0, 0, 0, 0.6);
-        }
-
-        .hero-buttons { display: flex; gap: 1.5rem; justify-content: center; }
 
         /* --- Stats Bridge --- */
         .stats-wrapper { margin-top: -4rem; position: relative; z-index: 10; padding: 0 2rem; }
@@ -346,27 +222,6 @@
         .footer a:hover { color: var(--primary); }
         .footer ul { list-style: none; padding: 0; margin: 0; display: flex; flex-direction: column; gap: 0.75rem; }
 
-        /* Mobile Nav Toggle */
-        .mobile-nav-toggle {
-            display: block;
-            position: fixed;
-            top: 1rem;
-            left: 1rem;
-            z-index: 2000;
-            background: var(--primary);
-            color: white;
-            border: none;
-            border-radius: 8px;
-            padding: 0.5rem;
-            cursor: pointer;
-            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
-            transition: transform 0.2s ease, background 0.2s ease;
-        }
-        .mobile-nav-toggle:hover {
-            transform: scale(1.05);
-            background: var(--primary-hover);
-        }
-
         /* ==========================================
            RESPONSIVENESS (MEDIA QUERIES)
            ========================================== */
@@ -380,7 +235,7 @@
             .stat-card:nth-child(2) { border-right: none; }
             .stat-card:nth-child(1), .stat-card:nth-child(2) { border-bottom: 1px solid #f1f5f9; }
 
-            .hero { padding: 6rem 1.5rem 8rem; }
+            .hero-slider { height: 60vh; min-height: 400px; }
             .footer-grid { grid-template-columns: 1fr; gap: 2rem; text-align: center; }
         }
 
@@ -390,64 +245,221 @@
             .stat-card:last-child { border-bottom: none; }
         }
     </style>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&display=swap');
+
+        .utility-bar {
+            background: var(--secondary);
+            color: var(--white);
+            padding: 0.5rem 2rem;
+            display: flex;
+            justify-content: flex-end;
+            gap: 1.5rem;
+            font-size: 0.85rem;
+            font-weight: 500;
+        }
+        .utility-bar a {
+            color: var(--white);
+            text-decoration: none;
+            transition: color 0.2s ease;
+        }
+        .utility-bar a:hover { color: var(--primary); }
+
+        .main-nav {
+            background: var(--white);
+            padding: 1rem 2rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 1px solid #e2e8f0;
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+            box-shadow: 0 4px 6px -1px rgba(0,0,0,0.05);
+        }
+        .nav-brand {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            text-decoration: none;
+        }
+        .nav-brand h2 {
+            color: var(--secondary);
+            font-size: 1.25rem;
+            font-weight: 800;
+            margin: 0;
+            line-height: 1.2;
+        }
+        .nav-brand span { color: var(--primary); }
+
+        .nav-links {
+            display: flex;
+            gap: 2rem;
+            align-items: center;
+        }
+        .nav-item {
+            position: relative;
+            color: var(--secondary);
+            text-decoration: none;
+            font-weight: 600;
+            font-size: 1rem;
+            padding: 0.5rem 0;
+            transition: color 0.2s ease;
+            cursor: pointer;
+        }
+        .nav-item:hover { color: var(--primary); }
+
+        .nav-dropdown {
+            display: none;
+            position: absolute;
+            top: 100%;
+            left: 0;
+            background: var(--white);
+            min-width: 200px;
+            box-shadow: 0 10px 15px -3px rgba(0,0,0,0.1);
+            border-radius: 8px;
+            padding: 0.5rem 0;
+            z-index: 100;
+        }
+        .nav-item:hover .nav-dropdown {
+            display: block;
+        }
+        .nav-dropdown a {
+            display: block;
+            padding: 0.75rem 1.5rem;
+            color: var(--text-main);
+            text-decoration: none;
+            font-weight: 500;
+            transition: background 0.2s;
+        }
+        .nav-dropdown a:hover {
+            background: #f1f5f9;
+            color: var(--primary);
+        }
+
+        .hero-slider {
+            position: relative;
+            height: 80vh;
+            min-height: 500px;
+            overflow: hidden;
+            background: var(--secondary);
+        }
+        .slide {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            opacity: 0;
+            transition: opacity 1s ease-in-out;
+            background-size: cover;
+            background-position: center;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+        }
+        .slide::before {
+            content: '';
+            position: absolute;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background: linear-gradient(rgba(15, 23, 42, 0.85), rgba(15, 23, 42, 0.7));
+        }
+        .slide.active { opacity: 1; z-index: 1; }
+        .slide-content {
+            position: relative;
+            z-index: 2;
+            color: white;
+            max-width: 900px;
+            padding: 0 2rem;
+        }
+        .slide-content h1 {
+            font-family: 'Outfit', 'Google Sans', sans-serif;
+            font-size: clamp(3rem, 6vw, 5rem);
+            font-weight: 800;
+            line-height: 1.1;
+            margin-bottom: 1.5rem;
+            color: white;
+        }
+        .slide-content p {
+            font-size: clamp(1.1rem, 1.5vw, 1.25rem);
+            color: #e2e8f0;
+            margin-bottom: 2.5rem;
+        }
+    </style>
 </head>
 
 <body>
 
-    <button class="mobile-nav-toggle" onclick="toggleSidebar()">
-        <iconify-icon icon="mdi:menu" style="font-size: 1.5rem;"></iconify-icon>
-    </button>
+    <div class="utility-bar">
+        <a href="/login">Portal</a>
+        <a href="#webmail">Webmail</a>
+        <a href="#staff">Staff</a>
+    </div>
 
-    <aside class="sidebar" id="sidebar">
-        <a href="/" class="sidebar-header">
+    <nav class="main-nav">
+        <a href="/" class="nav-brand">
             <img src="{{ url_for('static', path='/img/prestige_logo.png') }}" style="height: 40px; width: auto;" alt="Prestige Logo">
             <h2>PRESTIGE<br><span>NURSING</span></h2>
         </a>
-        <nav class="sidebar-nav">
-            <a href="/" class="sidebar-link active">
-                <iconify-icon icon="mdi:home-outline"></iconify-icon>
-                Home
-            </a>
-            <a href="#departments" class="sidebar-link">
-                <iconify-icon icon="mdi:domain"></iconify-icon>
-                Departments
-            </a>
-            <a href="#campus" class="sidebar-link">
-                <iconify-icon icon="mdi:image-multiple-outline"></iconify-icon>
-                Campus Life
-            </a>
-            <a href="#news" class="sidebar-link">
-                <iconify-icon icon="mdi:newspaper-variant-outline"></iconify-icon>
-                News & Notices
-            </a>
-            <div style="margin-top: auto; padding: 0 1.5rem; margin-bottom: 2rem;">
-                <a href="/login" class="btn btn-primary" style="width: 100%; justify-content: center; padding: 0.75rem;">
-                    <iconify-icon icon="mdi:login" style="margin-right: 0.5rem; font-size: 1.2rem;"></iconify-icon>
-                    Student Portal
-                </a>
-            </div>
-        </nav>
-    </aside>
-
-    <main class="main-content">
-        <div class="news-ticker">
-            {% if latest_news %}
-                📢 Urgent Notice: {{ latest_news.title }}
-            {% else %}
-                Welcome to Prestige School of Nursing & Health Technology - Empowering Future Healthcare Leaders
-            {% endif %}
-        </div>
-
-        <section class="hero">
-            <div class="container">
-                <h1 class="animate-up delay-1">Excellence in Clinical <br> Education & Care</h1>
-                <p class="animate-up delay-2">Empowering the next generation of nursing professionals with world-class facilities and expert-led training in the heart of Benue State.</p>
-                <div class="hero-buttons animate-up delay-3">
-                    <a href="#campus" class="btn btn-primary">Explore Campus</a>
-                    <a href="#news" class="btn btn-outline">View Announcements</a>
+        <div class="nav-links">
+            <div class="nav-item">
+                Academic Depts
+                <div class="nav-dropdown">
+                    <a href="#departments">All Departments</a>
+                    <a href="#departments">Nursing Sciences</a>
+                    <a href="#departments">Health Technology</a>
                 </div>
             </div>
-        </section>
+            <div class="nav-item">
+                Admissions
+                <div class="nav-dropdown">
+                    <a href="/register">Apply Now</a>
+                    <a href="#requirements">Requirements</a>
+                </div>
+            </div>
+            <div class="nav-item">
+                Campus Life
+                <div class="nav-dropdown">
+                    <a href="#campus">Facilities</a>
+                    <a href="#hostels">Hostels</a>
+                </div>
+            </div>
+            <a href="/login" class="btn btn-primary" style="padding: 0.5rem 1.5rem;">Student Portal</a>
+        </div>
+    </nav>
+
+    <main class="main-content">
+        <div class="hero-slider" id="home">
+            <div class="slide active" style="background-image: url('{{ url_for("static", path="/img/1776761084472.jpg") }}');">
+                <div class="slide-content">
+                    <h1 class="animate-up delay-1">Excellence in Clinical <br> Education & Care</h1>
+                    <p class="animate-up delay-2">Empowering the next generation of nursing professionals with world-class facilities and expert-led training in the heart of Benue State.</p>
+                    <div class="hero-buttons animate-up delay-3">
+                        <a href="#campus" class="btn btn-primary">Explore Campus</a>
+                        <a href="#news" class="btn btn-outline">View Announcements</a>
+                    </div>
+                </div>
+            </div>
+            <div class="slide" style="background-image: url('{{ url_for("static", path="/img/1776722738434.jpg") }}');">
+                <div class="slide-content">
+                    <h1>State-of-the-Art <br> Demonstration Labs</h1>
+                    <p>Train in fully equipped, modern laboratories that simulate real-world clinical environments.</p>
+                    <div class="hero-buttons">
+                        <a href="#departments" class="btn btn-primary">Our Programs</a>
+                    </div>
+                </div>
+            </div>
+            <div class="slide" style="background-image: url('{{ url_for("static", path="/img/1776722738390.jpg") }}');">
+                <div class="slide-content">
+                    <h1>A Vibrant Campus <br> Community</h1>
+                    <p>Experience a secure, supportive, and engaging campus life designed for academic success.</p>
+                    <div class="hero-buttons">
+                        <a href="/register" class="btn btn-primary">Apply Now</a>
+                    </div>
+                </div>
+            </div>
+        </div>
 
         <section class="stats-wrapper animate-up delay-3">
             <div class="stats-grid">
@@ -631,10 +643,17 @@
     </main>
 
     <script>
-        // Simple sidebar toggle for mobile
-        function toggleSidebar() {
-            document.getElementById('sidebar').classList.toggle('open');
+        // Auto-playing slider logic
+        const slides = document.querySelectorAll('.slide');
+        let currentSlide = 0;
+
+        function nextSlide() {
+            slides[currentSlide].classList.remove('active');
+            currentSlide = (currentSlide + 1) % slides.length;
+            slides[currentSlide].classList.add('active');
         }
+
+        setInterval(nextSlide, 5000);
 
         // Highlight active sidebar link based on scroll position (simplified)
         const sections = document.querySelectorAll("section[id]");
