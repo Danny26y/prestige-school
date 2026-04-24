@@ -276,14 +276,21 @@
         @import url('https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&display=swap');
 
         .utility-bar {
-            background: var(--secondary);
+            background: var(--deep-navy, #0A192F);
             color: var(--white);
-            padding: 0.5rem 2rem;
+            height: 40px;
+            padding: 0 2rem;
             display: flex;
-            justify-content: flex-end;
+            justify-content: space-between;
+            align-items: center;
+            font-size: 0.75rem;
+            font-weight: 600;
+            letter-spacing: 0.05em;
+        }
+        .utility-right {
+            display: flex;
             gap: 1.5rem;
-            font-size: 0.85rem;
-            font-weight: 500;
+            align-items: center;
         }
         .utility-bar a {
             color: var(--white);
@@ -310,17 +317,28 @@
             gap: 0.75rem;
             text-decoration: none;
         }
-        .nav-brand h2 {
+        .nav-brand-text {
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+        }
+        .nav-brand-text h2 {
             color: var(--secondary);
             font-size: 1.25rem;
             font-weight: 800;
             margin: 0;
-            line-height: 1.2;
+            line-height: 1.1;
             display: flex;
             align-items: center;
             gap: 0.25rem;
         }
-        .nav-brand span { color: var(--primary); }
+        .nav-brand-text h2 span { color: var(--primary); }
+        .nav-brand-subtitle {
+            font-size: 0.75rem;
+            color: var(--text-muted);
+            font-weight: 500;
+            margin-top: 0.1rem;
+        }
 
         .nav-links {
             display: flex;
@@ -429,40 +447,33 @@
 <body>
 
     <div class="utility-bar">
-        <a href="/login">Portal</a>
-        <a href="#webmail">Webmail</a>
-        <a href="#staff">Staff</a>
+        <div id="dynamic-date">Friday, April 24, 2026</div>
+        <div class="utility-right">
+            <a href="#donations">Donations</a>
+            <a href="#alumni">Alumni</a>
+            <a href="/login" style="display: flex; align-items: center; gap: 0.25rem;">
+                <iconify-icon icon="mdi:lock-outline" style="font-size: 1rem;"></iconify-icon>
+                SIGN IN
+            </a>
+        </div>
     </div>
 
     <nav class="main-nav">
         <a href="/" class="nav-brand">
             <img src="{{ url_for('static', path='/img/prestige_logo.png') }}" style="height: 45px; width: auto;" alt="Prestige Logo">
-            <h2>PRESTIGE <span>NURSING</span></h2>
+            <div class="nav-brand-text">
+                <h2>PRESTIGE <span>NURSING</span></h2>
+                <div class="nav-brand-subtitle">Akoodo, Wannune, Benue State</div>
+            </div>
         </a>
         <div class="nav-links">
-            <div class="nav-item">
-                Academic Depts
-                <div class="nav-dropdown">
-                    <a href="#departments">All Departments</a>
-                    <a href="#departments">Nursing Sciences</a>
-                    <a href="#departments">Health Technology</a>
-                </div>
-            </div>
-            <div class="nav-item">
-                Admissions
-                <div class="nav-dropdown">
-                    <a href="/register">Apply Now</a>
-                    <a href="#requirements">Requirements</a>
-                </div>
-            </div>
-            <div class="nav-item">
-                Campus Life
-                <div class="nav-dropdown">
-                    <a href="#campus">Facilities</a>
-                    <a href="#hostels">Hostels</a>
-                </div>
-            </div>
-            <a href="/login" class="btn btn-primary" style="padding: 0.5rem 1.5rem;">Student Portal</a>
+            <a href="#about" class="nav-item">ABOUT US</a>
+            <a href="#departments" class="nav-item">PROGRAMMES</a>
+            <a href="/register" class="nav-item">ADMISSIONS</a>
+            <a href="#academics" class="nav-item">ACADEMICS</a>
+            <a href="#staff" class="nav-item">STAFF</a>
+            <a href="#contact" class="nav-item">CONTACT</a>
+            <iconify-icon icon="mdi:magnify" style="font-size: 1.5rem; color: var(--secondary); cursor: pointer; margin-left: 0.5rem;"></iconify-icon>
         </div>
     </nav>
 
