@@ -523,7 +523,58 @@
             </div>
         </section>
 
-        <section class="section-padding" style="background: var(--medical-white);" id="facilities">
+        <section class="section-padding" style="background: var(--medical-white);" id="studying">
+            <div class="section-header">
+                <h2>Studying at Prestige</h2>
+                <p style="color: var(--text-muted); max-width: 600px; margin: 1rem auto 0; font-size: 1.1rem; line-height: 1.6;">Discover pathways to achieving your professional healthcare goals with our flexible programs.</p>
+            </div>
+
+            <div class="container" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 2rem;">
+                <div class="card" style="text-align: center; border-top: 4px solid var(--primary);">
+                    <iconify-icon icon="mdi:school-outline" style="font-size: 3rem; color: var(--primary); margin-bottom: 1rem;"></iconify-icon>
+                    <h3>Undergraduate Admissions</h3>
+                    <p style="color: var(--text-muted); margin-bottom: 1.5rem; font-size: 0.95rem;">Join our regular NBTE-approved ND/HND programs for full-time campus learning.</p>
+                    <a href="/register" class="btn btn-outline" style="border-color: var(--primary); color: var(--primary);">Apply Now</a>
+                </div>
+                <div class="card" style="text-align: center; border-top: 4px solid var(--burnished-gold);">
+                    <iconify-icon icon="mdi:laptop-mac" style="font-size: 3rem; color: var(--burnished-gold); margin-bottom: 1rem;"></iconify-icon>
+                    <h3>Distance Learning</h3>
+                    <p style="color: var(--text-muted); margin-bottom: 1.5rem; font-size: 0.95rem;">Flexible online coursework designed for working healthcare professionals.</p>
+                    <a href="#" class="btn btn-outline" style="border-color: var(--burnished-gold); color: var(--burnished-gold);">Explore Options</a>
+                </div>
+                <div class="card" style="text-align: center; border-top: 4px solid var(--deep-navy);">
+                    <iconify-icon icon="mdi:certificate-outline" style="font-size: 3rem; color: var(--deep-navy); margin-bottom: 1rem;"></iconify-icon>
+                    <h3>License Courses</h3>
+                    <p style="color: var(--text-muted); margin-bottom: 1.5rem; font-size: 0.95rem;">Short-term preparatory courses for national licensing and certification exams.</p>
+                    <a href="#" class="btn btn-outline" style="border-color: var(--deep-navy); color: var(--deep-navy);">View Courses</a>
+                </div>
+            </div>
+        </section>
+
+        <section class="section-padding" style="background: var(--bg-light);" id="message">
+            <div class="container split-section">
+                <div style="position: relative;">
+                    <img src="https://images.unsplash.com/photo-1559839734-2b71ea197ec2?q=80&w=800&auto=format&fit=crop"
+                         style="width: 100%; border-radius: 16px; border: 1px solid var(--border-color);"
+                         alt="Principal Message">
+                    <div style="position: absolute; bottom: -2rem; right: -2rem; background: var(--white); padding: 1.5rem; border-radius: 12px; border: 1px solid var(--border-color);">
+                        <h4 style="margin: 0; font-size: 1.2rem;">Dr. A. Emmanuel</h4>
+                        <p style="margin: 0; color: var(--primary); font-weight: 600; font-size: 0.9rem;">Provost / Principal</p>
+                    </div>
+                </div>
+                <div style="padding-left: 2rem;">
+                    <h2 style="font-size: clamp(2rem, 3vw, 2.5rem); margin-bottom: 1.5rem;">Commandant's Message</h2>
+                    <p style="font-size: 1.2rem; font-style: italic; color: var(--secondary); font-family: 'Playfair Display', serif; border-left: 4px solid var(--primary); padding-left: 1.5rem; margin-bottom: 2rem;">
+                        "To transform Prestige into a Global Centre of Health Excellence, nurturing minds that will revolutionize patient care across Africa and beyond."
+                    </p>
+                    <p style="color: var(--text-muted); line-height: 1.8;">
+                        Welcome to Prestige School of Health Technology. We are committed to rigorous academic standards, cutting-edge clinical practice, and the holistic development of our students. Our graduates are equipped not just with knowledge, but with the compassion and ethical grounding required to excel in modern healthcare.
+                    </p>
+                </div>
+            </div>
+        </section>
+
+        <section class="section-padding" style="background: var(--white);" id="facilities">
             <div class="section-header">
                 <h2>Academic Facilities</h2>
                 <p style="color: var(--text-muted); max-width: 600px; margin: 1rem auto 0; font-size: 1.1rem; line-height: 1.6;">Take a glimpse into the vibrant environment and state-of-the-art facilities where our students train and learn.</p>
@@ -657,6 +708,21 @@
                     <img src="{{ url_for('static', path='/img/1776722738434.jpg') }}"
                          style="width: 100%; border-radius: 16px; box-shadow: 0 20px 40px -10px rgba(0,0,0,0.2); border: 4px solid var(--white);"
                          alt="Health Technology Students">
+                </div>
+            </div>
+        </section>
+
+        <section class="section-padding" style="background: var(--deep-navy); color: var(--white); text-align: center;" id="video-tour">
+            <div class="container">
+                <h2 style="color: var(--white); margin-bottom: 1rem;">Experience Prestige Campus</h2>
+                <p style="color: #cbd5e1; max-width: 600px; margin: 0 auto 3rem;">Take a virtual tour of our state-of-the-art facilities, modern hostels, and vibrant student community.</p>
+
+                <div style="position: relative; padding-bottom: 56.25%; height: 0; overflow: hidden; max-width: 900px; margin: 0 auto; border-radius: 16px; border: 1px solid rgba(255,255,255,0.1); background: #000;">
+                    <!-- Placeholder for actual YouTube/Vimeo embed -->
+                    <div style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; display: flex; align-items: center; justify-content: center; flex-direction: column; background: rgba(0,0,0,0.5);">
+                        <iconify-icon icon="mdi:play-circle-outline" style="font-size: 5rem; color: var(--white); cursor: pointer; transition: transform 0.2s;"></iconify-icon>
+                        <p style="margin-top: 1rem; color: #94a3b8;">Click to watch campus tour</p>
+                    </div>
                 </div>
             </div>
         </section>
