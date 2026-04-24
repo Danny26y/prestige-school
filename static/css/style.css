@@ -1,19 +1,22 @@
+@import url('https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400..900;1,400..900&display=swap');
+
 :root {
-  /* Medical Theme Colors */
-  --deep-navy: #0f2942;
-  --medical-teal: #0d9488;
-  --teal-hover: #0f766e;
-  --medical-white: #f8fafc;
+  /* High-Tier Academic Theme Colors */
+  --deep-navy: #0A192F;
+  --medical-teal: #065F46;
+  --teal-hover: #047857;
+  --medical-white: #F1F5F9;
   --pure-white: #ffffff;
   --text-main: #334155;
   --text-light: #64748b;
   --border-color: #e2e8f0;
   --error: #ef4444;
   --success: #10b981;
+  --burnished-gold: #B8860B;
   
-  --shadow-sm: 0 1px 2px 0 rgb(0 0 0 / 0.05);
-  --shadow-md: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
-  --shadow-lg: 0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1);
+  --shadow-sm: none;
+  --shadow-md: none;
+  --shadow-lg: none;
 }
 
 * {
@@ -34,8 +37,9 @@ body {
 
 /* Typography */
 h1, h2, h3, h4, h5, h6 {
+  font-family: 'Playfair Display', serif;
   color: var(--deep-navy);
-  font-weight: 600;
+  font-weight: 700;
   margin-bottom: 1rem;
 }
 
@@ -65,14 +69,13 @@ a:hover {
   padding: 1.5rem;
 }
 
-/* Cards & Glassmorphism */
+/* Cards & Layering */
 .card {
   background: var(--pure-white);
   border-radius: 12px;
-  box-shadow: var(--shadow-lg);
   padding: 2rem;
   width: 100%;
-  border: 1px solid rgba(255, 255, 255, 0.2);
+  border: 1px solid var(--border-color);
 }
 
 /* Form Elements */
@@ -219,11 +222,11 @@ a:hover {
   background: var(--pure-white);
   padding: 1.5rem;
   border-radius: 12px;
-  box-shadow: var(--shadow-sm);
+  border: 1px solid var(--border-color);
   display: flex;
   align-items: center;
   justify-content: space-between;
-  border-left: 4px solid var(--medical-teal);
+  border-left: 4px solid var(--burnished-gold);
 }
 
 .status-title {
@@ -285,7 +288,6 @@ a:hover {
 .table-container {
   background: var(--pure-white);
   border-radius: 12px;
-  box-shadow: var(--shadow-sm);
   overflow: hidden;
   border: 1px solid var(--border-color);
 }

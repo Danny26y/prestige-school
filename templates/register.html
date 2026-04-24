@@ -3,15 +3,11 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Student Registration - Prestige School of Nursing</title>
-    
+    <title>Register | Prestige School of Nursing</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
-    
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
     <script src="https://code.iconify.design/iconify-icon/1.0.7/iconify-icon.min.js"></script>
-    <link rel="stylesheet" href="{{ url_for('static', path='/css/style.css') }}">
-    
     <style>
         :root {
             --primary: #059669;
@@ -19,72 +15,60 @@
             --secondary: #0f172a;
             --text-main: #1e293b;
             --text-muted: #64748b;
-            --bg-body: #f1f5f9;
+            --bg-body: #f8fafc;
             --white: #ffffff;
             --input-border: #cbd5e1;
         }
 
-        body { 
-            background-color: var(--bg-body); 
+        body {
             font-family: 'Inter', sans-serif;
+            background-color: var(--bg-body);
             margin: 0;
+            padding: 0;
             display: flex;
-            align-items: center;
             justify-content: center;
+            align-items: center;
             min-height: 100vh;
             color: var(--text-main);
         }
 
-        /* --- Split Screen Card --- */
         .login-wrapper {
             display: flex;
-            width: 100%;
-            max-width: 1000px;
             background: var(--white);
-            border-radius: 24px;
+            border-radius: 20px;
             box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.15);
             overflow: hidden;
+            width: 100%;
+            max-width: 900px;
             margin: 2rem;
-            animation: fadeUp 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+            min-height: 600px;
         }
 
-        @keyframes fadeUp {
-            from { opacity: 0; transform: translateY(20px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
-
-        /* --- Left Side: Branding/Image --- */
+        /* --- Left Sidebar --- */
         .login-sidebar {
-            flex: 1.2;
-            background: linear-gradient(rgba(15, 23, 42, 0.85), rgba(5, 150, 105, 0.85)), 
-                        url('https://images.unsplash.com/photo-1576091160550-2173dba999ef?q=80&w=2070&auto=format&fit=crop');
-            background-size: cover;
-            background-position: center;
-            padding: 4rem 3rem;
+            background: linear-gradient(135deg, rgba(15, 23, 42, 0.95), rgba(15, 23, 42, 0.85)),
+                        url('https://images.unsplash.com/photo-1584515933487-779824d29309?q=80&w=800&auto=format&fit=crop') center/cover;
             color: var(--white);
+            padding: 3.5rem;
+            width: 45%;
             display: flex;
             flex-direction: column;
             justify-content: center;
+            position: relative;
         }
 
-        .login-sidebar h2 { font-size: 2.5rem; font-weight: 800; margin-bottom: 1rem; line-height: 1.2; letter-spacing: -0.03em; }
-        .login-sidebar p { font-size: 1.1rem; line-height: 1.6; color: #e2e8f0; margin-bottom: 2rem; }
+        .login-sidebar h2 { font-size: 2.2rem; font-weight: 800; margin-bottom: 1rem; line-height: 1.2; letter-spacing: -0.03em; }
+        .login-sidebar p { color: #cbd5e1; font-size: 1.05rem; line-height: 1.6; margin-bottom: 2rem; }
 
         .back-home {
-            display: inline-flex;
-            align-items: center;
-            gap: 0.5rem;
-            color: var(--white);
-            text-decoration: none;
-            font-weight: 500;
-            font-size: 0.95rem;
-            opacity: 0.8;
-            transition: opacity 0.2s;
-            margin-top: auto;
+            position: absolute; top: 2rem; left: 2rem;
+            color: rgba(255,255,255,0.8); text-decoration: none;
+            display: flex; align-items: center; gap: 0.5rem;
+            font-size: 0.9rem; font-weight: 600; transition: color 0.2s;
         }
-        .back-home:hover { opacity: 1; }
+        .back-home:hover { color: var(--white); }
 
-        /* --- Right Side: Form --- */
+        /* --- Right Form Area --- */
         .login-form-area {
             flex: 1;
             padding: 3.5rem;
@@ -92,6 +76,8 @@
             flex-direction: column;
             justify-content: center;
             background: var(--white);
+            max-height: 90vh; /* make scrollable if tall */
+            overflow-y: auto;
         }
 
         .login-header { margin-bottom: 2rem; text-align: center; }
@@ -114,8 +100,27 @@
             transition: all 0.3s ease;
             box-sizing: border-box;
         }
+        .form-input[type="file"] {
+            padding: 0.6rem 1rem 0.6rem 3rem; /* slightly less vertical padding for file inputs */
+            font-size: 0.9rem;
+        }
         .form-input:focus { outline: none; border-color: var(--primary); box-shadow: 0 0 0 4px rgba(5, 150, 105, 0.1); }
         .form-input:focus + iconify-icon, .input-icon-wrapper:focus-within iconify-icon { color: var(--primary); }
+
+        select.form-input { appearance: none; }
+
+        /* Select Dropdown Arrow */
+        .select-wrapper { position: relative; }
+        .select-wrapper::after {
+            content: "▼";
+            font-size: 0.7rem;
+            color: #94a3b8;
+            position: absolute;
+            right: 1.2rem;
+            top: 50%;
+            transform: translateY(-50%);
+            pointer-events: none;
+        }
 
         .info-box {
             background: #ecfdf5;
@@ -152,11 +157,16 @@
         .auth-links a span { color: var(--primary); }
         .auth-links a:hover { color: var(--primary); }
 
+        .form-footer { margin-top: 2rem; text-align: center; font-size: 0.8rem; color: var(--text-muted); }
+
+        .spin { animation: spin 1s linear infinite; }
+        @keyframes spin { 100% { transform: rotate(360deg); } }
+
         @media (max-width: 768px) {
             .login-wrapper { flex-direction: column; max-width: 450px; margin: 1rem; }
             .login-sidebar { display: none; }
-            .login-form-area { padding: 3rem 2rem; }
-            .back-home { display: inline-flex; color: var(--text-muted); margin-bottom: 2rem; justify-content: center; }
+            .login-form-area { padding: 3rem 2rem; max-height: none; }
+            .back-home { display: inline-flex; color: var(--text-muted); margin-bottom: 2rem; justify-content: center; position: static; }
         }
     </style>
 </head>
@@ -179,21 +189,40 @@
             </a>
 
             <div class="login-header">
-                <h3>Create Account</h3>
+                <h3>Create Account & Apply</h3>
                 <p>Register using your approved JAMB Number</p>
             </div>
 
-            <div class="info-box">
+            <div class="info-box" id="infoBoxInitial">
                 <iconify-icon icon="mdi:information-outline"></iconify-icon>
                 <p>You must have a verified JAMB Registration Number on the ICT clearance list to create an account.</p>
             </div>
 
-            <form id="registerForm">
+            <form id="verifyForm">
                 <div class="form-group">
-                    <label for="jamb_no" class="form-label">JAMB Registration Number</label>
+                    <label for="verify_jamb_no" class="form-label">JAMB Registration Number</label>
                     <div class="input-icon-wrapper">
                         <iconify-icon icon="mdi:card-account-details-outline"></iconify-icon>
-                        <input type="text" id="jamb_no" name="jamb_no" class="form-input" placeholder="e.g. 202612345678AB" required>
+                        <input type="text" id="verify_jamb_no" name="jamb_no" class="form-input" placeholder="e.g. 202612345678AB" required>
+                    </div>
+                </div>
+                <button type="submit" class="btn-primary" id="verifyBtn">Verify JAMB</button>
+            </form>
+
+            <form id="registerForm" style="display: none;" enctype="multipart/form-data">
+                <input type="hidden" id="jamb_no" name="jamb_no" required>
+
+                <div class="info-box" style="margin-top: 1rem;">
+                    <iconify-icon icon="mdi:check-circle"></iconify-icon>
+                    <p id="verifiedNameDisplay">JAMB Verified! Complete your registration below.</p>
+                </div>
+
+                <h4 style="margin: 0 0 1rem 0; color: var(--secondary); border-bottom: 1px solid var(--input-border); padding-bottom: 0.5rem;">Basic Information</h4>
+                <div class="form-group">
+                    <label for="fullName" class="form-label">Full Name</label>
+                    <div class="input-icon-wrapper">
+                        <iconify-icon icon="mdi:account-outline"></iconify-icon>
+                        <input type="text" id="fullName" name="fullName" class="form-input" placeholder="Surname First" required>
                     </div>
                 </div>
 
@@ -206,6 +235,111 @@
                 </div>
 
                 <div class="form-group">
+                    <label for="phoneNumber" class="form-label">Phone Number</label>
+                    <div class="input-icon-wrapper">
+                        <iconify-icon icon="mdi:phone-outline"></iconify-icon>
+                        <input type="text" id="phoneNumber" name="phoneNumber" class="form-input" placeholder="08012345678" required>
+                    </div>
+                </div>
+
+                <h4 style="margin: 1.5rem 0 1rem 0; color: var(--secondary); border-bottom: 1px solid var(--input-border); padding-bottom: 0.5rem;">Personal Details</h4>
+                <div class="form-group">
+                    <label for="gender" class="form-label">Gender</label>
+                    <div class="input-icon-wrapper select-wrapper">
+                        <iconify-icon icon="mdi:gender-male-female"></iconify-icon>
+                        <select id="gender" name="gender" class="form-input" required>
+                            <option value="">Select Gender</option>
+                            <option value="Male">Male</option>
+                            <option value="Female">Female</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label for="religion" class="form-label">Religion</label>
+                    <div class="input-icon-wrapper select-wrapper">
+                        <iconify-icon icon="mdi:hands-pray"></iconify-icon>
+                        <select id="religion" name="religion" class="form-input" required>
+                            <option value="">Select Religion</option>
+                            <option value="Christianity">Christianity</option>
+                            <option value="Islam">Islam</option>
+                            <option value="Traditional">Traditional</option>
+                            <option value="Other">Other</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label for="ethnicity" class="form-label">Ethnicity</label>
+                    <div class="input-icon-wrapper">
+                        <iconify-icon icon="mdi:account-group-outline"></iconify-icon>
+                        <input type="text" id="ethnicity" name="ethnicity" class="form-input" placeholder="e.g. Tiv, Idoma, Igbo" required>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label for="address" class="form-label">Residential Address</label>
+                    <div class="input-icon-wrapper">
+                        <iconify-icon icon="mdi:home-outline"></iconify-icon>
+                        <input type="text" id="address" name="address" class="form-input" placeholder="Full residential address" required>
+                    </div>
+                </div>
+
+                <h4 style="margin: 1.5rem 0 1rem 0; color: var(--secondary); border-bottom: 1px solid var(--input-border); padding-bottom: 0.5rem;">Origin Details</h4>
+                <div class="form-group">
+                    <label for="stateOfOrigin" class="form-label">State of Origin</label>
+                    <div class="input-icon-wrapper select-wrapper">
+                        <iconify-icon icon="mdi:map-marker-outline"></iconify-icon>
+                        <select id="stateOfOrigin" name="stateOfOrigin" class="form-input" required>
+                            <option value="">Select State</option>
+                            <option value="Abia">Abia</option>
+                            <option value="Adamawa">Adamawa</option>
+                            <option value="Akwa Ibom">Akwa Ibom</option>
+                            <option value="Benue">Benue</option>
+                            <option value="Kogi">Kogi</option>
+                            <option value="Nasarawa">Nasarawa</option>
+                            <option value="Plateau">Plateau</option>
+                            <option value="Taraba">Taraba</option>
+                            <option value="Other">Other</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label for="lga_of_origin" class="form-label">LGA of Origin</label>
+                    <div class="input-icon-wrapper">
+                        <iconify-icon icon="mdi:map-marker-radius-outline"></iconify-icon>
+                        <input type="text" id="lga_of_origin" name="lga_of_origin" class="form-input" placeholder="Local Government Area" required>
+                    </div>
+                </div>
+
+                <h4 style="margin: 1.5rem 0 1rem 0; color: var(--secondary); border-bottom: 1px solid var(--input-border); padding-bottom: 0.5rem;">Next of Kin Details</h4>
+                <div class="form-group">
+                    <label for="next_of_kin_name" class="form-label">Next of Kin Full Name</label>
+                    <div class="input-icon-wrapper">
+                        <iconify-icon icon="mdi:account-tie-outline"></iconify-icon>
+                        <input type="text" id="next_of_kin_name" name="next_of_kin_name" class="form-input" placeholder="Surname First" required>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label for="next_of_kin_phone" class="form-label">Next of Kin Phone</label>
+                    <div class="input-icon-wrapper">
+                        <iconify-icon icon="mdi:phone-in-talk-outline"></iconify-icon>
+                        <input type="text" id="next_of_kin_phone" name="next_of_kin_phone" class="form-input" placeholder="08012345678" required>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label for="next_of_kin_address" class="form-label">Next of Kin Address</label>
+                    <div class="input-icon-wrapper">
+                        <iconify-icon icon="mdi:home-city-outline"></iconify-icon>
+                        <input type="text" id="next_of_kin_address" name="next_of_kin_address" class="form-input" placeholder="Full residential address" required>
+                    </div>
+                </div>
+
+                <h4 style="margin: 1.5rem 0 1rem 0; color: var(--secondary); border-bottom: 1px solid var(--input-border); padding-bottom: 0.5rem;">Account Security</h4>
+                <div class="form-group">
                     <label for="password" class="form-label">Create Password</label>
                     <div class="input-icon-wrapper">
                         <iconify-icon icon="mdi:lock-outline"></iconify-icon>
@@ -213,11 +347,35 @@
                     </div>
                 </div>
 
-                <button type="submit" class="btn-primary">Verify & Create Account</button>
+                <hr style="border: 0; border-top: 1px solid var(--input-border); margin: 1.5rem 0;">
+
+                <h4 style="margin: 0 0 1rem 0; color: var(--secondary);">Document Upload</h4>
+
+                <div class="form-group">
+                    <label for="passport" class="form-label">Passport Photograph (Max 2MB)</label>
+                    <div class="input-icon-wrapper">
+                        <iconify-icon icon="mdi:camera-outline"></iconify-icon>
+                        <input type="file" id="passport" name="passport" class="form-input" accept="image/jpeg,image/png" required>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label for="results" class="form-label">O'Level Results (Max 2MB)</label>
+                    <div class="input-icon-wrapper">
+                        <iconify-icon icon="mdi:file-document-outline"></iconify-icon>
+                        <input type="file" id="results" name="results" class="form-input" accept="image/jpeg,image/png,application/pdf" required>
+                    </div>
+                </div>
+
+                <button type="submit" class="btn-primary">Complete Registration & Apply</button>
             </form>
             
             <div class="auth-links">
                 <a href="/login">Already have an account? <span>Sign In Here</span></a>
+            </div>
+
+            <div class="form-footer">
+                Need help? Contact <a href="mailto:prestigeschoolofhealthtech.@gmail.com" style="color: var(--primary); text-decoration: none;">prestigeschoolofhealthtech.@gmail.com</a>
             </div>
         </div>
     </div>
@@ -227,15 +385,59 @@
             document.getElementById('mobile-back').style.display = 'inline-flex';
         }
 
-        document.getElementById('registerForm').addEventListener('submit', async (e) => {
+        const verifyForm = document.getElementById('verifyForm');
+        const registerForm = document.getElementById('registerForm');
+        const verifyBtn = document.getElementById('verifyBtn');
+        const verifiedNameDisplay = document.getElementById('verifiedNameDisplay');
+        const hiddenJambNo = document.getElementById('jamb_no');
+        const infoBoxInitial = document.getElementById('infoBoxInitial');
+        const fullNameInput = document.getElementById('fullName');
+
+        verifyForm.addEventListener('submit', async (e) => {
+            e.preventDefault();
+
+            const originalText = verifyBtn.innerHTML;
+            verifyBtn.innerHTML = '<iconify-icon icon="mdi:loading" class="spin"></iconify-icon> Verifying...';
+            verifyBtn.disabled = true;
+
+            const formData = new FormData(verifyForm);
+
+            try {
+                const response = await fetch('/verify-jamb', {
+                    method: 'POST',
+                    body: formData
+                });
+
+                if (response.ok) {
+                    const data = await response.json();
+                    // Show next step
+                    verifyForm.style.display = 'none';
+                    infoBoxInitial.style.display = 'none';
+                    registerForm.style.display = 'block';
+                    hiddenJambNo.value = data.jamb_no;
+                    fullNameInput.value = data.full_name; // pre-fill
+                    verifiedNameDisplay.innerText = `Verified: ${data.full_name}. Complete your registration.`;
+                } else {
+                    const error = await response.json();
+                    alert(error.detail || 'JAMB Number verification failed.');
+                }
+            } catch (err) {
+                alert('A network error occurred. Please check your connection.');
+            } finally {
+                verifyBtn.innerHTML = originalText;
+                verifyBtn.disabled = false;
+            }
+        });
+
+        registerForm.addEventListener('submit', async (e) => {
             e.preventDefault();
             
-            const btn = e.target.querySelector('button');
+            const btn = e.target.querySelector('button[type="submit"]');
             const originalText = btn.innerHTML;
-            btn.innerHTML = '<iconify-icon icon="mdi:loading" class="spin"></iconify-icon> Verifying JAMB...';
+            btn.innerHTML = '<iconify-icon icon="mdi:loading" class="spin"></iconify-icon> Processing...';
             btn.disabled = true;
 
-            const formData = new FormData(e.target);
+            const formData = new FormData(registerForm);
             
             try {
                 const response = await fetch('/register', {
@@ -249,7 +451,7 @@
                     window.location.href = '/login';
                 } else {
                     const error = await response.json();
-                    alert(error.detail || 'Registration failed. Please check your JAMB number.');
+                    alert(error.detail || 'Registration failed.');
                 }
             } catch (err) {
                 alert('A network error occurred. Please check your connection.');

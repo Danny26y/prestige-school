@@ -9,6 +9,7 @@ import os
 import uuid
 import csv
 import io
+import math
 from datetime import datetime, timedelta, timezone
 import jwt
 
@@ -45,7 +46,9 @@ models.Base.metadata.create_all(bind=engine)
 
 # --- DEPENDENCIES (SESSION MANAGEMENT) ---
 
-SECRET_KEY = os.getenv("SECRET_KEY", "fallback")
+SECRET_KEY = os.getenv("SECRET_KEY")
+if not SECRET_KEY:
+    raise ValueError("SECRET_KEY environment variable not set")
 ALGORITHM = "HS256"
 
 def get_current_user_from_cookie(request: Request, db: Session = Depends(get_db)):
@@ -84,11 +87,42 @@ async def home(request: Request, db: Session = Depends(get_db)):
     latest_news = db.query(models.News).filter(models.News.is_urgent == True).order_by(
         models.News.created_at.desc()
     ).first()
+
+    # Fetch departments
+    departments = db.query(models.Department).all()
+
+    # Fetch gallery images
+    gallery_images = db.query(models.GalleryImage).order_by(models.GalleryImage.created_at.desc()).all()
     
     return templates.TemplateResponse("index.html", {
         "request": request, 
         "news": news_list, 
-        "latest_news": latest_news
+        "latest_news": latest_news,
+        "departments": departments,
+        "gallery_images": gallery_images
+    })
+
+@app.get("/news", response_class=HTMLResponse)
+async def news_archive(request: Request, page: int = 1, db: Session = Depends(get_db)):
+    """Dedicated News Archive Page with Pagination"""
+    limit = 6
+    offset = (page - 1) * limit
+
+    # Count total
+    total_news = db.query(models.News).count()
+    total_pages = math.ceil(total_news / limit) if total_news > 0 else 1
+
+    # Fetch paginated items, prioritizing urgent
+    news_list = db.query(models.News).order_by(
+        models.News.is_urgent.desc(),
+        models.News.created_at.desc()
+    ).offset(offset).limit(limit).all()
+
+    return templates.TemplateResponse("news_archive.html", {
+        "request": request,
+        "news": news_list,
+        "page": page,
+        "total_pages": total_pages
     })
 
 @app.get("/login", response_class=HTMLResponse)
@@ -101,24 +135,88 @@ async def get_register(request: Request):
 
 # --- AUTHENTICATION ACTIONS ---
 
+@app.post("/verify-jamb")
+def verify_jamb_endpoint(jamb_no: str = Form(...), db: Session = Depends(get_db)):
+    """Verifies if a given JAMB Registration Number is authorized."""
+    jamb_no_upper = jamb_no.strip().upper()
+    is_verified = db.query(models.VerifiedJAMB).filter(models.VerifiedJAMB.jamb_no == jamb_no_upper).first()
+
+    if not is_verified:
+        raise HTTPException(status_code=404, detail="JAMB Number not found in official list.")
+
+    return {"status": "success", "full_name": is_verified.full_name, "jamb_no": is_verified.jamb_no}
+
 @app.post("/register")
-def register_candidate(
+async def register_candidate(
     email: str = Form(...),
     jamb_no: str = Form(...),
     password: str = Form(...),
+    fullName: str = Form(...),
+    phoneNumber: str = Form(...),
+    gender: str = Form(...),
+    religion: str = Form(...),
+    ethnicity: str = Form(...),
+    address: str = Form(...),
+    stateOfOrigin: str = Form(...),
+    lga_of_origin: str = Form(...),
+    next_of_kin_name: str = Form(...),
+    next_of_kin_phone: str = Form(...),
+    next_of_kin_address: str = Form(...),
+    passport: UploadFile = File(...),
+    results: UploadFile = File(...),
     db: Session = Depends(get_db)
 ):
-    """Verifies JAMB eligibility before allowing registration"""
+    """Verifies JAMB eligibility, handles file uploads, and creates user + admission record."""
     jamb_no_upper = jamb_no.strip().upper()
 
+    # 1. Verify JAMB eligibility
     is_verified = db.query(models.VerifiedJAMB).filter(models.VerifiedJAMB.jamb_no == jamb_no_upper).first()
     if not is_verified:
         raise HTTPException(status_code=403, detail="JAMB Number not found in official list.")
 
+    # 2. Check for existing user
     existing_user = db.query(models.User).filter((models.User.email == email) | (models.User.jamb_reg_no == jamb_no_upper)).first()
     if existing_user:
         raise HTTPException(status_code=400, detail="Account already exists.")
 
+    # 3. Validate files
+    ALLOWED_TYPES = ["image/jpeg", "image/png", "application/pdf"]
+    MAX_SIZE = 2 * 1024 * 1024 # 2MB
+
+    for file_obj, name in [(passport, "Passport"), (results, "Results")]:
+        if file_obj.content_type not in ALLOWED_TYPES:
+            raise HTTPException(status_code=400, detail=f"Invalid file type for {name}. Allowed types: JPEG, PNG, PDF.")
+
+        file_obj.file.seek(0, 2)
+        size = file_obj.file.tell()
+        file_obj.file.seek(0)
+
+        if size > MAX_SIZE:
+            raise HTTPException(status_code=400, detail=f"{name} file size exceeds 2MB limit.")
+
+    try:
+        # 4. Upload to Cloudinary
+        passport_upload = cloudinary.uploader.upload(
+            passport.file,
+            folder="prestige_passports",
+            resource_type="image"
+        )
+
+        # Results could be pdf or image
+        resource_type = "image"
+        if results.content_type == "application/pdf":
+            resource_type = "raw"
+
+        results_upload = cloudinary.uploader.upload(
+            results.file,
+            folder="prestige_results",
+            resource_type=resource_type
+        )
+    except Exception as e:
+        print(f"Cloudinary upload error: {e}")
+        raise HTTPException(status_code=500, detail="Failed to upload files. Please try again.")
+
+    # 5. Create User and Admission
     salt = bcrypt.gensalt()
     hashed_password = bcrypt.hashpw(password.encode('utf-8'), salt).decode('utf-8')
 
@@ -129,10 +227,42 @@ def register_candidate(
         passwordHash=hashed_password,
         role="student"
     )
-
     db.add(new_user)
-    db.commit()
-    return {"status": "success", "message": f"Welcome, {is_verified.full_name}!"}
+    db.flush() # flush to get the user ID
+
+    new_admission = models.Admission(
+        userId=new_user.id,
+        fullName=fullName,
+        phoneNumber=phoneNumber,
+        gender=gender,
+        religion=religion,
+        ethnicity=ethnicity,
+        address=address,
+        stateOfOrigin=stateOfOrigin,
+        lga_of_origin=lga_of_origin,
+        next_of_kin_name=next_of_kin_name,
+        next_of_kin_phone=next_of_kin_phone,
+        next_of_kin_address=next_of_kin_address,
+        passportUrl=passport_upload.get('secure_url'),
+        resultsUrl=results_upload.get('secure_url'),
+        course=is_verified.course if is_verified.course else "ND Community Health",
+        status="PENDING"
+    )
+    db.add(new_admission)
+
+    try:
+        db.commit()
+    except Exception as e:
+        db.rollback()
+        # Clean up uploaded files if DB commit fails
+        try:
+            cloudinary.uploader.destroy(passport_upload.get('public_id'))
+            cloudinary.uploader.destroy(results_upload.get('public_id'), resource_type=resource_type)
+        except:
+            pass
+        raise HTTPException(status_code=500, detail="Failed to create account due to a database error.")
+
+    return {"status": "success", "message": f"Welcome, {is_verified.full_name}! Application submitted."}
 
 @app.post("/login")
 def login(email: str = Form(...), password: str = Form(...), db: Session = Depends(get_db)):
@@ -176,33 +306,68 @@ async def get_dashboard(request: Request, db: Session = Depends(get_db), current
         "application": application
     })
 
+@app.get("/dashboard/print-letter", response_class=HTMLResponse)
+async def print_admission_letter(request: Request, db: Session = Depends(get_db), current_user: models.User = Depends(get_current_user_from_cookie)):
+    if not current_user:
+        return RedirectResponse(url="/login", status_code=303)
+
+    application = db.query(models.Admission).filter(models.Admission.userId == current_user.id).first()
+
+    if not application or application.status != "APPROVED":
+        raise HTTPException(status_code=403, detail="You do not have an approved admission to print.")
+
+    return templates.TemplateResponse("admission_letter.html", {
+        "request": request,
+        "user": current_user,
+        "application": application,
+        "date": datetime.now().strftime("%B %d, %Y")
+    })
+
 @app.post("/apply")
 async def apply_for_admission(
     userId: str = Form(...),
     fullName: str = Form(...),
     phoneNumber: str = Form(...),
     stateOfOrigin: str = Form(...),
+    course: str = Form("ND Community Health"),
     passport: UploadFile = File(...),
     results: UploadFile = File(...),
     db: Session = Depends(get_db)
 ):
     """Processes file uploads to Cloudinary and saves application records"""
     
-    # 1. Upload Passport to Cloudinary
-    passport_upload = cloudinary.uploader.upload(
-        passport.file, 
-        folder="prestige_passports",
-        public_id=f"passport_{uuid.uuid4()}"
-    )
-    passport_secure_url = passport_upload.get("secure_url")
+    ALLOWED_TYPES = ["image/jpeg", "image/png", "application/pdf"]
+    MAX_SIZE = 2 * 1024 * 1024 # 2MB
 
-    # 2. Upload Results to Cloudinary
-    results_upload = cloudinary.uploader.upload(
-        results.file, 
-        folder="prestige_results",
-        public_id=f"results_{uuid.uuid4()}"
-    )
-    results_secure_url = results_upload.get("secure_url")
+    for file_obj, name in [(passport, "Passport"), (results, "Results")]:
+        if file_obj.content_type not in ALLOWED_TYPES:
+            raise HTTPException(status_code=400, detail=f"Invalid file type for {name}. Allowed types: JPEG, PNG, PDF.")
+
+        file_obj.file.seek(0, 2)
+        size = file_obj.file.tell()
+        file_obj.file.seek(0)
+
+        if size > MAX_SIZE:
+            raise HTTPException(status_code=400, detail=f"{name} file size exceeds 2MB limit.")
+
+    try:
+        # 1. Upload Passport to Cloudinary
+        passport_upload = cloudinary.uploader.upload(
+            passport.file,
+            folder="prestige_passports",
+            public_id=f"passport_{uuid.uuid4()}"
+        )
+        passport_secure_url = passport_upload.get("secure_url")
+
+        # 2. Upload Results to Cloudinary
+        results_upload = cloudinary.uploader.upload(
+            results.file,
+            folder="prestige_results",
+            public_id=f"results_{uuid.uuid4()}"
+        )
+        results_secure_url = results_upload.get("secure_url")
+    except Exception as e:
+        raise HTTPException(status_code=500, detail="An error occurred while uploading files. Please try again.")
 
     # 3. Save the Cloud URLs to Neon Database
     new_admission = models.Admission(
@@ -211,6 +376,7 @@ async def apply_for_admission(
         fullName=fullName,
         phoneNumber=phoneNumber,
         stateOfOrigin=stateOfOrigin,
+        course=course,
         passportUrl=passport_secure_url, 
         resultsUrl=results_secure_url,   
         status="PENDING"
@@ -244,13 +410,23 @@ async def admin_portal(
 async def import_jamb_list(file: UploadFile = File(...), db: Session = Depends(get_db), admin: models.User = Depends(require_admin)):
     """Bulk imports authorized students from a CSV file"""
     content = await file.read()
-    reader = csv.DictReader(io.StringIO(content.decode('utf-8')))
+    decoded_content = content.decode('utf-8')
+    reader = csv.DictReader(io.StringIO(decoded_content))
+
+    # Normalize headers to lowercase and strip whitespace to handle standard JAMB CAPS export formats
+    reader.fieldnames = [name.strip().lower() for name in reader.fieldnames]
 
     count = 0
     for row in reader:
-        jamb_no = row.get('jamb_no').strip().upper()
+        raw_jamb_no = row.get('jamb_no') or row.get('jamb registration number') or row.get('reg_no')
+        if not raw_jamb_no:
+            continue
+        jamb_no = str(raw_jamb_no).strip().upper()
+        full_name = row.get('full_name') or row.get('candidate name') or row.get('name', '')
+        course = row.get('course_name') or row.get('course', '')
+
         if not db.query(models.VerifiedJAMB).filter_by(jamb_no=jamb_no).first():
-            new_entry = models.VerifiedJAMB(jamb_no=jamb_no, full_name=row.get('full_name'))
+            new_entry = models.VerifiedJAMB(jamb_no=jamb_no, full_name=full_name, course=course)
             db.add(new_entry)
             count += 1
     db.commit()
@@ -314,34 +490,36 @@ async def delete_news(
     db: Session = Depends(get_db), 
     admin: models.User = Depends(require_admin)
 ):
-    """Safely removes a post and its physical image from storage"""
+    """Safely removes a post and its cloud image from storage"""
     news_item = db.query(models.News).filter(models.News.id == news_id).first()
     
     if not news_item:
         raise HTTPException(status_code=404, detail="News post not found")
 
-    # Clean up physical storage on your Dell laptop
-    if news_item.imageUrl and os.path.exists(news_item.imageUrl):
+    # Clean up cloud storage
+    if news_item.imageUrl:
         try:
-            os.remove(news_item.imageUrl)
+            # Extract public_id from Cloudinary URL: e.g. .../upload/v12345/folder/id.extension
+            # Assuming standard Cloudinary URLs, the public_id includes the folder structure
+            parts = news_item.imageUrl.split('/')
+            if 'upload' in parts:
+                upload_index = parts.index('upload')
+                # Join the parts after upload (excluding version if it exists, though usually it's 'v' followed by digits)
+                # For simplicity, we can extract everything after upload/v.../ or upload/ up to the extension
+                path_parts = parts[upload_index+1:]
+                if path_parts[0].startswith('v') and path_parts[0][1:].isdigit():
+                    path_parts = path_parts[1:]
+
+                file_with_ext = "/".join(path_parts)
+                public_id = file_with_ext.rsplit('.', 1)[0]
+                cloudinary.uploader.destroy(public_id)
         except Exception as e:
-            print(f"File cleanup error: {e}")
+            print(f"Cloudinary cleanup error: {e}")
 
     db.delete(news_item)
     db.commit()
     return RedirectResponse(url="/admin/news", status_code=303)
-@app.get("/apply", response_class=HTMLResponse)
-async def get_apply_page(request: Request, db: Session = Depends(get_db), current_user: models.User = Depends(get_current_user_from_cookie)):
-    # Block unauthorized access
-    if not current_user:
-        return RedirectResponse(url="/login", status_code=303)
-    
-    # Block if they already applied
-    existing_app = db.query(models.Admission).filter(models.Admission.userId == current_user.id).first()
-    if existing_app:
-        return RedirectResponse(url="/dashboard", status_code=303)
 
-    return templates.TemplateResponse("apply.html", {"request": request, "user": current_user})
 
 # --- DIAGNOSTICS ---
 
@@ -371,11 +549,103 @@ async def get_profile(request: Request, db: Session = Depends(get_db), current_u
 
 @app.get("/payment", response_class=HTMLResponse)
 async def get_payment_page(request: Request, db: Session = Depends(get_db), current_user: models.User = Depends(get_current_user_from_cookie)):
-    """Renders the coming soon payment portal"""
+    """Renders the payment portal with calculated fees based on admitted course"""
     if not current_user:
         return RedirectResponse(url="/login", status_code=303)
     
     if current_user.role == "admin":
         return RedirectResponse(url="/admin", status_code=303)
 
-    return templates.TemplateResponse("payment.html", {"request": request, "user": current_user})
+    application = db.query(models.Admission).filter(models.Admission.userId == current_user.id).first()
+
+    fee = 50000 # Default
+    course = "Not Selected"
+    if application:
+        course = application.course
+        if course == "ND Medical Laboratory":
+            fee = 60000
+        else:
+            fee = 50000
+
+    return templates.TemplateResponse("payment.html", {
+        "request": request,
+        "user": current_user,
+        "application": application,
+        "fee": fee,
+        "course": course
+    })
+
+@app.post("/payment/initialize")
+async def initialize_payment(request: Request, db: Session = Depends(get_db), current_user: models.User = Depends(get_current_user_from_cookie)):
+    if not current_user:
+        raise HTTPException(status_code=401, detail="Unauthorized")
+
+    application = db.query(models.Admission).filter(models.Admission.userId == current_user.id).first()
+    fee = 50000
+    if application and application.course == "ND Medical Laboratory":
+        fee = 60000
+
+    reference = f"REF-{uuid.uuid4().hex}"
+
+    # In a real scenario, you'd call Paystack API here and get an authorization URL.
+    return {"status": "success", "reference": reference, "amount": fee}
+@app.get("/admin/gallery", response_class=HTMLResponse)
+async def get_admin_gallery(request: Request, db: Session = Depends(get_db), admin: models.User = Depends(require_admin)):
+    images = db.query(models.GalleryImage).order_by(models.GalleryImage.created_at.desc()).all()
+    return templates.TemplateResponse("admin_gallery.html", {
+        "request": request,
+        "gallery_images": images
+    })
+
+@app.post("/admin/gallery/add")
+async def add_gallery_image(
+    caption: str = Form(""),
+    image: UploadFile = File(...),
+    db: Session = Depends(get_db),
+    admin: models.User = Depends(require_admin)
+):
+    ALLOWED_TYPES = ["image/jpeg", "image/png", "image/webp"]
+    if image.content_type not in ALLOWED_TYPES:
+        raise HTTPException(status_code=400, detail="Invalid image format. Allowed: JPEG, PNG, WEBP.")
+
+    try:
+        upload_result = cloudinary.uploader.upload(
+            image.file,
+            folder="prestige_gallery",
+            resource_type="image"
+        )
+
+        new_img = models.GalleryImage(
+            imageUrl=upload_result.get('secure_url'),
+            caption=caption
+        )
+        db.add(new_img)
+        db.commit()
+        return {"status": "success"}
+    except Exception as e:
+        print(f"Cloudinary upload error: {e}")
+        raise HTTPException(status_code=500, detail="Upload failed.")
+
+@app.post("/admin/gallery/delete/{image_id}")
+async def delete_gallery_image(
+    image_id: str,
+    db: Session = Depends(get_db),
+    admin: models.User = Depends(require_admin)
+):
+    img = db.query(models.GalleryImage).filter(models.GalleryImage.id == image_id).first()
+    if not img:
+        return RedirectResponse(url="/admin/gallery", status_code=303)
+
+    try:
+        # Extract public_id from secure_url (assuming standard cloudinary url format)
+        url_parts = img.imageUrl.split('/')
+        file_with_ext = url_parts[-1]
+        public_id = "prestige_gallery/" + file_with_ext.split('.')[0]
+
+        cloudinary.uploader.destroy(public_id, resource_type="image")
+    except Exception as e:
+        print(f"Cloudinary cleanup error: {e}")
+
+    db.delete(img)
+    db.commit()
+    return RedirectResponse(url="/admin/gallery", status_code=303)

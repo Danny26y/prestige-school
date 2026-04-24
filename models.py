@@ -22,9 +22,25 @@ class Admission(Base):
     userId = Column(String, ForeignKey("User.id"))
     fullName = Column(String)
     phoneNumber = Column(String)
+
+    # New Personal Fields
+    gender = Column(String, nullable=True)
+    religion = Column(String, nullable=True)
+    ethnicity = Column(String, nullable=True)
+    address = Column(Text, nullable=True)
+
+    # Origin Fields
     stateOfOrigin = Column(String)
+    lga_of_origin = Column(String, nullable=True)
+
+    # Next of Kin Fields
+    next_of_kin_name = Column(String, nullable=True)
+    next_of_kin_phone = Column(String, nullable=True)
+    next_of_kin_address = Column(Text, nullable=True)
+
     passportUrl = Column(String)  # Path to the uploaded photo
     resultsUrl = Column(String)   # Path to the uploaded PDF/Image
+    course = Column(String, default="ND Community Health") # Admitted Course
     status = Column(String, default="PENDING") # PENDING, APPROVED, REJECTED
     createdAt = Column(DateTime(timezone=True), server_default=func.now())
 
@@ -47,4 +63,21 @@ class VerifiedJAMB(Base):
     id = Column(Integer, primary_key=True, index=True)
     jamb_no = Column(String, unique=True, index=True, nullable=False)
     full_name = Column(String, nullable=False)
+    course = Column(String, nullable=True)
+    created_at = Column(DateTime, default=lambda: datetime.now(timezone.utc))
+
+class Department(Base):
+    __tablename__ = "Department"
+
+    id = Column(String, primary_key=True, default=lambda: str(uuid.uuid4()))
+    name = Column(String, nullable=False)
+    description = Column(Text, nullable=True)
+    head_of_department = Column(String, nullable=True)
+    imageUrl = Column(String, nullable=True)
+class GalleryImage(Base):
+    __tablename__ = "GalleryImage"
+
+    id = Column(String, primary_key=True, default=lambda: str(uuid.uuid4()))
+    imageUrl = Column(String, nullable=False)
+    caption = Column(String, nullable=True)
     created_at = Column(DateTime, default=lambda: datetime.now(timezone.utc))

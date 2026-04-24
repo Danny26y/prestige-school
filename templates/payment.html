@@ -169,15 +169,24 @@
     </aside>
 
     <main class="dashboard-content">
-        <div class="coming-soon-card">
-            <div class="floating-icon">
-                <iconify-icon icon="mdi:bank-transfer"></iconify-icon>
+        <div class="coming-soon-card" style="text-align: left;">
+            <h1 style="text-align: center; margin-bottom: 2rem;">Fee Payment</h1>
+
+            <div style="background: #f8fafc; padding: 1.5rem; border-radius: 8px; margin-bottom: 2rem; border: 1px solid var(--border-color);">
+                <p style="margin: 0 0 0.5rem 0; font-weight: 600;">Admitted Course:</p>
+                <p style="margin: 0 0 1.5rem 0; font-size: 1.1rem; color: var(--primary);">{{ course }}</p>
+
+                <p style="margin: 0 0 0.5rem 0; font-weight: 600;">Amount Due:</p>
+                <p style="margin: 0; font-size: 1.8rem; font-weight: 800; color: var(--secondary);">₦{{ "{:,.2f}".format(fee) }}</p>
             </div>
-            <h1>Secure Payments Integration</h1>
-            <p>We are currently configuring our secure payment gateway for the 2026/2027 academic session. Admission and acceptance fee processing will be available here shortly.</p>
-            <div class="badge">
-                <iconify-icon icon="mdi:clock-outline" style="vertical-align: middle; margin-right: 0.25rem; font-size: 1.1rem;"></iconify-icon> Coming Soon
-            </div>
+
+            <p style="text-align: center; color: var(--text-muted); font-size: 0.9rem; margin-bottom: 1.5rem;">Click below to securely initialize your payment via Paystack.</p>
+
+            <button id="paystack-btn" style="width: 100%; padding: 1rem; background: #0ba4db; color: white; border: none; border-radius: 8px; font-weight: 700; font-size: 1.1rem; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 0.5rem; transition: background 0.2s;">
+                <iconify-icon icon="mdi:credit-card"></iconify-icon> Pay with Paystack
+            </button>
+
+            <div id="payment-status" style="margin-top: 1.5rem; text-align: center; font-weight: 600; display: none;"></div>
         </div>
     </main>
 
@@ -194,6 +203,37 @@
                 }
             });
         }
+
+        document.getElementById('paystack-btn').addEventListener('click', async function() {
+            const btn = this;
+            const originalText = btn.innerHTML;
+            btn.innerHTML = '<iconify-icon icon="mdi:loading" class="spin"></iconify-icon> Initializing...';
+            btn.disabled = true;
+
+            try {
+                const response = await fetch('/payment/initialize', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' }
+                });
+
+                if (response.ok) {
+                    const data = await response.json();
+                    const statusDiv = document.getElementById('payment-status');
+                    statusDiv.style.display = 'block';
+                    statusDiv.style.color = 'var(--primary)';
+                    statusDiv.innerText = `Payment Initialized! Ref: ${data.reference}`;
+                    btn.style.display = 'none'; // Hide button after init
+                } else {
+                    alert('Failed to initialize payment.');
+                    btn.innerHTML = originalText;
+                    btn.disabled = false;
+                }
+            } catch (error) {
+                alert('Network error while initializing payment.');
+                btn.innerHTML = originalText;
+                btn.disabled = false;
+            }
+        });
     </script>
     <script src="{{ url_for('static', path='/js/app.js') }}"></script>
 </body>
