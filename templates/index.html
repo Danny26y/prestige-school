@@ -461,10 +461,6 @@
             padding: 0 2rem;
         }
 
-        h1, h2, h3, h4, h5, h6 {
-            font-family: 'Google Sans', 'Outfit', sans-serif;
-        }
-
         .slide-content h1 {
             font-family: 'Google Sans', 'Outfit', sans-serif;
             font-size: clamp(3rem, 6vw, 5rem);
@@ -554,30 +550,145 @@
             </div>
         </div>
 
-        <section class="stats-wrapper animate-up delay-3">
-            <div class="stats-grid">
-                <div class="stat-card">
-                    <iconify-icon icon="mdi:certificate-outline"></iconify-icon>
-                    <h3>NMCN</h3>
-                    <p>Fully Accredited</p>
+        <style>
+            .scroller-container {
+                width: 100%;
+                height: 300px;
+                overflow: hidden;
+                position: relative;
+                background: var(--medical-white);
+                margin-bottom: 4rem; /* AFIT overlap buffer */
+            }
+            .scroller-track {
+                display: flex;
+                height: 100%;
+                width: max-content;
+                animation: scrollLoop 30s linear infinite;
+            }
+            .scroller-track:hover {
+                animation-play-state: paused;
+            }
+            .scroll-img-wrapper {
+                position: relative;
+                height: 100%;
+                width: 400px; /* Fixed width for consistent scrolling */
+            }
+            .scroll-img-wrapper img {
+                height: 100%;
+                width: 100%;
+                object-fit: cover;
+                display: block;
+            }
+            .scroll-overlay-title {
+                position: absolute;
+                bottom: 0;
+                left: 0;
+                background: rgba(10, 25, 47, 0.8); /* Regal Navy semi-transparent */
+                color: white;
+                padding: 0.5rem 1rem;
+                font-family: 'Inter', sans-serif;
+                font-size: 0.85rem;
+                font-weight: 600;
+                letter-spacing: 0.05em;
+            }
+
+            @keyframes scrollLoop {
+                0% { transform: translateX(0); }
+                100% { transform: translateX(-50%); } /* Scrolls exactly half its duplicated length */
+            }
+
+            .zig-zag-departments {
+                position: relative;
+                z-index: 20;
+                margin-top: -6rem; /* Overlaps the scroller slightly */
+                padding: 0 2rem;
+                display: grid;
+                grid-template-columns: 1fr 1fr;
+                gap: 2rem;
+                max-width: 1200px;
+                margin-left: auto;
+                margin-right: auto;
+                margin-bottom: 4rem;
+            }
+            .zig-zag-card {
+                background: var(--white);
+                padding: 2.5rem;
+                border-radius: 12px;
+                border: 1px solid var(--border-color);
+                border-top: 4px solid var(--primary);
+                box-shadow: 0 10px 25px -5px rgba(0,0,0,0.1);
+            }
+
+            @media (max-width: 768px) {
+                .zig-zag-departments {
+                    grid-template-columns: 1fr;
+                    margin-top: 2rem;
+                }
+            }
+        </style>
+
+        <!-- 1. The Horizontal Scroller (Layer 2) -->
+        <section class="scroller-container">
+            <div class="scroller-track">
+                <!-- Original set -->
+                <div class="scroll-img-wrapper">
+                    <img src="{{ url_for('static', path='/img/1776722738390.jpg') }}" alt="Campus">
+                    <div class="scroll-overlay-title">Campus Environment</div>
                 </div>
-                <div class="stat-card">
-                    <iconify-icon icon="mdi:account-group-outline"></iconify-icon>
-                    <h3>100%</h3>
-                    <p>Clinical Placement</p>
+                <div class="scroll-img-wrapper">
+                    <img src="{{ url_for('static', path='/img/1776722738410.jpg') }}" alt="Science Laboratory">
+                    <div class="scroll-overlay-title">Medical Laboratory</div>
                 </div>
-                <div class="stat-card">
-                    <iconify-icon icon="mdi:library-outline"></iconify-icon>
-                    <h3>24/7</h3>
-                    <p>E-Library Access</p>
+                <div class="scroll-img-wrapper">
+                    <img src="{{ url_for('static', path='/img/1776722738417.jpg') }}" alt="Students">
+                    <div class="scroll-overlay-title">2026 Admission</div>
                 </div>
-                <div class="stat-card">
-                    <iconify-icon icon="mdi:hospital-building"></iconify-icon>
-                    <h3>Top-Tier</h3>
-                    <p>Skill Lab Facilities</p>
+                <div class="scroll-img-wrapper">
+                    <img src="{{ url_for('static', path='/img/1776722738428.jpg') }}" alt="Research">
+                    <div class="scroll-overlay-title">Research Center</div>
+                </div>
+                <div class="scroll-img-wrapper">
+                    <img src="{{ url_for('static', path='/img/1776722738434.jpg') }}" alt="Clinical">
+                    <div class="scroll-overlay-title">Clinical Practice</div>
+                </div>
+
+                <!-- Duplicated set for seamless loop -->
+                <div class="scroll-img-wrapper">
+                    <img src="{{ url_for('static', path='/img/1776722738390.jpg') }}" alt="Campus">
+                    <div class="scroll-overlay-title">Campus Environment</div>
+                </div>
+                <div class="scroll-img-wrapper">
+                    <img src="{{ url_for('static', path='/img/1776722738410.jpg') }}" alt="Science Laboratory">
+                    <div class="scroll-overlay-title">Medical Laboratory</div>
+                </div>
+                <div class="scroll-img-wrapper">
+                    <img src="{{ url_for('static', path='/img/1776722738417.jpg') }}" alt="Students">
+                    <div class="scroll-overlay-title">2026 Admission</div>
+                </div>
+                <div class="scroll-img-wrapper">
+                    <img src="{{ url_for('static', path='/img/1776722738428.jpg') }}" alt="Research">
+                    <div class="scroll-overlay-title">Research Center</div>
+                </div>
+                <div class="scroll-img-wrapper">
+                    <img src="{{ url_for('static', path='/img/1776722738434.jpg') }}" alt="Clinical">
+                    <div class="scroll-overlay-title">Clinical Practice</div>
                 </div>
             </div>
         </section>
+
+        <!-- 2. Content Layering (The "AFIT" Stitch) -->
+        <div class="zig-zag-departments">
+            <div class="zig-zag-card">
+                <iconify-icon icon="mdi:stethoscope" style="font-size: 3rem; color: var(--primary); margin-bottom: 1rem;"></iconify-icon>
+                <h3 style="font-size: 1.5rem; margin-bottom: 1rem; color: var(--deep-navy, #0A192F);">ND Community Health Technology</h3>
+                <p style="color: var(--text-muted); line-height: 1.7; font-size: 1rem;">Comprehensive training in community health, epidemiology, and primary healthcare management designed to produce frontline health workers.</p>
+            </div>
+            <div class="zig-zag-card" style="border-top-color: var(--burnished-gold, #B8860B);">
+                <iconify-icon icon="mdi:microscope" style="font-size: 3rem; color: var(--burnished-gold, #B8860B); margin-bottom: 1rem;"></iconify-icon>
+                <h3 style="font-size: 1.5rem; margin-bottom: 1rem; color: var(--deep-navy, #0A192F);">ND Medical Laboratory Technology</h3>
+                <p style="color: var(--text-muted); line-height: 1.7; font-size: 1rem;">Advanced technical instruction in clinical chemistry, microbiology, and hematology using state-of-the-art laboratory equipment.</p>
+            </div>
+        </div>
 
         <section class="section-padding" style="background: var(--medical-white);" id="studying">
             <div class="section-header">
@@ -823,12 +934,12 @@
                 <div>
                     <h4>Contact Us</h4>
                     <p>Benue State, Nigeria<br>
-                    support@prestigenursing.edu.ng<br>
+                    prestigeschoolofhealthtech.@gmail.com<br>
                     +234 (0) 800 PRESTIGE</p>
                 </div>
             </div>
             <div style="border-top: 1px solid rgba(255,255,255,0.1); padding-top: 2rem; text-align: center; color: #64748b; font-size: 0.85rem; margin: 0 2rem;">
-                &copy; 2026 Prestige School of Nursing Benue. Developed for Academic Excellence.
+                &copy; 2026 Prestige School of Health Technology Benue. Developed for Academic Excellence.
             </div>
         </footer>
     </main>
