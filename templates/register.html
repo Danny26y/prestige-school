@@ -24,12 +24,13 @@
             font-family: 'Inter', sans-serif;
             background-color: var(--bg-body);
             margin: 0;
-            padding: 0;
+            padding: 2rem 0; /* Add top and bottom padding to avoid header conflict and allow scrolling */
             display: flex;
             justify-content: center;
             align-items: center;
             min-height: 100vh;
             color: var(--text-main);
+            overflow-y: auto; /* Ensure body can scroll */
         }
 
         .login-wrapper {
@@ -37,10 +38,10 @@
             background: var(--white);
             border-radius: 20px;
             box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.15);
-            overflow: hidden;
+            /* Remove overflow: hidden to allow the content to expand and scroll correctly */
             width: 100%;
             max-width: 900px;
-            margin: 2rem;
+            margin: 2rem auto; /* Ensure it stays centered horizontally */
             min-height: 600px;
         }
 
@@ -55,6 +56,8 @@
             flex-direction: column;
             justify-content: center;
             position: relative;
+            border-top-left-radius: 20px;
+            border-bottom-left-radius: 20px;
         }
 
         .login-sidebar h2 { font-size: 2.2rem; font-weight: 800; margin-bottom: 1rem; line-height: 1.2; letter-spacing: -0.03em; }
