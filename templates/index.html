@@ -126,12 +126,42 @@
             transform: scale(1.05);
         }
 
+        .facility-card .facility-overlay {
+            position: absolute;
+            bottom: 0; left: 0; right: 0;
+            background: linear-gradient(transparent, rgba(15, 23, 42, 0.9));
+            color: white;
+            padding: 2rem 1.5rem 1.5rem;
+            transform: translateY(100%);
+            transition: transform 0.3s ease;
+        }
+        .facility-card:hover .facility-overlay {
+            transform: translateY(0);
+        }
+        .facility-overlay h3 {
+            margin: 0 0 0.5rem 0;
+            font-size: 1.25rem;
+        }
+        .facility-overlay p {
+            margin: 0;
+            font-size: 0.9rem;
+            color: #cbd5e1;
+        }
+
         /* --- News Section --- */
         .news-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+            grid-template-columns: repeat(3, 1fr);
             gap: 2rem;
             padding: 0 2rem;
+        }
+
+        @media (max-width: 1024px) {
+            .news-grid { grid-template-columns: repeat(2, 1fr); }
+        }
+
+        @media (max-width: 768px) {
+            .news-grid { grid-template-columns: 1fr; }
         }
 
         .news-card {
@@ -486,24 +516,34 @@
             </div>
         </section>
 
-        <section class="section-padding" style="background: var(--white);" id="campus">
+        <section class="section-padding" style="background: var(--white);" id="facilities">
             <div class="section-header">
-                <h2>Our Campus & Facilities</h2>
+                <h2>Academic Facilities</h2>
                 <p style="color: var(--text-muted); max-width: 600px; margin: 1rem auto 0; font-size: 1.1rem; line-height: 1.6;">Take a glimpse into the vibrant environment and state-of-the-art facilities where our students train and learn.</p>
             </div>
 
             <div class="gallery-grid">
-                {% for img in gallery_images %}
-                <div class="gallery-item">
-                    <img src="{{ img.imageUrl }}" alt="{{ img.caption or 'Campus Image' }}">
+                <div class="gallery-item facility-card">
+                    <img src="{{ url_for('static', path='/img/1776722738434.jpg') }}" alt="Demonstration Lab">
+                    <div class="facility-overlay">
+                        <h3>Demonstration Lab</h3>
+                        <p>Fully equipped for hands-on clinical simulations.</p>
+                    </div>
                 </div>
-                {% else %}
-                <div class="gallery-item"><img src="{{ url_for('static', path='/img/1776722738390.jpg') }}" alt="Campus Image"></div>
-                <div class="gallery-item"><img src="{{ url_for('static', path='/img/1776722738410.jpg') }}" alt="Campus Image"></div>
-                <div class="gallery-item"><img src="{{ url_for('static', path='/img/1776722738417.jpg') }}" alt="Campus Image"></div>
-                <div class="gallery-item"><img src="{{ url_for('static', path='/img/1776722738428.jpg') }}" alt="Campus Image"></div>
-                <div class="gallery-item"><img src="{{ url_for('static', path='/img/1776722738439.jpg') }}" alt="Campus Image"></div>
-                {% endfor %}
+                <div class="gallery-item facility-card">
+                    <img src="{{ url_for('static', path='/img/1776722738410.jpg') }}" alt="Science Laboratory">
+                    <div class="facility-overlay">
+                        <h3>Science Laboratory</h3>
+                        <p>Advanced equipment for medical laboratory technology.</p>
+                    </div>
+                </div>
+                <div class="gallery-item facility-card">
+                    <img src="{{ url_for('static', path='/img/1776722738428.jpg') }}" alt="Research Center">
+                    <div class="facility-overlay">
+                        <h3>Research Center</h3>
+                        <p>Fostering academic excellence and healthcare innovation.</p>
+                    </div>
+                </div>
             </div>
         </section>
 
@@ -542,7 +582,7 @@
 
         <section class="section-padding" style="background: var(--white);" id="news">
             <div class="section-header">
-                <h2>Academic Announcements</h2>
+                <h2>News & Events</h2>
                 <p style="color: var(--text-muted); max-width: 600px; margin: 1rem auto 0; font-size: 1.1rem; line-height: 1.6;">Stay updated with the latest news, exam dates, and administrative notices from the college.</p>
             </div>
 
@@ -610,6 +650,28 @@
                     <img src="{{ url_for('static', path='/img/1776722738434.jpg') }}"
                          style="width: 100%; border-radius: 16px; box-shadow: 0 20px 40px -10px rgba(0,0,0,0.2); border: 4px solid var(--white);"
                          alt="Health Technology Students">
+                </div>
+            </div>
+        </section>
+
+        <section class="regulators-section" style="background: var(--white); padding: 3rem 0; border-top: 1px solid #e2e8f0; text-align: center;">
+            <div class="container">
+                <h3 style="color: var(--text-muted); font-size: 1rem; text-transform: uppercase; letter-spacing: 0.1em; margin-bottom: 2rem;">Regulators & Accreditation</h3>
+                <div style="display: flex; justify-content: center; gap: 4rem; align-items: center; flex-wrap: wrap;">
+                    <div style="display: flex; align-items: center; gap: 1rem; color: var(--secondary);">
+                        <iconify-icon icon="mdi:shield-check" style="font-size: 3rem; color: var(--primary);"></iconify-icon>
+                        <div style="text-align: left;">
+                            <h4 style="margin: 0; font-size: 1.1rem; font-weight: 800;">NBTE</h4>
+                            <span style="font-size: 0.8rem; color: var(--text-muted);">Fully Accredited</span>
+                        </div>
+                    </div>
+                    <div style="display: flex; align-items: center; gap: 1rem; color: var(--secondary);">
+                        <iconify-icon icon="mdi:medical-bag" style="font-size: 3rem; color: var(--primary);"></iconify-icon>
+                        <div style="text-align: left;">
+                            <h4 style="margin: 0; font-size: 1.1rem; font-weight: 800;">NMCN</h4>
+                            <span style="font-size: 0.8rem; color: var(--text-muted);">Approved Institution</span>
+                        </div>
+                    </div>
                 </div>
             </div>
         </section>
