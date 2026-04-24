@@ -311,6 +311,71 @@
             z-index: 1000;
         }
 
+        .mobile-menu-btn {
+            display: none;
+            background: transparent;
+            border: none;
+            font-size: 1.8rem;
+            color: var(--secondary);
+            cursor: pointer;
+        }
+
+        .mobile-drawer {
+            position: fixed;
+            top: 0;
+            right: -100%;
+            width: 80%;
+            max-width: 400px;
+            height: 100vh;
+            background: var(--white);
+            z-index: 2000;
+            transition: right 0.3s ease;
+            box-shadow: -5px 0 15px rgba(0,0,0,0.1);
+            display: flex;
+            flex-direction: column;
+            padding: 2rem;
+        }
+
+        .mobile-drawer.open {
+            right: 0;
+        }
+
+        .mobile-drawer-close {
+            align-self: flex-end;
+            background: transparent;
+            border: none;
+            font-size: 2rem;
+            color: var(--text-muted);
+            cursor: pointer;
+            margin-bottom: 2rem;
+        }
+
+        .mobile-drawer-links {
+            display: flex;
+            flex-direction: column;
+            gap: 1.5rem;
+        }
+
+        .mobile-drawer-links a {
+            text-decoration: none;
+            color: var(--secondary);
+            font-weight: 700;
+            font-size: 1.2rem;
+            border-bottom: 1px solid var(--border-color, #e2e8f0);
+            padding-bottom: 0.5rem;
+        }
+
+        .mobile-drawer-overlay {
+            display: none;
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0,0,0,0.5);
+            z-index: 1999;
+        }
+        .mobile-drawer-overlay.open {
+            display: block;
+        }
+
         .headlines-ticker {
             display: flex;
             align-items: center;
@@ -348,6 +413,24 @@
         @keyframes scrollTicker {
             0% { transform: translateX(0); }
             100% { transform: translateX(-100%); }
+        }
+
+        @media (max-width: 768px) {
+            .utility-bar, .headlines-ticker, .nav-brand-subtitle {
+                display: none !important;
+            }
+            .nav-links {
+                display: none !important;
+            }
+            .mobile-menu-btn {
+                display: block;
+            }
+            .nav-brand-text h2 {
+                font-size: 1.1rem;
+            }
+            .main-nav {
+                padding: 0.5rem 1rem;
+            }
         }
         .nav-brand {
             display: flex;
@@ -500,6 +583,9 @@
                 <div class="nav-brand-subtitle">Akoodo, Wannune, Benue State</div>
             </div>
         </a>
+        <button class="mobile-menu-btn" onclick="toggleMobileMenu()">
+            <iconify-icon icon="mdi:menu"></iconify-icon>
+        </button>
         <div class="nav-links">
             <a href="#about" class="nav-item">ABOUT US</a>
             <a href="#departments" class="nav-item">PROGRAMMES</a>
@@ -510,6 +596,23 @@
             <iconify-icon icon="mdi:magnify" style="font-size: 1.5rem; color: var(--secondary); cursor: pointer; margin-left: 0.5rem;"></iconify-icon>
         </div>
     </nav>
+
+    <!-- Mobile Drawer -->
+    <div class="mobile-drawer-overlay" id="mobileOverlay" onclick="toggleMobileMenu()"></div>
+    <div class="mobile-drawer" id="mobileDrawer">
+        <button class="mobile-drawer-close" onclick="toggleMobileMenu()">
+            <iconify-icon icon="mdi:close"></iconify-icon>
+        </button>
+        <div class="mobile-drawer-links">
+            <a href="#about" onclick="toggleMobileMenu()">ABOUT US</a>
+            <a href="#departments" onclick="toggleMobileMenu()">PROGRAMMES</a>
+            <a href="/register" onclick="toggleMobileMenu()">ADMISSIONS</a>
+            <a href="#academics" onclick="toggleMobileMenu()">ACADEMICS</a>
+            <a href="#staff" onclick="toggleMobileMenu()">STAFF</a>
+            <a href="#contact" onclick="toggleMobileMenu()">CONTACT</a>
+            <a href="/login" onclick="toggleMobileMenu()" style="color: var(--primary);">SIGN IN</a>
+        </div>
+    </div>
 
     <div class="headlines-ticker">
         <div class="headlines-label">HEADLINES</div>
@@ -945,6 +1048,12 @@
     </main>
 
     <script>
+        // Mobile Menu Toggle
+        function toggleMobileMenu() {
+            document.getElementById('mobileDrawer').classList.toggle('open');
+            document.getElementById('mobileOverlay').classList.toggle('open');
+        }
+
         // Auto-playing slider logic
         const slides = document.querySelectorAll('.slide');
         let currentSlide = 0;
