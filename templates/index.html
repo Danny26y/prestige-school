@@ -309,7 +309,45 @@
             position: sticky;
             top: 0;
             z-index: 1000;
-            box-shadow: 0 4px 6px -1px rgba(0,0,0,0.05);
+        }
+
+        .headlines-ticker {
+            display: flex;
+            align-items: center;
+            background: var(--medical-white, #F1F5F9);
+            border-bottom: 1px solid var(--border-color, #e2e8f0);
+            overflow: hidden;
+            width: 100%;
+        }
+        .headlines-label {
+            background: var(--deep-navy, #0A192F);
+            color: white;
+            padding: 0.5rem 1.5rem;
+            font-weight: 700;
+            font-size: 0.85rem;
+            letter-spacing: 0.05em;
+            text-transform: uppercase;
+            z-index: 2;
+            white-space: nowrap;
+        }
+        .headlines-scroll {
+            flex: 1;
+            white-space: nowrap;
+            overflow: hidden;
+            padding: 0 1rem;
+            color: var(--text-main, #334155);
+            font-weight: 500;
+            font-size: 0.9rem;
+            position: relative;
+        }
+        .headlines-scroll span {
+            display: inline-block;
+            padding-left: 100%;
+            animation: scrollTicker 20s linear infinite;
+        }
+        @keyframes scrollTicker {
+            0% { transform: translateX(0); }
+            100% { transform: translateX(-100%); }
         }
         .nav-brand {
             display: flex;
@@ -476,6 +514,13 @@
             <iconify-icon icon="mdi:magnify" style="font-size: 1.5rem; color: var(--secondary); cursor: pointer; margin-left: 0.5rem;"></iconify-icon>
         </div>
     </nav>
+
+    <div class="headlines-ticker">
+        <div class="headlines-label">HEADLINES</div>
+        <div class="headlines-scroll">
+            <span>{% if latest_news %}{{ latest_news.title }}{% else %}Welcome to Prestige School of Nursing - Excellence in Clinical Education & Care{% endif %}</span>
+        </div>
+    </div>
 
     <main class="main-content">
         <div class="hero-slider" id="home">
