@@ -21,7 +21,7 @@ import cloudinary.api
 # Internal imports
 from database import get_db, engine
 import models
-
+from starlette.middleware.base import BaseHTTPMiddleware
 
 
 load_dotenv()
@@ -33,6 +33,16 @@ cloudinary.config(
 )
 # --- CONFIGURATION ---
 app = FastAPI(title="Prestige School of Nursing API")
+
+# Middleware to fix HTTPS behind proxy
+class HTTPSRedirectMiddleware(BaseHTTPMiddleware):
+    async def dispatch(self, request: Request, call_next):
+        if request.headers.get("x-forwarded-proto") == "https":
+            request.scope["scheme"] = "https"
+        return await call_next(request)
+
+app.add_middleware(HTTPSRedirectMiddleware)
+
 templates = Jinja2Templates(directory="templates")
 
 # Mount Static and Upload folders for asset accessibility
